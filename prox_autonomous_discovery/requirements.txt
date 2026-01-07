@@ -1,0 +1,43 @@
+# Core Framework
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+python-dotenv>=1.0.0
+
+# Database
+psycopg[binary,pool]>=3.1.13
+sqlalchemy
+
+# API Clients
+praw  # Reddit API
+google-api-python-client  # YouTube API
+anthropic>=0.7.8  # Claude API
+apify-client  # Apify scraping
+requests>=2.31.0
+httpx>=0.25.2
+
+# Amazon Product API
+python-amazon-paapi
+
+# Data Processing
+pandas
+numpy
+
+# Web Scraping (backup)
+beautifulsoup4
+selenium
+
+# Scheduling
+apscheduler
+
+# Monitoring & Logging
+python-json-logger
+sentry-sdk
+
+# Testing
+pytest
+pytest-asyncio
+
+# Utils
+python-dateutil
+pytz

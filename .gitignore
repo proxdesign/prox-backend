@@ -1,0 +1,20 @@
+# Ignore everything except backend
+/*
+!/prox_autonomous_discovery/
+!.gitignore
+!README.md
+
+# But ignore these in backend
+prox_autonomous_discovery/.env*
+prox_autonomous_discovery/__pycache__/
+prox_autonomous_discovery/**/*.pyc
+prox_autonomous_discovery/**/*.pyo
+prox_autonomous_discovery/**/*.pyd
+prox_autonomous_discovery/**/__pycache__/
+prox_autonomous_discovery/.DS_Store
+
+# Ignore archives and frontends
+00_archive/
+prox-frontend/
+prox-frontend-v2/
+design-agent/

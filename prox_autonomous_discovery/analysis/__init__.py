@@ -1,0 +1,1 @@
+"""Analysis package for AI-powered furniture problem analysis."""

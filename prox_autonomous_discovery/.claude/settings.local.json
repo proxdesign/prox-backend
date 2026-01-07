@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(./setup.sh:*)",
+      "Bash(createdb:*)",
+      "Bash(psql:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(mkdir:*)",
+      "Bash(pip3 install:*)",
+      "Bash(timeout 30 python3:*)",
+      "Bash(touch:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install:*)",
+      "Bash(curl:*)",
+      "Bash(npm run dev:*)",
+      "Bash(rm:*)",
+      "Bash(npm run build:*)",
+      "Bash(cp:*)",
+      "Bash(grep:*)",
+      "Bash(lsof:*)",
+      "Bash(kill:*)",
+      "Bash(node:*)",
+      "Bash(timeout:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "/Volumes/Dave s Mac/prox-product-discovery",
+      "/Volumes/Dave''''s Mac/prox-product-discovery",
+      "/Volumes/Daves Mac/prox-product-discovery"
+    ]
+  }
+}
