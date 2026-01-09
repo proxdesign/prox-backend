@@ -98,6 +98,15 @@ async def root():
         "timestamp": datetime.now()
     }
 
+@app.get("/health")
+async def health_check():
+    """Railway health check endpoint."""
+    return {
+        "status": "operational",
+        "timestamp": datetime.now(),
+        "version": "1.0.0"
+    }
+
 
 @app.get("/problems", response_model=List[Problem])
 async def get_problems(
