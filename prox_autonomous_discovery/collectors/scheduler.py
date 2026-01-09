@@ -7,9 +7,10 @@ from apscheduler.triggers.interval import IntervalTrigger
 from config.settings import settings
 
 # Import all collectors
-from collectors.reddit_collector import RedditCollector
 from collectors.youtube_collector import YouTubeCollector
 from collectors.pinterest_api_limited import PinterestLimitedCollector
+from collectors.blog_collector import BlogCollector
+# Note: Reddit collector disabled due to ToS restrictions
 
 logging.basicConfig(level=settings.LOG_LEVEL)
 logger = logging.getLogger(__name__)
@@ -21,9 +22,9 @@ class CollectionScheduler:
     def __init__(self):
         self.scheduler = BlockingScheduler()
         self.collectors = {
-            'reddit': RedditCollector(),
-            'youtube': YouTubeCollector(),
-            'pinterest': PinterestLimitedCollector()
+            'youtube': YouTubeCollector(),      # Primary - most reliable
+            'blog': BlogCollector(),            # Secondary - good product mentions  
+            'pinterest': PinterestLimitedCollector()  # Optional - may have auth issues
         }
         logger.info("Collection scheduler initialized")
     
@@ -162,7 +163,7 @@ def main():
         else:
             print("Usage: python scheduler.py [once|platform <name>|schedule]")
             print("  once      - Run single collection cycle")
-            print("  platform  - Run single platform (reddit|youtube|pinterest)")
+            print("  platform  - Run single platform (youtube|blog|pinterest)")
             print("  schedule  - Start scheduled collection every 6 hours")
             
     else:

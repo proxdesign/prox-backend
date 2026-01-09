@@ -42,7 +42,14 @@
       "Bash(PYTHONPATH=. python scripts/run_pipeline_v2.py stats)",
       "Bash(PYTHONPATH=. uvicorn api.main:app --reload --port 8000)",
       "Bash(PYTHONPATH=. python scripts/test_api.py)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(npx vercel:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker compose:*)",
+      "Bash(./start-dev.sh:*)",
+      "Bash(sudo hdiutil attach:*)",
+      "Bash(softwareupdate:*)"
     ],
     "deny": [],
     "ask": [],

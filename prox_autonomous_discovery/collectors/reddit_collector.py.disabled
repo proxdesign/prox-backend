@@ -1,0 +1,34 @@
+"""
+DISABLED: Reddit content collector - ToS Compliance Issue
+
+This collector has been disabled because Reddit's Terms of Service 
+prohibit commercial use of their data without explicit permission.
+
+Historical Reddit data in the database has been preserved for reference
+but no new Reddit data should be collected.
+
+For commercial applications, use alternative data sources:
+- Blog RSS feeds
+- YouTube API
+- Google Trends
+- Pinterest API (with proper authentication)
+
+Date disabled: 2026-01-09
+Reason: Reddit ToS compliance
+"""
+
+# Original collector code preserved below for reference:
+# (Code commented out to prevent accidental usage)
+
+"""
+import praw
+import logging
+import json
+from datetime import datetime
+from config.settings import settings
+from database.connection import db
+
+class RedditCollector:
+    # DISABLED - Do not use for commercial purposes
+    pass
+"""

@@ -5,7 +5,7 @@ AI-powered conversational furniture discovery platform that runs 90% autonomousl
 ## Overview
 
 **What it does:**
-- Discovers furniture buying problems from social media (Reddit, TikTok, Pinterest)
+- Discovers furniture buying problems from social media (YouTube, Blog RSS feeds, Pinterest)
 - Matches problems to solutions using AI analysis
 - Recommends products via conversational interface
 - Earns affiliate commissions on purchases
@@ -15,7 +15,7 @@ AI-powered conversational furniture discovery platform that runs 90% autonomousl
 - Backend: Python + FastAPI
 - Database: PostgreSQL
 - AI: Claude API (Anthropic)
-- Data Collection: Reddit API, YouTube API, Apify scrapers
+- Data Collection: YouTube API, Blog RSS feeds, Pinterest API
 - Frontend: React (coming in Phase 6)
 
 ---

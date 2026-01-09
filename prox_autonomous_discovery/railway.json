@@ -5,9 +5,39 @@
   },
   "deploy": {
     "startCommand": "uvicorn api.main:app --host 0.0.0.0 --port $PORT",
-    "healthcheckPath": "/",
+    "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "on-failure",
     "restartPolicyMaxRetries": 10
+  },
+  "environments": {
+    "production": {
+      "variables": {
+        "PROX_ENV": "production",
+        "COLLECTION_FREQUENCY_HOURS": "6",
+        "LOG_LEVEL": "INFO"
+      }
+    },
+    "staging": {
+      "variables": {
+        "PROX_ENV": "staging", 
+        "COLLECTION_FREQUENCY_HOURS": "12",
+        "LOG_LEVEL": "DEBUG"
+      }
+    }
+  },
+  "cron": {
+    "datacollection": {
+      "schedule": "0 */6 * * *",
+      "command": "python3 scripts/run_collection.py"
+    },
+    "trendscoring": {
+      "schedule": "30 */6 * * *",
+      "command": "python3 scripts/run_trend_scoring.py"
+    },
+    "healthcheck": {
+      "schedule": "*/30 * * * *",
+      "command": "python3 scripts/run_collection.py --test"
+    }
   }
 }
