@@ -128,9 +128,11 @@ async def root():
     """API health check."""
     return {
         "message": "Prox Autonomous Discovery API",
-        "status": "operational",
-        "version": "1.0.0",
-        "timestamp": datetime.now()
+        "status": "operational", 
+        "version": "1.0.1-auth-enabled",
+        "timestamp": datetime.now(),
+        "auth_routes_count": len([r for r in app.routes if hasattr(r, 'path') and 'auth' in str(r.path)]),
+        "total_routes_count": len([r for r in app.routes if hasattr(r, 'path')])
     }
 
 @app.get("/health")
