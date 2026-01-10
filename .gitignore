@@ -3,6 +3,7 @@
 !/prox_autonomous_discovery/
 !.gitignore
 !README.md
+!Procfile
 
 # But ignore these in backend
 prox_autonomous_discovery/.env*

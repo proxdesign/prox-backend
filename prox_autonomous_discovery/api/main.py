@@ -1,13 +1,15 @@
 """FastAPI backend for Prox Autonomous Discovery."""
 import logging
 from datetime import datetime
-from typing import List, Dict, Optional
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
+from typing import List, Dict, Optional, Any
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 import anthropic
 from config.settings import settings
 from database.connection import db
+from services.auth_service import auth_service
 
 logging.basicConfig(level=settings.LOG_LEVEL)
 logger = logging.getLogger(__name__)
@@ -35,6 +37,18 @@ app.add_middleware(
 
 # Initialize Claude client
 claude = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+
+# Auth dependency
+def get_current_user(authorization: Optional[str] = Header(None)) -> Optional[Dict[str, Any]]:
+    """Extract user from JWT token in Authorization header."""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    
+    try:
+        token = authorization.split(" ")[1]
+        return auth_service.verify_jwt_token(token)
+    except Exception:
+        return None
 
 # Pydantic models for API responses
 class Problem(BaseModel):
@@ -86,6 +100,27 @@ class ChatResponse(BaseModel):
     recommendations: Optional[List[Product]] = None
     problems_identified: Optional[List[str]] = None
     session_id: Optional[str] = None
+
+# Auth models
+class MagicLinkRequest(BaseModel):
+    email: str
+    name: Optional[str] = None
+
+class TokenVerifyRequest(BaseModel):
+    token: str
+
+class AuthResponse(BaseModel):
+    success: bool
+    message: str
+    user: Optional[Dict[str, Any]] = None
+    token: Optional[str] = None
+
+class UserModel(BaseModel):
+    id: int
+    email: str
+    name: str
+    created_at: Optional[str] = None
+    preferences: Dict[str, Any] = {}
 
 
 @app.get("/")
@@ -870,6 +905,92 @@ async def check_amazon_credentials():
     except Exception as e:
         logger.error(f"Error checking Amazon credentials: {e}")
         raise HTTPException(status_code=500, detail="Failed to check credentials")
+
+
+# Authentication endpoints
+@app.post("/auth/request-magic-link", response_model=AuthResponse)
+async def request_magic_link(request: MagicLinkRequest):
+    """Request a magic link for passwordless authentication."""
+    try:
+        result = auth_service.create_magic_link(request.email, request.name)
+        
+        return AuthResponse(
+            success=result["success"],
+            message=result["message"]
+        )
+        
+    except Exception as e:
+        logger.error(f"Error requesting magic link: {e}")
+        raise HTTPException(status_code=500, detail="Failed to send magic link")
+
+
+@app.get("/auth/verify")
+async def verify_magic_link(token: str = Query(..., description="Magic link token")):
+    """Verify magic link token and redirect to frontend with JWT."""
+    try:
+        result = auth_service.verify_magic_link(token)
+        
+        if result["success"]:
+            # Redirect to frontend with JWT token
+            frontend_url = auth_service.app_url
+            redirect_url = f"{frontend_url}?token={result['token']}"
+            return RedirectResponse(url=redirect_url)
+        else:
+            # Redirect to frontend with error
+            frontend_url = auth_service.app_url
+            redirect_url = f"{frontend_url}?auth_error={result['message']}"
+            return RedirectResponse(url=redirect_url)
+            
+    except Exception as e:
+        logger.error(f"Error verifying magic link: {e}")
+        frontend_url = auth_service.app_url
+        redirect_url = f"{frontend_url}?auth_error=Verification failed"
+        return RedirectResponse(url=redirect_url)
+
+
+@app.post("/auth/verify-token", response_model=AuthResponse)
+async def verify_token(request: TokenVerifyRequest):
+    """Verify JWT token and return user data."""
+    token = request.token
+    try:
+        user = auth_service.verify_jwt_token(token)
+        
+        if user:
+            return AuthResponse(
+                success=True,
+                message="Token verified",
+                user=user,
+                token=token
+            )
+        else:
+            return AuthResponse(
+                success=False,
+                message="Invalid or expired token"
+            )
+            
+    except Exception as e:
+        logger.error(f"Error verifying token: {e}")
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+
+@app.post("/auth/me", response_model=UserModel)
+async def get_current_user_info(current_user: Dict[str, Any] = Depends(get_current_user)):
+    """Get current user information."""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    return UserModel(
+        id=current_user["id"],
+        email=current_user["email"],
+        name=current_user["name"],
+        preferences=current_user.get("preferences", {})
+    )
+
+
+@app.post("/auth/logout")
+async def logout():
+    """Logout endpoint (client-side token removal)."""
+    return {"success": True, "message": "Logged out successfully"}
 
 
 if __name__ == "__main__":

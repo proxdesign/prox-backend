@@ -1,6 +1,15 @@
 {
   "changelog": [
     {
+      "date": "2026-01-10",
+      "version": "5.0.0",
+      "type": "milestone", 
+      "component": "Magic Link Passwordless Authentication System",
+      "reason": "Major security and UX milestone: Complete implementation of passwordless authentication replacing traditional login system with modern magic link flow",
+      "details": "Complete backend authentication service with magic link token generation and JWT creation, Resend email service integration with professional HTML email templates and domain fallback support, database schema with magic_links table including proper indexing and expiration handling, FastAPI authentication endpoints (/auth/request-magic-link, /auth/verify, /auth/verify-token) with comprehensive error handling, frontend integration with URL token parsing and automatic user session management, secure token verification and user state persistence with localStorage integration",
+      "impact": "Modern passwordless authentication experience eliminating password management friction, enhanced security with time-limited tokens, professional email delivery system, and seamless user onboarding flow driving higher conversion rates"
+    },
+    {
       "date": "2026-01-09",
       "version": "4.1.0",
       "type": "added",

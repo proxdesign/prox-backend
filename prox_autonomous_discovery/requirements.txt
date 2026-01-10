@@ -38,6 +38,12 @@ sentry-sdk
 pytest
 pytest-asyncio
 
+# Email Service
+resend>=0.6.0
+
+# JWT Authentication
+pyjwt[crypto]>=2.8.0
+
 # Utils
 python-dateutil
 pytz
