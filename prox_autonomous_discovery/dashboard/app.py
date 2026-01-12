@@ -18,9 +18,13 @@ from flask_cors import CORS
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
 
+import requests
 from database.connection import db
 from scripts.health_monitor import HealthMonitor
 from scripts.send_alerts import AlertManager
+
+# Fly.io API Configuration
+FLY_API_BASE = "https://prox-autonomous-discovery.fly.dev"
 
 app = Flask(__name__)
 app.secret_key = 'prox-dashboard-secret-key-change-in-production'
@@ -47,6 +51,30 @@ def get_cached_or_execute(key, func, timeout=None):
     result = func()
     _cache[key] = (now, result)
     return result
+
+
+def call_fly_api(endpoint, method="GET", data=None):
+    """Make API call to Fly.io backend."""
+    try:
+        url = f"{FLY_API_BASE}{endpoint}"
+        headers = {"Content-Type": "application/json"}
+        
+        if method == "GET":
+            response = requests.get(url, headers=headers, timeout=30)
+        elif method == "POST":
+            response = requests.post(url, json=data, headers=headers, timeout=30)
+        else:
+            raise ValueError(f"Unsupported method: {method}")
+            
+        response.raise_for_status()
+        return response.json()
+        
+    except requests.RequestException as e:
+        return {
+            "error": f"API call failed: {str(e)}",
+            "endpoint": endpoint,
+            "method": method
+        }
 
 
 def run_script_safely(script_path, args=None):
@@ -107,12 +135,17 @@ def dashboard():
 def api_health():
     """Get system health status."""
     def get_health():
+        # Check Fly.io backend health
+        fly_health = call_fly_api("/health")
+        
+        # Also run local health checks
         monitor = HealthMonitor()
         is_healthy = monitor.run_health_checks()
         
         return {
-            'status': monitor.status,
-            'is_healthy': is_healthy,
+            'fly_backend': fly_health,
+            'local_status': monitor.status,
+            'is_healthy': is_healthy and not fly_health.get('error'),
             'checks': monitor.checks,
             'alerts': [
                 {
@@ -215,56 +248,21 @@ def api_trending_products():
     """Get trending product statistics."""
     def get_trending():
         try:
-            # Top trending products
-            trending = db.fetch_all("""
-                SELECT 
-                    product_name,
-                    brand,
-                    trend_score,
-                    price,
-                    last_updated
-                FROM products
-                WHERE active = TRUE
-                ORDER BY trend_score DESC
-                LIMIT 20
-            """)
+            # Get trending products from Fly.io API
+            trending_data = call_fly_api("/trending-products?limit=20")
             
-            # Trend score distribution
-            score_distribution = db.fetch_all("""
-                SELECT 
-                    CASE 
-                        WHEN trend_score >= 9 THEN '9-10'
-                        WHEN trend_score >= 8 THEN '8-9'
-                        WHEN trend_score >= 7 THEN '7-8'
-                        WHEN trend_score >= 6 THEN '6-7'
-                        WHEN trend_score >= 5 THEN '5-6'
-                        ELSE '<5'
-                    END as score_range,
-                    COUNT(*) as product_count
-                FROM products
-                WHERE active = TRUE
-                GROUP BY score_range
-                ORDER BY score_range DESC
-            """)
+            if trending_data.get('error'):
+                return {
+                    'error': trending_data['error'],
+                    'timestamp': datetime.now().isoformat()
+                }
+            
+            # Get stats from Fly.io API
+            stats_data = call_fly_api("/stats")
             
             return {
-                'trending_products': [
-                    {
-                        'product_name': p[0],
-                        'brand': p[1],
-                        'trend_score': float(p[2]) if p[2] else 0,
-                        'price': float(p[3]) if p[3] else 0,
-                        'last_updated': p[4].isoformat() if p[4] else None
-                    }
-                    for p in trending
-                ] if trending else [],
-                'score_distribution': [
-                    {
-                        'score_range': s[0],
-                        'product_count': s[1]
-                    }
-                    for s in score_distribution
-                ] if score_distribution else [],
+                'trending_products': trending_data,
+                'stats': stats_data,
                 'timestamp': datetime.now().isoformat()
             }
             
@@ -275,6 +273,33 @@ def api_trending_products():
             }
             
     return jsonify(get_cached_or_execute('trending_products', get_trending, 300))
+
+
+@app.route('/api/fly-backend-stats')
+def api_fly_backend_stats():
+    """Get statistics from Fly.io backend API."""
+    def get_fly_stats():
+        try:
+            # Get various stats from Fly.io backend
+            stats = call_fly_api("/stats")
+            trending = call_fly_api("/trending-products?limit=10")
+            categories = call_fly_api("/categories")
+            
+            return {
+                'backend_stats': stats,
+                'trending_sample': trending,
+                'categories': categories,
+                'backend_url': FLY_API_BASE,
+                'timestamp': datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            return {
+                'error': str(e),
+                'timestamp': datetime.now().isoformat()
+            }
+            
+    return jsonify(get_cached_or_execute('fly_stats', get_fly_stats, 180))
 
 
 @app.route('/api/automation-status')
@@ -598,6 +623,22 @@ def api_agent_logs():
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
     
     return jsonify(get_logs())  # Don't cache logs, always fresh
+
+
+@app.route('/api/test-fly-api', methods=['POST'])
+def api_test_fly_api():
+    """Test Fly.io API connectivity."""
+    data = request.get_json() or {}
+    endpoint = data.get('endpoint', '/health')
+    
+    result = call_fly_api(endpoint)
+    
+    return jsonify({
+        'endpoint_tested': endpoint,
+        'result': result,
+        'success': not result.get('error'),
+        'timestamp': datetime.now().isoformat()
+    })
 
 
 @app.route('/api/test-status')

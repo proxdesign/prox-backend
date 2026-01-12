@@ -515,6 +515,21 @@
                 </div>
                 <div class="timestamp" id="trending-timestamp"></div>
             </div>
+            
+            <!-- Fly.io Backend Status -->
+            <div class="section">
+                <h2>🚀 Fly.io Backend API</h2>
+                <div id="fly-backend-status">
+                    <div class="loading">Loading backend status...</div>
+                </div>
+                <div class="controls">
+                    <button onclick="testFlyApi('/health')" class="btn">Test Health</button>
+                    <button onclick="testFlyApi('/stats')" class="btn">Test Stats</button>
+                    <button onclick="testFlyApi('/trending-products')" class="btn">Test Trending</button>
+                    <button onclick="refreshFlyStats()" class="btn btn-primary">Refresh</button>
+                </div>
+                <div class="timestamp" id="fly-timestamp"></div>
+            </div>
 
             <!-- Automation Services -->
             <div class="section full-width">
@@ -890,6 +905,90 @@
             }
         }
 
+        // Fly.io Backend functions
+        async function loadFlyBackendStats() {
+            try {
+                const data = await apiCall('/api/fly-backend-stats');
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                const statusDiv = document.getElementById('fly-backend-status');
+                
+                let html = '<div class="stats-grid">';
+                
+                // Show backend URL
+                html += `
+                    <div class="stat-item">
+                        <div class="metric">${data.backend_url || 'N/A'}</div>
+                        <div class="metric-label">Backend URL</div>
+                    </div>
+                `;
+                
+                // Show backend stats if available
+                if (data.backend_stats && !data.backend_stats.error) {
+                    const stats = data.backend_stats;
+                    html += `
+                        <div class="stat-item">
+                            <div class="metric">${stats.database_connection ? '✅' : '❌'}</div>
+                            <div class="metric-label">Database</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="metric">${formatNumber(stats.total_products || 0)}</div>
+                            <div class="metric-label">Total Products</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="metric">${formatNumber(stats.total_posts || 0)}</div>
+                            <div class="metric-label">Social Posts</div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="stat-item">
+                            <div class="metric">❌</div>
+                            <div class="metric-label">Stats Error</div>
+                        </div>
+                    `;
+                }
+                
+                html += '</div>';
+                
+                statusDiv.innerHTML = html;
+                document.getElementById('fly-timestamp').textContent = formatTimestamp(data.timestamp);
+                
+            } catch (error) {
+                document.getElementById('fly-backend-status').innerHTML = 
+                    `<div class="error">Error loading backend stats: ${error.message}</div>`;
+            }
+        }
+        
+        async function testFlyApi(endpoint) {
+            logActivity(`Testing Fly.io API endpoint: ${endpoint}`);
+            
+            try {
+                const result = await apiCall('/api/test-fly-api', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ endpoint: endpoint })
+                });
+                
+                if (result.success) {
+                    logActivity(`✅ ${endpoint} test successful`, 'success');
+                } else {
+                    logActivity(`❌ ${endpoint} test failed: ${result.result.error || 'Unknown error'}`, 'error');
+                }
+                
+            } catch (error) {
+                logActivity(`❌ ${endpoint} test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function refreshFlyStats() {
+            loadFlyBackendStats();
+            logActivity('Refreshed Fly.io backend stats', 'success');
+        }
+
         // Action functions
         async function runCollection() {
             const btn = event.target;
@@ -1029,6 +1128,7 @@
                 loadHealthData(),
                 loadCollectionStats(),
                 loadTrendingProducts(),
+                loadFlyBackendStats(),
                 loadAutomationStatus(),
                 loadAgentStatus(),
                 loadTestStatus()
