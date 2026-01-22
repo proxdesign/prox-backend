@@ -5,11 +5,38 @@ Prox is an AI-powered furniture discovery platform that helps users find furnitu
 
 **Live Site:** https://proxdesign.co
 **API:** https://prox-autonomous-discovery.fly.dev
+**GitHub:** https://github.com/proxdesign/prox-backend
+
+## Development Workflow
+
+### Directory Structure
+```
+~/projects/prox-product-discovery/     # LOCAL - Fast development (SSD)
+~/cloud-projects/prox-product-discovery/  # BACKUP - iCloud sync (slow for dev)
+```
+
+### Git Workflow
+1. **Work locally** in `~/projects/prox-product-discovery/` for fast file I/O
+2. **Commit and push** regularly to GitHub for backup
+3. **iCloud copy** syncs automatically but is too slow for Next.js development
+
+```bash
+# Start work
+cd ~/projects/prox-product-discovery
+
+# After making changes
+git add -A
+git commit -m "Description of changes"
+git push origin main
+
+# Pull latest if working from another machine
+git pull origin main
+```
 
 ## Project Structure
 
 ```
-~/cloud-projects/prox-product-discovery/
+~/projects/prox-product-discovery/
 ├── prox_autonomous_discovery/    # Python backend (FastAPI)
 │   ├── api/                      # FastAPI endpoints
 │   ├── collectors/               # Data collection (YouTube, Blogs, Pinterest)
@@ -17,25 +44,25 @@ Prox is an AI-powered furniture discovery platform that helps users find furnitu
 │   ├── database/                 # PostgreSQL connection & queries
 │   ├── config/                   # Settings and configuration
 │   ├── scripts/                  # Utility scripts
+│   ├── dashboard/                # Health monitoring dashboard (localhost:5555)
 │   └── .env                      # Backend environment variables
 │
 ├── prox-frontend-v2/             # Next.js frontend (ACTIVE)
-│   ├── src/app/                  # Next.js app router pages
-│   ├── src/components/           # React components
+│   ├── app/                      # Next.js app router pages
+│   ├── components/               # React components
 │   ├── public/                   # Static assets
 │   └── .env.local                # Frontend environment variables
 │
-├── prox-frontend/                # Legacy frontend (deprecated)
-├── 00_archive/                   # Archived/old code
-├── changelog.json                # Version history (in prox_autonomous_discovery/)
-└── prox-setup.sh                 # Development environment setup script
+├── CLAUDE.md                     # This context file
+├── prox-setup.sh                 # Development environment setup script
+└── changelog.json                # Version history (in prox_autonomous_discovery/)
 ```
 
 ## Tech Stack
 
 ### Frontend
-- **Framework:** Next.js 14 (React)
-- **Styling:** CSS modules
+- **Framework:** Next.js 16.1.0 (Turbopack)
+- **Styling:** Tailwind CSS
 - **Deployment:** Vercel
 
 ### Backend
@@ -44,7 +71,7 @@ Prox is an AI-powered furniture discovery platform that helps users find furnitu
 - **Deployment:** Fly.dev
 
 ### Database
-- **Primary:** PostgreSQL (local dev + Fly.dev managed)
+- **Primary:** PostgreSQL (Fly.dev managed)
 - **Caching:** Redis (optional, for rate limiting)
 
 ### AI/ML
@@ -66,7 +93,10 @@ Prox is an AI-powered furniture discovery platform that helps users find furnitu
 
 Active collectors (runs every 6 hours):
 1. **YouTube** - Primary source, 14 search queries for furniture/organization content
-2. **Blog/RSS** - 6 feeds: Apartment Therapy, The Spruce, Better Homes & Gardens, Real Simple, IKEA Hackers, Container Store Blog
+2. **Blog/RSS** - 16 feeds from major home/design magazines:
+   - IKEA Hackers, Apartment Therapy, Architectural Digest, House Beautiful
+   - Elle Decor, Dezeen, Bob Vila, Family Handyman, Young House Love
+   - Curbly, Homedit, Design Milk, Hunker, Curbed, Remodelista, Country Living
 3. **Pinterest** - Limited scope (user's own pins/boards only)
 
 **Disabled:** Reddit (ToS), Instagram (ToS), TikTok (ToS)
@@ -78,35 +108,41 @@ Active collectors (runs every 6 hours):
 | `prox_autonomous_discovery/api/main.py` | FastAPI app entry point |
 | `prox_autonomous_discovery/api/chat.py` | Chat endpoint with Claude |
 | `prox_autonomous_discovery/collectors/scheduler.py` | Data collection orchestration |
-| `prox-frontend-v2/src/app/page.tsx` | Homepage |
-| `prox-frontend-v2/src/components/ChatInterface.tsx` | Main chat UI |
-| `prox_autonomous_discovery/changelog.json` | Version history |
+| `prox_autonomous_discovery/collectors/blog_collector.py` | RSS feed collection (16 sources) |
+| `prox_autonomous_discovery/dashboard/app.py` | Health dashboard at localhost:5555 |
+| `prox-frontend-v2/app/page.tsx` | Homepage |
+| `prox-frontend-v2/components/ChatInterface.tsx` | Main chat UI |
+| `prox_autonomous_discovery/CHANGELOG.json` | Version history |
 
 ## Common Commands
 
 ```bash
-# Setup/check environment
-./prox-setup.sh check
+# Navigate to project
+cd ~/projects/prox-product-discovery
 
-# Start local development
-./prox-setup.sh start
+# Frontend development (fast on local SSD)
+cd prox-frontend-v2
+npm run dev                    # Starts at localhost:3000
 
-# Stop local servers
-./prox-setup.sh stop
-
-# Test API connections
-./prox-setup.sh test-apis
-
-# Backend only (from prox_autonomous_discovery/)
+# Backend development
+cd prox_autonomous_discovery
 source venv/bin/activate
 uvicorn api.main:app --reload --port 8000
 
-# Frontend only (from prox-frontend-v2/)
-npm run dev
+# Health dashboard
+cd prox_autonomous_discovery
+./start_dashboard.sh           # Starts at localhost:5555
 
 # Run data collection manually
 cd prox_autonomous_discovery
 python -m scripts.run_collection --platform youtube
+python -m scripts.run_collection --platform blog
+
+# Git workflow
+git status
+git add -A
+git commit -m "Description"
+git push origin main
 ```
 
 ## Database Schema (Key Tables)
@@ -119,6 +155,7 @@ python -m scripts.run_collection --platform youtube
 - `saved_products` - User's saved items
 - `product_feedback` - User feedback on recommendations
 - `magic_links` - Passwordless auth tokens
+- `collection_runs` - Data collection history
 
 ## Environment Variables Needed
 
@@ -149,9 +186,11 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-...
 
 ## Notes for Claude Code
 
-1. **Always use the iCloud path:** `~/cloud-projects/prox-product-discovery/`
-2. **Active frontend is `prox-frontend-v2`** (not `prox-frontend`)
-3. **Changelog is at:** `prox_autonomous_discovery/changelog.json` - update it for significant changes
-4. **Don't commit .env files** - they contain real API keys
-5. **Reddit collector is disabled** - don't re-enable without ToS review
-6. **Production API is on Fly.dev**, not Railway (changelog may reference Railway - it's outdated)
+1. **Work in local directory:** `~/projects/prox-product-discovery/` (fast SSD)
+2. **NOT iCloud:** `~/cloud-projects/...` is too slow for Next.js development
+3. **Active frontend is `prox-frontend-v2`** (not `prox-frontend`)
+4. **Changelog is at:** `prox_autonomous_discovery/CHANGELOG.json` - update it for significant changes
+5. **Don't commit .env files** - they contain real API keys
+6. **Reddit collector is disabled** - don't re-enable without ToS review
+7. **Production API is on Fly.dev**, not Railway
+8. **Always push changes** to GitHub after significant work sessions
