@@ -1,0 +1,344 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-neutral-900;
+    background-color: #F0F2F1;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    /* IE and Edge */
+    -ms-overflow-style: none;
+
+    /* Firefox */
+    scrollbar-width: none;
+
+    /* Safari and Chrome */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* Line clamp utilities for text truncation */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+}
+
+/* Bounce Animation for Product Type Cards */
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(20px);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.bounce-delay-1 { animation-delay: 100ms; }
+.bounce-delay-2 { animation-delay: 200ms; }
+.bounce-delay-3 { animation-delay: 300ms; }
+.bounce-delay-4 { animation-delay: 400ms; }
+
+/* Blinking Cursor Animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.typing-cursor {
+  color: #8B7355;
+  animation: blink 1s infinite;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+/* AI Loading Animation */
+@keyframes bounce {
+  0%, 80%, 100% { 
+    transform: scale(0);
+    opacity: 0.5;
+  } 
+  40% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.ai-loading-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #718479;
+  border-radius: 50%;
+  display: inline-block;
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.ai-loading-dot:nth-child(1) { animation-delay: -0.32s; }
+.ai-loading-dot:nth-child(2) { animation-delay: -0.16s; }
+.ai-loading-dot:nth-child(3) { animation-delay: 0s; }
+
+/* Chat Container with Hidden Scrollbar */
+.chat-container {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  scroll-behavior: smooth;
+}
+
+.chat-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Clean Chat Input Styling */
+.chat-input {
+  border: none !important;
+  border-bottom: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  caret-color: #8B7355;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chat-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-bottom: none !important;
+}
+
+/* Chat Bubble Spacing */
+.chat-bubble {
+  margin-bottom: 12px;
+}
+
+.chat-bubble:last-child {
+  margin-bottom: 0;
+}
+
+
+/* Natural Input Styling */
+.natural-input-area {
+  background-color: #D4C4B0;
+  border-radius: 16px;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 0 20px rgba(212, 196, 176, 0.3);
+  backdrop-filter: blur(2px);
+}
+
+
+/* Fade mask at top of chat */
+.chat-fade-mask::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 60px;
+  background: linear-gradient(to bottom, #F0F2F1 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Screen Transition Animations */
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+/* Show Products Button Animation */
+@keyframes buttonBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  60% {
+    transform: scale(1.05) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.show-products-button {
+  animation: buttonBounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* MODERN 2026 LANDING PAGE STYLES */
+
+/* Subtle gradient background */
+.landing-container {
+  background: linear-gradient(
+    180deg,
+    #F0F2F1 0%,
+    #E8EDE9 50%,
+    #F0F2F1 100%
+  );
+}
+
+/* Remove old bento grid styles - now using standard CSS Grid */
+
+/* Entrance Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-fade-in-up-1 {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.animate-fade-in-up-2 {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.animate-fade-in-up-3 {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.animate-fade-in-up-4 {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+/* Enhanced Typography */
+.landing-container h1 {
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.landing-container p {
+  line-height: 1.6;
+}
+
+/* Chat Message Animations */
+@keyframes slideInMessage {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-slideIn {
+  animation: slideInMessage 0.4s ease-out forwards;
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-slideInFromRight {
+  animation: slideInFromRight 0.3s ease-out forwards;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-slideInFromLeft {
+  animation: slideInFromLeft 0.3s ease-out forwards;
+}
+
+/* Responsive Text Scaling */
+@media (max-width: 640px) {
+  .landing-container h1 {
+    font-size: 2.5rem;
+  }
+  
+  .landing-container > div:first-child p {
+    font-size: 1.125rem;
+  }
+  
+  .large-card h3 {
+    font-size: 1.5rem;
+  }
+  
+  .medium-card h3 {
+    font-size: 1.25rem;
+  }
+}

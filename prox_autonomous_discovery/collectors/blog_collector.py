@@ -22,36 +22,90 @@ class BlogCollector:
     
     def __init__(self):
         self.rss_feeds = [
-            {
-                'name': 'Apartment Therapy',
-                'url': 'https://www.apartmenttherapy.com/feeds/all',
-                'category': 'home_design'
-            },
-            {
-                'name': 'The Spruce Organization',
-                'url': 'https://www.thespruce.com/feeds/all',
-                'category': 'home_organization'
-            },
-            {
-                'name': 'Better Homes & Gardens',
-                'url': 'https://feeds.bhg.com/bhg-decorating',
-                'category': 'home_lifestyle'
-            },
-            {
-                'name': 'Real Simple',
-                'url': 'https://feeds.feedburner.com/realsimple/decorating',
-                'category': 'organization'
-            },
+            # DIY & Home Organization Blogs
             {
                 'name': 'IKEA Hackers',
                 'url': 'https://www.ikeahackers.net/feed',
                 'category': 'furniture_hacks'
             },
             {
-                'name': 'The Container Store Blog',
-                'url': 'https://blog.containerstore.com/feed/',
-                'category': 'organization'
-            }
+                'name': 'Young House Love',
+                'url': 'https://www.younghouselove.com/feed/',
+                'category': 'diy_home'
+            },
+            {
+                'name': 'Curbly',
+                'url': 'https://www.curbly.com/feed',
+                'category': 'diy_home'
+            },
+            {
+                'name': 'Homedit',
+                'url': 'https://www.homedit.com/feed/',
+                'category': 'home_design'
+            },
+            # Home & Lifestyle Magazines
+            {
+                'name': 'Apartment Therapy',
+                'url': 'https://www.apartmenttherapy.com/main.rss',
+                'category': 'home_design'
+            },
+            {
+                'name': 'House Beautiful',
+                'url': 'https://www.housebeautiful.com/rss/all.xml/',
+                'category': 'home_lifestyle'
+            },
+            {
+                'name': 'Country Living',
+                'url': 'https://www.countryliving.com/rss/all.xml/',
+                'category': 'home_lifestyle'
+            },
+            {
+                'name': 'Elle Decor',
+                'url': 'https://www.elledecor.com/rss/all.xml/',
+                'category': 'interior_design'
+            },
+            # Architecture & Design Magazines
+            {
+                'name': 'Architectural Digest',
+                'url': 'https://www.architecturaldigest.com/feed/rss',
+                'category': 'interior_design'
+            },
+            {
+                'name': 'Dezeen',
+                'url': 'https://www.dezeen.com/feed/',
+                'category': 'architecture_design'
+            },
+            {
+                'name': 'Design Milk',
+                'url': 'https://design-milk.com/feed/',
+                'category': 'modern_design'
+            },
+            {
+                'name': 'Remodelista',
+                'url': 'https://www.remodelista.com/feed/',
+                'category': 'home_renovation'
+            },
+            # Home Improvement & DIY
+            {
+                'name': 'Bob Vila',
+                'url': 'https://www.bobvila.com/feed',
+                'category': 'home_improvement'
+            },
+            {
+                'name': 'Family Handyman',
+                'url': 'https://www.familyhandyman.com/feed/',
+                'category': 'home_improvement'
+            },
+            {
+                'name': 'Hunker',
+                'url': 'https://www.hunker.com/rss',
+                'category': 'home_design'
+            },
+            {
+                'name': 'Curbed',
+                'url': 'https://www.curbed.com/rss/index.xml',
+                'category': 'real_estate_design'
+            },
         ]
         
         # Keywords that must be present in title/content for relevance filtering

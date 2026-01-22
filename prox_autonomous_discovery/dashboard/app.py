@@ -81,7 +81,7 @@ def run_script_safely(script_path, args=None):
     """Run a script safely and return result."""
     try:
         project_root = Path(__file__).parent.parent
-        pythonpath = "/Volumes/Dave's Mac/prox-product-discovery/prox_trend_discovery"
+        pythonpath = str(Path(__file__).parent.parent)
         
         cmd = [
             'python3', str(project_root / script_path)
@@ -765,7 +765,8 @@ def api_run_tests():
         test_mode = data.get('mode', 'default')  # quick, default, full
         
         # Determine pytest command based on mode
-        base_cmd = ['python3', '/Volumes/Dave\'s Mac/prox-product-discovery/run_e2e_tests.py']
+        project_root = str(Path(__file__).parent.parent.parent)
+        base_cmd = ['python3', f'{project_root}/run_e2e_tests.py']
         
         if test_mode == 'quick':
             base_cmd.append('--quick')
@@ -778,11 +779,11 @@ def api_run_tests():
             """Run tests in background thread."""
             try:
                 # Set working directory and environment
-                project_root = '/Volumes/Dave\'s Mac/prox-product-discovery'
+                test_project_root = str(Path(__file__).parent.parent.parent)
                 
                 result = subprocess.run(
                     base_cmd,
-                    cwd=project_root,
+                    cwd=test_project_root,
                     capture_output=True,
                     text=True,
                     timeout=600  # 10 minute timeout

@@ -1,0 +1,944 @@
+{
+  "matches": [
+    {
+      "solutionId": "adhesive-wall-hooks",
+      "solutionName": "Adhesive Wall Hooks",
+      "imageFile": "adhesive-wall-hooks.jpg",
+      "imagePath": "/images/solutions/adhesive-wall-hooks.jpg"
+    },
+    {
+      "solutionId": "tension-rod-storage",
+      "solutionName": "Tension Rod Storage Systems",
+      "imageFile": "tension-rod-storage.jpg",
+      "imagePath": "/images/solutions/tension-rod-storage.jpg"
+    },
+    {
+      "solutionId": "freestanding-shelves",
+      "solutionName": "Freestanding Shelving Units",
+      "imageFile": "freestanding-shelves.jpg",
+      "imagePath": "/images/solutions/freestanding-shelves.jpg"
+    },
+    {
+      "solutionId": "over-door-organizers",
+      "solutionName": "Over-Door Organizers",
+      "imageFile": "over-door-organizers.jpg",
+      "imagePath": "/images/solutions/over-door-organizers.jpg"
+    },
+    {
+      "solutionId": "toy-storage-bins",
+      "solutionName": "Toy Storage Bins with Labels",
+      "imageFile": "toy-storage-bins.jpg",
+      "imagePath": "/images/solutions/toy-storage-bins.jpg"
+    },
+    {
+      "solutionId": "toy-rotation-storage",
+      "solutionName": "Toy Rotation System Storage",
+      "imageFile": "toy-rotation-storage.jpg",
+      "imagePath": "/images/solutions/toy-rotation-storage.jpg"
+    },
+    {
+      "solutionId": "wall-mounted-toy-storage",
+      "solutionName": "Wall-Mounted Toy Storage",
+      "imageFile": "wall-mounted-toy-storage.jpg",
+      "imagePath": "/images/solutions/wall-mounted-toy-storage.jpg"
+    },
+    {
+      "solutionId": "multi-compartment-organizer",
+      "solutionName": "Multi-Compartment Toy Organizer",
+      "imageFile": "multi-compartment-organizer.jpg",
+      "imagePath": "/images/solutions/multi-compartment-organizer.jpg"
+    },
+    {
+      "solutionId": "entryway-bench-storage",
+      "solutionName": "Entryway Bench with Shoe Storage",
+      "imageFile": "entryway-bench-storage.jpg",
+      "imagePath": "/images/solutions/entryway-bench-storage.jpg"
+    },
+    {
+      "solutionId": "wall-key-mail-organizer",
+      "solutionName": "Wall Key/Mail Organizer",
+      "imageFile": "wall-key-mail-organizer.jpg",
+      "imagePath": "/images/solutions/wall-key-mail-organizer.jpg"
+    },
+    {
+      "solutionId": "over-door-shoe-rack",
+      "solutionName": "Over-Door Shoe Rack",
+      "imageFile": "over-door-shoe-rack.jpg",
+      "imagePath": "/images/solutions/over-door-shoe-rack.jpg"
+    },
+    {
+      "solutionId": "coat-hooks-shelf",
+      "solutionName": "Coat Hooks with Shelf",
+      "imageFile": "coat-hooks-shelf.jpg",
+      "imagePath": "/images/solutions/coat-hooks-shelf.jpg"
+    },
+    {
+      "solutionId": "velvet-hangers",
+      "solutionName": "Slim Velvet Hangers",
+      "imageFile": "velvet-hangers.jpg",
+      "imagePath": "/images/solutions/velvet-hangers.jpg"
+    },
+    {
+      "solutionId": "closet-shelf-dividers",
+      "solutionName": "Closet Shelf Dividers",
+      "imageFile": "closet-shelf-dividers.jpg",
+      "imagePath": "/images/solutions/closet-shelf-dividers.jpg"
+    },
+    {
+      "solutionId": "double-hang-rod",
+      "solutionName": "Double Hang Closet Rod",
+      "imageFile": "double-hang-rod.jpg",
+      "imagePath": "/images/solutions/double-hang-rod.jpg"
+    },
+    {
+      "solutionId": "hanging-closet-shelves",
+      "solutionName": "Hanging Closet Organizer Shelves",
+      "imageFile": "hanging-closet-shelves.jpg",
+      "imagePath": "/images/solutions/hanging-closet-shelves.jpg"
+    },
+    {
+      "solutionId": "vacuum-storage-bags",
+      "solutionName": "Vacuum Storage Bags",
+      "imageFile": "vacuum-storage-bags.jpg",
+      "imagePath": "/images/solutions/vacuum-storage-bags.jpg"
+    },
+    {
+      "solutionId": "under-bed-storage",
+      "solutionName": "Under-Bed Storage Containers",
+      "imageFile": "under-bed-storage.jpg",
+      "imagePath": "/images/solutions/under-bed-storage.jpg"
+    },
+    {
+      "solutionId": "stackable-totes",
+      "solutionName": "Stackable Storage Totes",
+      "imageFile": "stackable-totes.jpg",
+      "imagePath": "/images/solutions/stackable-totes.jpg"
+    },
+    {
+      "solutionId": "over-sink-cutting-board",
+      "solutionName": "Over-the-Sink Cutting Board",
+      "imageFile": "over-sink-cutting-board.jpg",
+      "imagePath": "/images/solutions/over-sink-cutting-board.jpg"
+    },
+    {
+      "solutionId": "rolling-kitchen-cart",
+      "solutionName": "Rolling Kitchen Cart",
+      "imageFile": "rolling-kitchen-cart.jpg",
+      "imagePath": "/images/solutions/rolling-kitchen-cart.jpg"
+    },
+    {
+      "solutionId": "fold-down-table",
+      "solutionName": "Wall-Mounted Fold-Down Table",
+      "imageFile": "fold-down-table.jpg",
+      "imagePath": "/images/solutions/fold-down-table.jpg"
+    },
+    {
+      "solutionId": "counter-shelf-riser",
+      "solutionName": "Counter Shelf Riser",
+      "imageFile": "counter-shelf-riser.jpg",
+      "imagePath": "/images/solutions/counter-shelf-riser.jpg"
+    },
+    {
+      "solutionId": "clear-food-containers",
+      "solutionName": "Clear Airtight Food Containers",
+      "imageFile": "clear-food-containers.jpg",
+      "imagePath": "/images/solutions/clear-food-containers.jpg"
+    },
+    {
+      "solutionId": "lazy-susan",
+      "solutionName": "Cabinet Lazy Susan Turntable",
+      "imageFile": "lazy-susan.jpg",
+      "imagePath": "/images/solutions/lazy-susan.jpg"
+    },
+    {
+      "solutionId": "pull-out-organizer",
+      "solutionName": "Pull-Out Cabinet Organizer",
+      "imageFile": "pull-out-organizer.jpg",
+      "imagePath": "/images/solutions/pull-out-organizer.jpg"
+    },
+    {
+      "solutionId": "tiered-shelf-riser",
+      "solutionName": "Tiered Shelf Riser",
+      "imageFile": "tiered-shelf-riser.jpg",
+      "imagePath": "/images/solutions/tiered-shelf-riser.jpg"
+    },
+    {
+      "solutionId": "lid-organizer",
+      "solutionName": "Lid Organizer Rack",
+      "imageFile": "lid-organizer.jpg",
+      "imagePath": "/images/solutions/lid-organizer.jpg"
+    },
+    {
+      "solutionId": "container-drawer-dividers",
+      "solutionName": "Container Drawer Dividers",
+      "imageFile": "container-drawer-dividers.jpg",
+      "imagePath": "/images/solutions/container-drawer-dividers.jpg"
+    },
+    {
+      "solutionId": "pull-out-container-bin",
+      "solutionName": "Pull-Out Container Bin",
+      "imageFile": "pull-out-container-bin.jpg",
+      "imagePath": "/images/solutions/pull-out-container-bin.jpg"
+    },
+    {
+      "solutionId": "expandable-under-sink-shelf",
+      "solutionName": "Expandable Under-Sink Shelf",
+      "imageFile": "expandable-under-sink-shelf.jpg",
+      "imagePath": "/images/solutions/expandable-under-sink-shelf.jpg"
+    },
+    {
+      "solutionId": "tension-rod-spray-bottles",
+      "solutionName": "Tension Rod for Spray Bottles",
+      "imageFile": "tension-rod-spray-bottles.jpg",
+      "imagePath": "/images/solutions/tension-rod-spray-bottles.jpg"
+    },
+    {
+      "solutionId": "pull-out-under-sink-caddy",
+      "solutionName": "Pull-Out Under-Sink Caddy",
+      "imageFile": "pull-out-under-sink-caddy.jpg",
+      "imagePath": "/images/solutions/pull-out-under-sink-caddy.jpg"
+    },
+    {
+      "solutionId": "cabinet-door-organizer",
+      "solutionName": "Cabinet Door Organizer",
+      "imageFile": "cabinet-door-organizer.jpg",
+      "imagePath": "/images/solutions/cabinet-door-organizer.jpg"
+    },
+    {
+      "solutionId": "over-sink-dish-rack",
+      "solutionName": "Over-the-Sink Dish Rack",
+      "imageFile": "over-sink-dish-rack.jpg",
+      "imagePath": "/images/solutions/over-sink-dish-rack.jpg"
+    },
+    {
+      "solutionId": "collapsible-dish-rack",
+      "solutionName": "Collapsible Dish Rack",
+      "imageFile": "collapsible-dish-rack.jpg",
+      "imagePath": "/images/solutions/collapsible-dish-rack.jpg"
+    },
+    {
+      "solutionId": "roll-up-drying-mat",
+      "solutionName": "Roll-Up Sink Drying Mat",
+      "imageFile": "roll-up-drying-mat.jpg",
+      "imagePath": "/images/solutions/roll-up-drying-mat.jpg"
+    },
+    {
+      "solutionId": "two-tier-dish-rack",
+      "solutionName": "Two-Tier Dish Rack",
+      "imageFile": "two-tier-dish-rack.jpg",
+      "imagePath": "/images/solutions/two-tier-dish-rack.jpg"
+    },
+    {
+      "solutionId": "under-desk-cable-tray",
+      "solutionName": "Under-Desk Cable Tray",
+      "imageFile": "under-desk-cable-tray.jpg",
+      "imagePath": "/images/solutions/under-desk-cable-tray.jpg"
+    },
+    {
+      "solutionId": "cable-management-sleeve",
+      "solutionName": "Cable Management Sleeve",
+      "imageFile": "cable-management-sleeve.jpg",
+      "imagePath": "/images/solutions/cable-management-sleeve.jpg"
+    },
+    {
+      "solutionId": "cable-clips-velcro",
+      "solutionName": "Cable Clips & Velcro Straps",
+      "imageFile": "cable-clips-velcro.jpg",
+      "imagePath": "/images/solutions/cable-clips-velcro.jpg"
+    },
+    {
+      "solutionId": "cable-management-box",
+      "solutionName": "Cable Management Box",
+      "imageFile": "cable-management-box.jpg",
+      "imagePath": "/images/solutions/cable-management-box.jpg"
+    },
+    {
+      "solutionId": "ergonomic-chair",
+      "solutionName": "Ergonomic Office Chair",
+      "imageFile": "ergonomic-chair.jpg",
+      "imagePath": "/images/solutions/ergonomic-chair.jpg"
+    },
+    {
+      "solutionId": "laptop-stand",
+      "solutionName": "Laptop Stand/Riser",
+      "imageFile": "laptop-stand.jpg",
+      "imagePath": "/images/solutions/laptop-stand.jpg"
+    },
+    {
+      "solutionId": "monitor-arm",
+      "solutionName": "Monitor Arm Mount",
+      "imageFile": "monitor-arm.jpg",
+      "imagePath": "/images/solutions/monitor-arm.jpg"
+    },
+    {
+      "solutionId": "wrist-rest",
+      "solutionName": "Keyboard/Mouse Wrist Rest",
+      "imageFile": "wrist-rest.jpg",
+      "imagePath": "/images/solutions/wrist-rest.jpg"
+    },
+    {
+      "solutionId": "desktop-organizer",
+      "solutionName": "Desktop Organizer with Drawers",
+      "imageFile": "desktop-organizer.jpg",
+      "imagePath": "/images/solutions/desktop-organizer.jpg"
+    },
+    {
+      "solutionId": "monitor-stand-storage",
+      "solutionName": "Monitor Stand with Storage",
+      "imageFile": "monitor-stand-storage.jpg",
+      "imagePath": "/images/solutions/monitor-stand-storage.jpg"
+    },
+    {
+      "solutionId": "desk-shelf-riser",
+      "solutionName": "Desk Shelf Riser",
+      "imageFile": "desk-shelf-riser.jpg",
+      "imagePath": "/images/solutions/desk-shelf-riser.jpg"
+    },
+    {
+      "solutionId": "room-divider",
+      "solutionName": "Room Divider Screen",
+      "imageFile": "room-divider.jpg",
+      "imagePath": "/images/solutions/room-divider.jpg"
+    },
+    {
+      "solutionId": "video-backdrop",
+      "solutionName": "Video Call Backdrop Panel",
+      "imageFile": "video-backdrop.jpg",
+      "imagePath": "/images/solutions/video-backdrop.jpg"
+    },
+    {
+      "solutionId": "green-screen",
+      "solutionName": "Collapsible Green Screen",
+      "imageFile": "green-screen.jpg",
+      "imagePath": "/images/solutions/green-screen.jpg"
+    },
+    {
+      "solutionId": "wall-mounted-desk",
+      "solutionName": "Folding Wall-Mounted Desk",
+      "imageFile": "wall-mounted-desk.jpg",
+      "imagePath": "/images/solutions/wall-mounted-desk.jpg"
+    },
+    {
+      "solutionId": "corner-desk",
+      "solutionName": "Corner Desk Compact",
+      "imageFile": "corner-desk.jpg",
+      "imagePath": "/images/solutions/corner-desk.jpg"
+    },
+    {
+      "solutionId": "desk-with-storage",
+      "solutionName": "Desk with Built-in Storage",
+      "imageFile": "desk-with-storage.jpg",
+      "imagePath": "/images/solutions/desk-with-storage.jpg"
+    },
+    {
+      "solutionId": "foam-insert",
+      "solutionName": "High-Density Foam Insert",
+      "imageFile": "foam-insert.jpg",
+      "imagePath": "/images/solutions/foam-insert.jpg"
+    },
+    {
+      "solutionId": "cushion-support-board",
+      "solutionName": "Cushion Support Insert/Board",
+      "imageFile": "cushion-support-board.jpg",
+      "imagePath": "/images/solutions/cushion-support-board.jpg"
+    },
+    {
+      "solutionId": "cushion-wrap",
+      "solutionName": "Cushion Wrap/Batting",
+      "imageFile": "cushion-wrap.jpg",
+      "imagePath": "/images/solutions/cushion-wrap.jpg"
+    },
+    {
+      "solutionId": "pet-proof-slipcover",
+      "solutionName": "Pet-Proof Couch Slipcover",
+      "imageFile": "pet-proof-slipcover.jpg",
+      "imagePath": "/images/solutions/pet-proof-slipcover.jpg"
+    },
+    {
+      "solutionId": "scratch-protector",
+      "solutionName": "Scratch-Resistant Furniture Protector",
+      "imageFile": "scratch-protector.jpg",
+      "imagePath": "/images/solutions/scratch-protector.jpg"
+    },
+    {
+      "solutionId": "waterproof-pet-blanket",
+      "solutionName": "Waterproof Pet Blanket/Throw",
+      "imageFile": "waterproof-pet-blanket.jpg",
+      "imagePath": "/images/solutions/waterproof-pet-blanket.jpg"
+    },
+    {
+      "solutionId": "cable-raceway",
+      "solutionName": "Cable Raceway/Cover Kit",
+      "imageFile": "cable-raceway.jpg",
+      "imagePath": "/images/solutions/cable-raceway.jpg"
+    },
+    {
+      "solutionId": "in-wall-cable-kit",
+      "solutionName": "In-Wall Cable Management Kit",
+      "imageFile": "in-wall-cable-kit.jpg",
+      "imagePath": "/images/solutions/in-wall-cable-kit.jpg"
+    },
+    {
+      "solutionId": "tv-stand-cable-management",
+      "solutionName": "TV Stand with Cable Management",
+      "imageFile": "tv-stand-cable-management.jpg",
+      "imagePath": "/images/solutions/tv-stand-cable-management.jpg"
+    },
+    {
+      "solutionId": "apartment-size-sofa",
+      "solutionName": "Apartment-Size Sofa",
+      "imageFile": "apartment-size-sofa.jpg",
+      "imagePath": "/images/solutions/apartment-size-sofa.jpg"
+    },
+    {
+      "solutionId": "nesting-tables",
+      "solutionName": "Nesting Coffee Tables",
+      "imageFile": "nesting-tables.jpg",
+      "imagePath": "/images/solutions/nesting-tables.jpg"
+    },
+    {
+      "solutionId": "storage-ottoman",
+      "solutionName": "Storage Ottoman",
+      "imageFile": "storage-ottoman.jpg",
+      "imagePath": "/images/solutions/storage-ottoman.jpg"
+    },
+    {
+      "solutionId": "storage-coffee-table",
+      "solutionName": "Storage Coffee Table",
+      "imageFile": "storage-coffee-table.jpg",
+      "imagePath": "/images/solutions/storage-coffee-table.jpg"
+    },
+    {
+      "solutionId": "fabric-storage-cubes",
+      "solutionName": "Fabric Storage Cubes/Bins",
+      "imageFile": "fabric-storage-cubes.jpg",
+      "imagePath": "/images/solutions/fabric-storage-cubes.jpg"
+    },
+    {
+      "solutionId": "console-table-shelves",
+      "solutionName": "Console Table with Shelves",
+      "imageFile": "console-table-shelves.jpg",
+      "imagePath": "/images/solutions/console-table-shelves.jpg"
+    },
+    {
+      "solutionId": "storage-ottoman-cube",
+      "solutionName": "Ottoman with Storage",
+      "imageFile": "storage-ottoman-cube.jpg",
+      "imagePath": "/images/solutions/storage-ottoman-cube.jpg"
+    },
+    {
+      "solutionId": "blackout-curtains",
+      "solutionName": "Blackout Curtains",
+      "imageFile": "blackout-curtains.jpg",
+      "imagePath": "/images/solutions/blackout-curtains.jpg"
+    },
+    {
+      "solutionId": "sleep-mask",
+      "solutionName": "Sleep Eye Mask",
+      "imageFile": "sleep-mask.jpg",
+      "imagePath": "/images/solutions/sleep-mask.jpg"
+    },
+    {
+      "solutionId": "blackout-window-film",
+      "solutionName": "Blackout Window Film",
+      "imageFile": "blackout-window-film.jpg",
+      "imagePath": "/images/solutions/blackout-window-film.jpg"
+    },
+    {
+      "solutionId": "curtain-light-blockers",
+      "solutionName": "Curtain Gap Light Blockers",
+      "imageFile": "curtain-light-blockers.jpg",
+      "imagePath": "/images/solutions/curtain-light-blockers.jpg"
+    },
+    {
+      "solutionId": "white-noise-machine",
+      "solutionName": "White Noise Machine",
+      "imageFile": "white-noise-machine.jpg",
+      "imagePath": "/images/solutions/white-noise-machine.jpg"
+    },
+    {
+      "solutionId": "sleep-earplugs",
+      "solutionName": "Noise Reducing Earplugs",
+      "imageFile": "sleep-earplugs.jpg",
+      "imagePath": "/images/solutions/sleep-earplugs.jpg"
+    },
+    {
+      "solutionId": "soundproof-curtains",
+      "solutionName": "Sound Dampening Curtains",
+      "imageFile": "soundproof-curtains.jpg",
+      "imagePath": "/images/solutions/soundproof-curtains.jpg"
+    },
+    {
+      "solutionId": "storage-bed-frame",
+      "solutionName": "Bed Frame with Built-In Storage",
+      "imageFile": "storage-bed-frame.jpg",
+      "imagePath": "/images/solutions/storage-bed-frame.jpg"
+    },
+    {
+      "solutionId": "bed-risers",
+      "solutionName": "Bed Risers for Under-Bed Storage",
+      "imageFile": "bed-risers.jpg",
+      "imagePath": "/images/solutions/bed-risers.jpg"
+    },
+    {
+      "solutionId": "floating-nightstand",
+      "solutionName": "Floating Nightstand",
+      "imageFile": "floating-nightstand.jpg",
+      "imagePath": "/images/solutions/floating-nightstand.jpg"
+    },
+    {
+      "solutionId": "over-bed-storage",
+      "solutionName": "Over-Bed Storage Shelf",
+      "imageFile": "over-bed-storage.jpg",
+      "imagePath": "/images/solutions/over-bed-storage.jpg"
+    },
+    {
+      "solutionId": "clothes-valet",
+      "solutionName": "Clothes Valet Stand",
+      "imageFile": "clothes-valet.jpg",
+      "imagePath": "/images/solutions/clothes-valet.jpg"
+    },
+    {
+      "solutionId": "over-door-clothes-hooks",
+      "solutionName": "Over-Door Clothes Hooks",
+      "imageFile": "over-door-clothes-hooks.jpg",
+      "imagePath": "/images/solutions/over-door-clothes-hooks.jpg"
+    },
+    {
+      "solutionId": "decorative-ladder",
+      "solutionName": "Decorative Ladder Rack",
+      "imageFile": "decorative-ladder.jpg",
+      "imagePath": "/images/solutions/decorative-ladder.jpg"
+    },
+    {
+      "solutionId": "freestanding-clothes-rack",
+      "solutionName": "Freestanding Clothes Rack",
+      "imageFile": "freestanding-clothes-rack.jpg",
+      "imagePath": "/images/solutions/freestanding-clothes-rack.jpg"
+    },
+    {
+      "solutionId": "bedside-caddy",
+      "solutionName": "Bedside Caddy/Pocket Organizer",
+      "imageFile": "bedside-caddy.jpg",
+      "imagePath": "/images/solutions/bedside-caddy.jpg"
+    },
+    {
+      "solutionId": "clip-on-bed-shelf",
+      "solutionName": "Clip-On Bed Shelf",
+      "imageFile": "clip-on-bed-shelf.jpg",
+      "imagePath": "/images/solutions/clip-on-bed-shelf.jpg"
+    },
+    {
+      "solutionId": "adhesive-wall-pocket",
+      "solutionName": "Adhesive Wall Pocket",
+      "imageFile": "adhesive-wall-pocket.jpg",
+      "imagePath": "/images/solutions/adhesive-wall-pocket.jpg"
+    },
+    {
+      "solutionId": "c-table",
+      "solutionName": "C-Table/Slide Under Sofa Table",
+      "imageFile": "c-table.jpg",
+      "imagePath": "/images/solutions/c-table.jpg"
+    },
+    {
+      "solutionId": "adhesive-shower-shelf",
+      "solutionName": "Adhesive Mount Shower Shelf",
+      "imageFile": "adhesive-shower-shelf.jpg",
+      "imagePath": "/images/solutions/adhesive-shower-shelf.jpg"
+    },
+    {
+      "solutionId": "tension-pole-caddy",
+      "solutionName": "Tension Pole Shower Caddy",
+      "imageFile": "tension-pole-caddy.jpg",
+      "imagePath": "/images/solutions/tension-pole-caddy.jpg"
+    },
+    {
+      "solutionId": "hanging-showerhead-caddy",
+      "solutionName": "Hanging Over-Showerhead Caddy with Grip",
+      "imageFile": "hanging-showerhead-caddy.jpg",
+      "imagePath": "/images/solutions/hanging-showerhead-caddy.jpg"
+    },
+    {
+      "solutionId": "corner-shower-shelf",
+      "solutionName": "Shower Corner Shelf (Permanent)",
+      "imageFile": "corner-shower-shelf.jpg",
+      "imagePath": "/images/solutions/corner-shower-shelf.jpg"
+    },
+    {
+      "solutionId": "wall-medicine-cabinet",
+      "solutionName": "Wall-Mounted Medicine Cabinet",
+      "imageFile": "wall-medicine-cabinet.jpg",
+      "imagePath": "/images/solutions/wall-medicine-cabinet.jpg"
+    },
+    {
+      "solutionId": "slim-bathroom-cabinet",
+      "solutionName": "Slim Freestanding Cabinet",
+      "imageFile": "slim-bathroom-cabinet.jpg",
+      "imagePath": "/images/solutions/slim-bathroom-cabinet.jpg"
+    },
+    {
+      "solutionId": "over-door-bathroom-organizer",
+      "solutionName": "Over-Door Hanging Organizer",
+      "imageFile": "over-door-bathroom-organizer.jpg",
+      "imagePath": "/images/solutions/over-door-bathroom-organizer.jpg"
+    },
+    {
+      "solutionId": "countertop-toiletry-organizer",
+      "solutionName": "Countertop Makeup/Toiletry Organizer",
+      "imageFile": "countertop-toiletry-organizer.jpg",
+      "imagePath": "/images/solutions/countertop-toiletry-organizer.jpg"
+    },
+    {
+      "solutionId": "over-toilet-shelf",
+      "solutionName": "Over-the-Toilet Shelving Unit",
+      "imageFile": "over-toilet-shelf.jpg",
+      "imagePath": "/images/solutions/over-toilet-shelf.jpg"
+    },
+    {
+      "solutionId": "bathroom-floating-shelves",
+      "solutionName": "Floating Shelves",
+      "imageFile": "bathroom-floating-shelves.jpg",
+      "imagePath": "/images/solutions/bathroom-floating-shelves.jpg"
+    },
+    {
+      "solutionId": "over-toilet-cabinet",
+      "solutionName": "Over-the-Toilet Cabinet",
+      "imageFile": "over-toilet-cabinet.jpg",
+      "imagePath": "/images/solutions/over-toilet-cabinet.jpg"
+    },
+    {
+      "solutionId": "bathroom-ladder-shelf",
+      "solutionName": "Ladder Shelf Unit",
+      "imageFile": "bathroom-ladder-shelf.jpg",
+      "imagePath": "/images/solutions/bathroom-ladder-shelf.jpg"
+    },
+    {
+      "solutionId": "stackable-bathroom-bins",
+      "solutionName": "Stackable Storage Bins",
+      "imageFile": "stackable-bathroom-bins.jpg",
+      "imagePath": "/images/solutions/stackable-bathroom-bins.jpg"
+    },
+    {
+      "solutionId": "two-tier-under-sink",
+      "solutionName": "Two-Tier Under-Sink Organizer",
+      "imageFile": "two-tier-under-sink.jpg",
+      "imagePath": "/images/solutions/two-tier-under-sink.jpg"
+    },
+    {
+      "solutionId": "pull-out-bathroom-drawers",
+      "solutionName": "Pull-Out Bathroom Drawers",
+      "imageFile": "pull-out-bathroom-drawers.jpg",
+      "imagePath": "/images/solutions/pull-out-bathroom-drawers.jpg"
+    },
+    {
+      "solutionId": "hair-tool-organizer",
+      "solutionName": "Hair Tool Organizer/Holder",
+      "imageFile": "hair-tool-organizer.jpg",
+      "imagePath": "/images/solutions/hair-tool-organizer.jpg"
+    },
+    {
+      "solutionId": "over-cabinet-hair-station",
+      "solutionName": "Over-Cabinet Hair Tool Station",
+      "imageFile": "over-cabinet-hair-station.jpg",
+      "imagePath": "/images/solutions/over-cabinet-hair-station.jpg"
+    },
+    {
+      "solutionId": "heat-resistant-caddy",
+      "solutionName": "Heat-Resistant Hair Tool Caddy",
+      "imageFile": "heat-resistant-caddy.jpg",
+      "imagePath": "/images/solutions/heat-resistant-caddy.jpg"
+    },
+    {
+      "solutionId": "lint-brush-roller",
+      "solutionName": "Reusable Lint Brush Roller",
+      "imageFile": "lint-brush-roller.jpg",
+      "imagePath": "/images/solutions/lint-brush-roller.jpg"
+    },
+    {
+      "solutionId": "pet-hair-rake",
+      "solutionName": "Rubber Pet Hair Rake Tool",
+      "imageFile": "pet-hair-rake.jpg",
+      "imagePath": "/images/solutions/pet-hair-rake.jpg"
+    },
+    {
+      "solutionId": "pet-hair-laundry",
+      "solutionName": "Pet Hair Laundry Remover",
+      "imageFile": "pet-hair-laundry.jpg",
+      "imagePath": "/images/solutions/pet-hair-laundry.jpg"
+    },
+    {
+      "solutionId": "deshedding-brush",
+      "solutionName": "Deshedding Brush",
+      "imageFile": "deshedding-brush.jpg",
+      "imagePath": "/images/solutions/deshedding-brush.jpg"
+    },
+    {
+      "solutionId": "odor-control-litter",
+      "solutionName": "Odor-Control Clumping Litter",
+      "imageFile": "odor-control-litter.jpg",
+      "imagePath": "/images/solutions/odor-control-litter.jpg"
+    },
+    {
+      "solutionId": "litter-disposal-pail",
+      "solutionName": "Litter Disposal Pail",
+      "imageFile": "litter-disposal-pail.jpg",
+      "imagePath": "/images/solutions/litter-disposal-pail.jpg"
+    },
+    {
+      "solutionId": "air-purifier-pets",
+      "solutionName": "Air Purifier with Carbon Filter",
+      "imageFile": "air-purifier-pets.jpg",
+      "imagePath": "/images/solutions/air-purifier-pets.jpg"
+    },
+    {
+      "solutionId": "enzymatic-litter-deodorizer",
+      "solutionName": "Enzymatic Litter Deodorizer",
+      "imageFile": "enzymatic-litter-deodorizer.jpg",
+      "imagePath": "/images/solutions/enzymatic-litter-deodorizer.jpg"
+    },
+    {
+      "solutionId": "paw-washer",
+      "solutionName": "Paw Washer/Plunger Cup",
+      "imageFile": "paw-washer.jpg",
+      "imagePath": "/images/solutions/paw-washer.jpg"
+    },
+    {
+      "solutionId": "absorbent-door-mat",
+      "solutionName": "High-Absorbent Door Mat",
+      "imageFile": "absorbent-door-mat.jpg",
+      "imagePath": "/images/solutions/absorbent-door-mat.jpg"
+    },
+    {
+      "solutionId": "paw-cleaning-wipes",
+      "solutionName": "Dog Paw Cleaning Wipes",
+      "imageFile": "paw-cleaning-wipes.jpg",
+      "imagePath": "/images/solutions/paw-cleaning-wipes.jpg"
+    },
+    {
+      "solutionId": "dog-booties",
+      "solutionName": "Dog Booties/Paw Protectors",
+      "imageFile": "dog-booties.jpg",
+      "imagePath": "/images/solutions/dog-booties.jpg"
+    },
+    {
+      "solutionId": "no-spill-bowl",
+      "solutionName": "No-Spill Water Bowl",
+      "imageFile": "no-spill-bowl.jpg",
+      "imagePath": "/images/solutions/no-spill-bowl.jpg"
+    },
+    {
+      "solutionId": "elevated-feeding-station",
+      "solutionName": "Elevated Feeding Station with Catch Basin",
+      "imageFile": "elevated-feeding-station.jpg",
+      "imagePath": "/images/solutions/elevated-feeding-station.jpg"
+    },
+    {
+      "solutionId": "waterproof-feeding-mat",
+      "solutionName": "Waterproof Feeding Mat",
+      "imageFile": "waterproof-feeding-mat.jpg",
+      "imagePath": "/images/solutions/waterproof-feeding-mat.jpg"
+    },
+    {
+      "solutionId": "slow-feed-water-bowl",
+      "solutionName": "Slow-Feed Water Bowl",
+      "imageFile": "slow-feed-water-bowl.jpg",
+      "imagePath": "/images/solutions/slow-feed-water-bowl.jpg"
+    },
+    {
+      "solutionId": "enzymatic-cleaner",
+      "solutionName": "Enzymatic Pet Stain Cleaner",
+      "imageFile": "enzymatic-cleaner.jpg",
+      "imagePath": "/images/solutions/enzymatic-cleaner.jpg"
+    },
+    {
+      "solutionId": "uv-blacklight",
+      "solutionName": "UV Blacklight Urine Detector",
+      "imageFile": "uv-blacklight.jpg",
+      "imagePath": "/images/solutions/uv-blacklight.jpg"
+    },
+    {
+      "solutionId": "carpet-cleaner-machine",
+      "solutionName": "Carpet Cleaner Machine (Pet Formula)",
+      "imageFile": "carpet-cleaner-machine.jpg",
+      "imagePath": "/images/solutions/carpet-cleaner-machine.jpg"
+    },
+    {
+      "solutionId": "odor-eliminating-spray",
+      "solutionName": "Odor-Eliminating Spray",
+      "imageFile": "odor-eliminating-spray.jpg",
+      "imagePath": "/images/solutions/odor-eliminating-spray.jpg"
+    },
+    {
+      "solutionId": "grout-cleaning-gel",
+      "solutionName": "Grout Cleaning Gel/Spray",
+      "imageFile": "grout-cleaning-gel.jpg",
+      "imagePath": "/images/solutions/grout-cleaning-gel.jpg"
+    },
+    {
+      "solutionId": "electric-grout-brush",
+      "solutionName": "Electric Grout Cleaning Brush",
+      "imageFile": "electric-grout-brush.jpg",
+      "imagePath": "/images/solutions/electric-grout-brush.jpg"
+    },
+    {
+      "solutionId": "steam-cleaner-grout",
+      "solutionName": "Steam Cleaner with Grout Attachment",
+      "imageFile": "steam-cleaner-grout.jpg",
+      "imagePath": "/images/solutions/steam-cleaner-grout.jpg"
+    },
+    {
+      "solutionId": "grout-sealer",
+      "solutionName": "Grout Sealer (Prevention)",
+      "imageFile": "grout-sealer.jpg",
+      "imagePath": "/images/solutions/grout-sealer.jpg"
+    },
+    {
+      "solutionId": "ammonia-free-cleaner",
+      "solutionName": "Ammonia-Free Glass Cleaner",
+      "imageFile": "ammonia-free-cleaner.jpg",
+      "imagePath": "/images/solutions/ammonia-free-cleaner.jpg"
+    },
+    {
+      "solutionId": "glass-microfiber",
+      "solutionName": "Glass-Specific Microfiber Cloths",
+      "imageFile": "glass-microfiber.jpg",
+      "imagePath": "/images/solutions/glass-microfiber.jpg"
+    },
+    {
+      "solutionId": "window-squeegee",
+      "solutionName": "Window Squeegee",
+      "imageFile": "window-squeegee.jpg",
+      "imagePath": "/images/solutions/window-squeegee.jpg"
+    },
+    {
+      "solutionId": "rubbing-alcohol",
+      "solutionName": "Rubbing Alcohol (Film Removal)",
+      "imageFile": "rubbing-alcohol.jpg",
+      "imagePath": "/images/solutions/rubbing-alcohol.jpg"
+    },
+    {
+      "solutionId": "hepa-vacuum",
+      "solutionName": "HEPA Filter Vacuum",
+      "imageFile": "hepa-vacuum.jpg",
+      "imagePath": "/images/solutions/hepa-vacuum.jpg"
+    },
+    {
+      "solutionId": "air-purifier-hepa",
+      "solutionName": "Air Purifier with True HEPA",
+      "imageFile": "air-purifier-hepa.jpg",
+      "imagePath": "/images/solutions/air-purifier-hepa.jpg"
+    },
+    {
+      "solutionId": "dust-trapping-cloths",
+      "solutionName": "Microfiber Dust-Trapping Cloths",
+      "imageFile": "dust-trapping-cloths.jpg",
+      "imagePath": "/images/solutions/dust-trapping-cloths.jpg"
+    },
+    {
+      "solutionId": "allergen-covers",
+      "solutionName": "Mattress/Pillow Allergen Covers",
+      "imageFile": "allergen-covers.jpg",
+      "imagePath": "/images/solutions/allergen-covers.jpg"
+    },
+    {
+      "solutionId": "soap-scum-spray",
+      "solutionName": "Soap Scum Dissolving Spray",
+      "imageFile": "soap-scum-spray.jpg",
+      "imagePath": "/images/solutions/soap-scum-spray.jpg"
+    },
+    {
+      "solutionId": "daily-shower-spray",
+      "solutionName": "Daily Shower Spray (Prevention)",
+      "imageFile": "daily-shower-spray.jpg",
+      "imagePath": "/images/solutions/daily-shower-spray.jpg"
+    },
+    {
+      "solutionId": "hard-water-remover",
+      "solutionName": "Hard Water Stain Remover",
+      "imageFile": "hard-water-remover.jpg",
+      "imagePath": "/images/solutions/hard-water-remover.jpg"
+    },
+    {
+      "solutionId": "shower-door-squeegee",
+      "solutionName": "Shower Door Squeegee",
+      "imageFile": "shower-door-squeegee.jpg",
+      "imagePath": "/images/solutions/shower-door-squeegee.jpg"
+    },
+    {
+      "solutionId": "robot-vacuum",
+      "solutionName": "Robot Vacuum",
+      "imageFile": "robot-vacuum.jpg",
+      "imagePath": "/images/solutions/robot-vacuum.jpg"
+    },
+    {
+      "solutionId": "multi-surface-cleaner",
+      "solutionName": "Multi-Surface Cleaning System",
+      "imageFile": "multi-surface-cleaner.jpg",
+      "imagePath": "/images/solutions/multi-surface-cleaner.jpg"
+    },
+    {
+      "solutionId": "microfiber-cleaning-kit",
+      "solutionName": "Microfiber Cleaning Tool Kit",
+      "imageFile": "microfiber-cleaning-kit.jpg",
+      "imagePath": "/images/solutions/microfiber-cleaning-kit.jpg"
+    },
+    {
+      "solutionId": "scrub-free-cleaner",
+      "solutionName": "Scrub-Free Bathroom Cleaner",
+      "imageFile": "scrub-free-cleaner.jpg",
+      "imagePath": "/images/solutions/scrub-free-cleaner.jpg"
+    }
+  ],
+  "unmatched": [
+    {
+      "solutionId": "stain-remover-spray",
+      "solutionName": "Stain Remover Spray"
+    },
+    {
+      "solutionId": "stain-stick",
+      "solutionName": "Stain Remover Stick"
+    },
+    {
+      "solutionId": "enzyme-cleaner",
+      "solutionName": "Enzyme-Based Stain Cleaner"
+    },
+    {
+      "solutionId": "oxygen-bleach",
+      "solutionName": "Oxygen Bleach Powder"
+    },
+    {
+      "solutionId": "carpet-stain-remover",
+      "solutionName": "Carpet & Upholstery Stain Remover"
+    },
+    {
+      "solutionId": "laundry-booster",
+      "solutionName": "Laundry Stain Booster"
+    }
+  ],
+  "unusedImages": [
+    {
+      "filename": "appliance-garage.jpg",
+      "id": "appliance-garage"
+    },
+    {
+      "filename": "corner-shelf-organizer.jpg",
+      "id": "corner-shelf-organizer"
+    },
+    {
+      "filename": "counter-shelf-organizer.jpg",
+      "id": "counter-shelf-organizer"
+    },
+    {
+      "filename": "tiered-counter-organizer.jpg",
+      "id": "tiered-counter-organizer"
+    },
+    {
+      "filename": "under-cabinet-hooks.jpg",
+      "id": "under-cabinet-hooks"
+    },
+    {
+      "filename": "wall-mounted-organizer.jpg",
+      "id": "wall-mounted-organizer"
+    }
+  ]
+}

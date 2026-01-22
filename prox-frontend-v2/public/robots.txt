@@ -1,0 +1,23 @@
+# Robots.txt for Prox Product Discovery
+# https://proxdiscovery.com
+
+User-agent: *
+Allow: /
+
+# Block API routes from crawling
+Disallow: /api/
+
+# Block private analytics page
+Disallow: /analytics
+
+# Block temporary or development routes
+Disallow: /_next/
+Disallow: /static/
+
+# Allow access to important files
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /sitemap.xml
+
+# Sitemap location
+Sitemap: https://proxdiscovery.com/sitemap.xml

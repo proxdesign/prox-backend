@@ -1,11 +1,14 @@
-# Ignore everything except backend
+# Ignore everything except backend and active frontend
 /*
 !/prox_autonomous_discovery/
+!/prox-frontend-v2/
 !.gitignore
 !README.md
 !Procfile
+!CLAUDE.md
+!prox-setup.sh
 
-# But ignore these in backend
+# Backend ignores
 prox_autonomous_discovery/.env*
 prox_autonomous_discovery/__pycache__/
 prox_autonomous_discovery/**/*.pyc
@@ -13,9 +16,17 @@ prox_autonomous_discovery/**/*.pyo
 prox_autonomous_discovery/**/*.pyd
 prox_autonomous_discovery/**/__pycache__/
 prox_autonomous_discovery/.DS_Store
+prox_autonomous_discovery/venv/
+prox_autonomous_discovery/logs/
 
-# Ignore archives and frontends
+# Frontend ignores
+prox-frontend-v2/.env*
+prox-frontend-v2/node_modules/
+prox-frontend-v2/.next/
+prox-frontend-v2/out/
+prox-frontend-v2/.DS_Store
+
+# Ignore archives and deprecated
 00_archive/
 prox-frontend/
-prox-frontend-v2/
 design-agent/

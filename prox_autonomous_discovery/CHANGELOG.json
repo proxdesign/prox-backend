@@ -1,6 +1,51 @@
 {
   "changelog": [
     {
+      "date": "2026-01-22",
+      "version": "5.2.2",
+      "type": "improved",
+      "component": "Blog RSS Feed Sources Expansion",
+      "reason": "Replace broken RSS feeds with working alternatives and add major home/design magazine sources",
+      "details": "Expanded blog collector from 6 feeds (5 broken) to 16 working feeds. Added major publications: Architectural Digest, House Beautiful, Elle Decor, Country Living, Dezeen, Remodelista, Bob Vila, Family Handyman. Added DIY blogs: Young House Love, Curbly, Homedit, Design Milk, Hunker, Curbed. Fixed Apartment Therapy URL (feeds/all -> main.rss). Removed broken feeds: The Spruce, Better Homes & Gardens, Real Simple, Container Store Blog.",
+      "impact": "Blog collection increased from 6 articles to 41 articles per run. Now collecting from 15 active sources across DIY blogs, home magazines, architecture publications, and home improvement sites. Total blog posts increased from 34 to 75."
+    },
+    {
+      "date": "2026-01-20",
+      "version": "5.2.1",
+      "type": "fixed",
+      "component": "System Health & Dashboard Maintenance",
+      "reason": "Fix health monitoring schema mismatch and refresh stale data collection",
+      "details": "Fixed health_monitor.py collection_status query to match actual collection_runs table schema (status->end_time, posts_collected->total_collected, added successful_platforms/failed_platforms). Updated dashboard/app.py to use dynamic paths instead of hardcoded external drive paths. Cleaned up disk space (freed ~1GB from caches and build artifacts). Ran fresh data collection: 625 YouTube videos and 6 blog articles collected.",
+      "impact": "Dashboard health checks now working correctly, system monitoring fully operational at localhost:5555, data pipeline refreshed with current content"
+    },
+    {
+      "date": "2026-01-19",
+      "version": "5.2.0",
+      "type": "changed",
+      "component": "Project Migration to iCloud Cloud Storage",
+      "reason": "Migrate project files from external hard drive to iCloud Drive for persistent cloud-based access without requiring physical drive connection",
+      "details": "Complete project copied to ~/Library/Mobile Documents/com~apple~CloudDocs/projects/prox-product-discovery (2.7GB), symlink created at ~/cloud-projects for easy terminal access, enables Claude Code and other development tools to access project files without external drive dependency, automatic sync across devices via iCloud",
+      "impact": "Development workflow no longer dependent on external hard drive, project accessible from any device with iCloud access, improved reliability for AI-assisted development sessions"
+    },
+    {
+      "date": "2026-01-19",
+      "version": "5.1.1",
+      "type": "changed",
+      "component": "Data Collection Pipeline - Platform Consolidation",
+      "reason": "Consolidate data collectors to compliant platforms only, removing Reddit due to Terms of Service restrictions on commercial data use",
+      "details": "Active collectors reduced to 3 platforms: YouTube API (primary, 14 search queries for furniture/organization content), Blog/RSS collector (6 feeds: Apartment Therapy, The Spruce, Better Homes & Gardens, Real Simple, IKEA Hackers, The Container Store Blog), and Pinterest API v5 (limited scope, user pins and boards only). Reddit collector disabled (2026-01-09) with historical data preserved. Legacy Apify-based collectors for Instagram and TikTok fully removed (only .pyc artifacts remain). Collection scheduler runs every 6 hours with YouTube as primary, Blog as secondary, and Pinterest as optional tertiary source.",
+      "impact": "Fully ToS-compliant data pipeline using only official APIs, sustainable long-term operation, reduced maintenance overhead from deprecated scrapers, continued trend discovery through YouTube video analysis and curated blog content"
+    },
+    {
+      "date": "2026-01-13",
+      "version": "5.1.0",
+      "type": "improved",
+      "component": "Three-Stage Flow UX & Browser Navigation",
+      "reason": "Enhance user experience with optimized solution panel visibility and improved browser navigation to prevent users from accidentally leaving the application",
+      "details": "Modified SolutionTypesPanel to only appear after conversation begins with dynamic layout adaptation from full-width chat to split layout, implemented comprehensive browser back button handling with popstate event management to redirect users to home page instead of external sites, added internal navigation states for different app stages (home/preview/browse), and history state management for seamless in-app navigation flow",
+      "impact": "Cleaner landing page experience with uncluttered chat interface, prevention of accidental site exits through browser back button, and improved user retention by keeping users within the discovery flow"
+    },
+    {
       "date": "2026-01-10",
       "version": "5.0.0",
       "type": "milestone", 

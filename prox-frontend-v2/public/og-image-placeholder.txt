@@ -1,0 +1,39 @@
+# Open Graph Image Required
+
+## File: og-image.png
+**Dimensions**: 1200x630 pixels
+**Format**: PNG
+**Location**: /public/og-image.png
+
+## Content Suggestions:
+- Prox logo prominently displayed
+- Tagline: "AI-Powered Home Product Discovery"
+- Modern, clean design with brand colors (#5C7C5C)
+- Icons representing furniture/home products
+- Social media-friendly gradient background
+
+## Design Elements:
+- Brand logo (top-left or center)
+- Main headline text: "Prox"
+- Subtitle: "Find products that actually work"
+- Visual elements: furniture icons, trending arrows, AI symbols
+- Background: Gradient or solid brand color
+- Ensure text is readable on both light and dark themes
+
+## Tools for Creation:
+- Canva (templates available)
+- Figma (custom design)
+- Adobe Photoshop
+- Online OG image generators
+
+## Alternative Temporary Solution:
+Until custom image is created, you can:
+1. Use the existing logo.png (but resize to 1200x630)
+2. Create a simple text-based image with brand colors
+3. Use a free online OG image generator with "Prox" and tagline
+
+## SEO Impact:
+- Improves social media sharing appearance
+- Increases click-through rates from social platforms
+- Professional brand presentation
+- Better LinkedIn, Facebook, Twitter previews

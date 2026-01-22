@@ -94,26 +94,32 @@ class HealthMonitor:
         try:
             # Check collection runs table if it exists
             collection_runs = db.fetch_all("""
-                SELECT 
+                SELECT
                     start_time,
-                    status,
-                    posts_collected,
-                    duration_seconds
-                FROM collection_runs 
-                ORDER BY start_time DESC 
+                    end_time,
+                    total_collected,
+                    EXTRACT(EPOCH FROM (end_time - start_time)) as duration_seconds,
+                    successful_platforms,
+                    failed_platforms
+                FROM collection_runs
+                ORDER BY start_time DESC
                 LIMIT 5
             """)
             
             if collection_runs:
                 latest_run = collection_runs[0]
                 run_time = latest_run[0]
-                status = latest_run[1] 
-                posts_collected = latest_run[2]
-                duration = latest_run[3]
-                
-                # Check if last run was successful
-                if status != 'completed':
-                    self.add_alert("warning", f"Last collection run status: {status}")
+                end_time = latest_run[1]
+                posts_collected = latest_run[2] or 0
+                duration = latest_run[3] or 0
+                successful_platforms = latest_run[4] or 0
+                failed_platforms = latest_run[5] or 0
+
+                # Check if last run was successful (has end_time and no failed platforms)
+                if end_time is None:
+                    self.add_alert("warning", "Last collection run did not complete")
+                elif failed_platforms > 0:
+                    self.add_alert("warning", f"Last collection run had {failed_platforms} failed platforms")
                     
                 # Check if last run was recent enough (within 7 hours for 6-hour schedule)
                 time_since_run = datetime.now() - run_time
@@ -124,10 +130,11 @@ class HealthMonitor:
                 if posts_collected < 10:
                     self.add_alert("warning", f"Low collection volume: {posts_collected} posts")
                     
+                duration_str = f"{duration:.1f}s" if duration else "unknown"
                 self.checks.append({
                     "name": "collection_status",
                     "status": "pass",
-                    "details": f"Last run: {posts_collected} posts, {duration:.1f}s duration"
+                    "details": f"Last run: {posts_collected} posts, {duration_str} duration, {successful_platforms} platforms OK"
                 })
                 
                 logger.info(f"✓ Collection status: {posts_collected} posts collected")

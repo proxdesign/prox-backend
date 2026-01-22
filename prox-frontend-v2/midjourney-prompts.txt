@@ -1,0 +1,331 @@
+# MIDJOURNEY PROMPTS FOR PRODUCT DISCOVERY SOLUTIONS
+# Total: 149 prompts organized by category
+# Format: /imagine prompt: [description] --ar 1:1 --v 6
+
+# === HOME ORGANIZATION (20 prompts) ===
+
+/imagine prompt: adhesive wall hooks for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: tension rod storage systems for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: freestanding shelving units for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: over-door organizers for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: toy storage bins with labels for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: toy rotation system storage for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: wall-mounted toy storage for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: multi-compartment toy organizer for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: entryway bench with shoe storage for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: wall key mail organizer for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: over-door shoe rack for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: coat hooks with shelf for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: slim velvet hangers for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: closet shelf dividers for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: double hang closet rod for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: hanging closet organizer shelves for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: vacuum storage bags for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: under-bed storage containers for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: stackable storage totes for home organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+# === KITCHEN (25 prompts) ===
+
+/imagine prompt: over-the-sink cutting board for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: rolling kitchen cart for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: wall-mounted fold-down table for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: counter shelf riser for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: counter shelf organizer for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: appliance garage cover for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: under-cabinet hooks storage for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: wall-mounted kitchen organizer for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: corner counter shelf for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: tiered counter organizer for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: clear airtight food containers for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: cabinet lazy susan turntable for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: pull-out cabinet organizer for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: tiered shelf riser for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: lid organizer rack for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: container drawer dividers for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: pull-out container bin for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: expandable under-sink shelf for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: tension rod for spray bottles for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: pull-out under-sink caddy for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: cabinet door organizer for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: over-the-sink dish rack for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: collapsible dish rack for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: roll-up sink drying mat for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: two-tier dish rack for kitchen organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+# === HOME OFFICE (17 prompts) ===
+
+/imagine prompt: under-desk cable tray for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: cable management sleeve for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: cable clips velcro straps for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: cable management box for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: ergonomic office chair for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: laptop stand riser for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: monitor arm mount for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: keyboard mouse wrist rest for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: desktop organizer with drawers for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: monitor stand with storage for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: desk shelf riser for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: room divider screen for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: video call backdrop panel for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: collapsible green screen for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: folding wall-mounted desk for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: corner desk compact for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: desk with built-in storage for home office organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+# === LIVING ROOM (17 prompts) ===
+
+/imagine prompt: high-density foam insert for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: cushion support insert board for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: polyester fiberfill stuffing for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: cushion wrap batting for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: pet-proof couch slipcover for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: scratch-resistant furniture protector for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: waterproof pet blanket throw for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: cable raceway cover kit for living room organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: in-wall cable management kit for living room organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: TV stand with cable management for living room organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: apartment-size sofa for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: nesting coffee tables for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: storage ottoman for living room furniture, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: storage coffee table for living room organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: fabric storage cubes bins for living room organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: console table with shelves for living room organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: ottoman with storage for living room organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+# === BEDROOM (18 prompts) ===
+
+/imagine prompt: blackout curtains for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: sleep eye mask for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: blackout window film for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: curtain gap light blockers for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: white noise machine for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: noise reducing earplugs for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: sound dampening curtains for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: bed frame with built-in storage for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: bed risers for under-bed storage for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: floating nightstand for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: over-bed storage shelf for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: clothes valet stand for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: over-door clothes hooks for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: decorative ladder rack for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: freestanding clothes rack for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: bedside caddy pocket organizer for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: clip-on bed shelf for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: adhesive wall pocket for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: C-table slide under sofa table for bedroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+# === BATHROOM (18 prompts) ===
+
+/imagine prompt: adhesive mount shower shelf for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: tension pole shower caddy for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: hanging over-showerhead caddy with grip for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: shower corner shelf permanent for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: wall-mounted medicine cabinet for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: slim freestanding cabinet for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: over-door hanging organizer for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: countertop makeup toiletry organizer for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: over-the-toilet shelving unit for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: floating shelves for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: over-the-toilet cabinet for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: ladder shelf unit for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: stackable storage bins for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: two-tier under-sink organizer for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: pull-out bathroom drawers for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: hair tool organizer holder for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: over-cabinet hair tool station for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: heat-resistant hair tool caddy for bathroom organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+# === PET OWNERS (20 prompts) ===
+
+/imagine prompt: reusable lint brush roller for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: rubber pet hair rake tool for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: pet hair laundry remover for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: deshedding brush for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: odor-control clumping litter for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: litter disposal pail for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: air purifier with carbon filter for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: enzymatic litter deodorizer for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: paw washer plunger cup for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: high-absorbent door mat for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: dog paw cleaning wipes for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: dog booties paw protectors for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: no-spill water bowl for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: elevated feeding station with catch basin for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: waterproof feeding mat for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: slow-feed water bowl for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: enzymatic pet stain cleaner for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: UV blacklight urine detector for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: carpet cleaner machine pet formula for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: odor-eliminating spray for pet owners, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+# === CLEANING (16 prompts) ===
+
+/imagine prompt: grout cleaning gel spray for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: electric grout cleaning brush for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: steam cleaner with grout attachment for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: grout sealer prevention for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: ammonia-free glass cleaner for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: glass-specific microfiber cloths for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: window squeegee for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: rubbing alcohol film removal for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: HEPA filter vacuum for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: air purifier with true HEPA for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: microfiber dust-trapping cloths for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: mattress pillow allergen covers for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: soap scum dissolving spray for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: daily shower spray prevention for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: hard water stain remover for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: shower door squeegee for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: robot vacuum for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: multi-surface cleaning system for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: microfiber cleaning tool kit for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+/imagine prompt: scrub-free bathroom cleaner for cleaning organization, product photography, clean white background, studio lighting, minimalist, 4k --ar 1:1 --v 6
+
+# END OF PROMPTS - Total: 149 prompts

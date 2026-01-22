@@ -19,10 +19,10 @@
     <integer>21600</integer> <!-- 6 hours -->
     
     <key>StandardOutPath</key>
-    <string>/Volumes/Dave's Mac/prox-product-discovery/prox_autonomous_discovery/logs/launchd_trend_out.log</string>
+    <string>/Volumes/Dave's Mac/prox-product-discovery/prox_autonomous_discovery/logs/trendscoring_out.log</string>
     
     <key>StandardErrorPath</key>
-    <string>/Volumes/Dave's Mac/prox-product-discovery/prox_autonomous_discovery/logs/launchd_trend_error.log</string>
+    <string>/Volumes/Dave's Mac/prox-product-discovery/prox_autonomous_discovery/logs/trendscoring_error.log</string>
     
     <key>RunAtLoad</key>
     <false/>
@@ -35,7 +35,7 @@
         <key>PATH</key>
         <string>/usr/local/bin:/usr/bin:/bin</string>
         <key>PYTHONPATH</key>
-        <string>/Volumes/Dave's Mac/prox-product-discovery/prox_trend_discovery</string>
+        <string>/Volumes/Dave's Mac/prox-product-discovery/prox_autonomous_discovery</string>
     </dict>
 </dict>
 </plist>

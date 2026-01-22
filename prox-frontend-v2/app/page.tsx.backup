@@ -1,0 +1,814 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import ChatInterface from '../components/ChatInterface';
+import StepIndicator from '../components/StepIndicator';
+import CardShelf from '../components/CardShelf';
+import ProductCard from '../components/ProductCard';
+import Footer from '../components/Footer';
+import HowItWorksModal from '../components/HowItWorksModal';
+import WhyProxModal from '../components/WhyProxModal';
+import { Problem, problems, FilterOption, getDefaultFiltersForCategory } from '../lib/mockData';
+import { getRepresentativeProductPerStyle, styleCategories } from '../lib/styleDetection';
+import { createSession, saveJourney, UserJourney } from '../lib/userJourney';
+
+interface Product {
+  asin?: string;
+  title: string;
+  price?: string;
+  image?: string;
+  rating?: number;
+  ratings_total?: number;
+  link?: string;
+}
+
+export default function Home() {
+  // Mode and step state
+  const [mode, setMode] = useState<'problem' | 'explore' | null>(null);
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
+  const [showVisualExplore, setShowVisualExplore] = useState(false);
+  const [conversationalInput, setConversationalInput] = useState('');
+  
+  // Selection state
+  const [selectedProblem, setSelectedProblem] = useState<Problem | null>(null);
+  const [availableSolutions, setAvailableSolutions] = useState<any[]>([]);
+  const [solutionPage, setSolutionPage] = useState(0);
+  const [selectedSolution, setSelectedSolution] = useState<any>(null);
+  const [availableStyles, setAvailableStyles] = useState<Array<{ style: any; product: any }>>([]);
+  const [stylePage, setStylePage] = useState(0);
+  const [selectedStyle, setSelectedStyle] = useState<any>(null);
+  
+  // Products state
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  
+  // Journey tracking
+  const [journey, setJourney] = useState<UserJourney>(() => createSession());
+  
+  // Filter and step label state
+  const [currentFilters, setCurrentFilters] = useState<FilterOption[]>([]);
+  const [stepLabels, setStepLabels] = useState<{ step2: string; step3: string }>({ 
+    step2: 'Product Type', 
+    step3: 'Refine' 
+  });
+  
+  // Modal state
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const [showWhyProx, setShowWhyProx] = useState(false);
+  
+  // Reference for card shelf
+  const shelfRef = useRef<HTMLDivElement>(null);
+
+  // Save journey on changes
+  useEffect(() => {
+    saveJourney(journey);
+  }, [journey]);
+
+  // Scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+
+  const handleModeSelect = (selectedMode: 'problem' | 'explore') => {
+    setMode(selectedMode);
+    if (selectedMode === 'explore') {
+      setShowVisualExplore(true);
+    } else {
+      setShowVisualExplore(false);
+    }
+    setJourney(prev => ({ ...prev, mode: selectedMode }));
+  };
+
+  const handleProblemIdentified = (problem: Problem, solutions: any[]) => {
+    setSelectedProblem(problem);
+    setCurrentStep(2);
+    setAvailableSolutions(solutions);
+    setSolutionPage(0);
+    
+    // Set dynamic filters and step labels from the problem
+    if (problem.filters && problem.filters.length > 0) {
+      setCurrentFilters(problem.filters);
+    } else {
+      // Fall back to category defaults
+      setCurrentFilters(getDefaultFiltersForCategory(problem.category));
+    }
+    
+    if (problem.stepLabels) {
+      setStepLabels(problem.stepLabels);
+    } else {
+      setStepLabels({ step2: 'Product Type', step3: 'Refine' });
+    }
+    
+    setJourney(prev => ({
+      ...prev,
+      problemText: problem.name,
+      problemCategory: problem.category,
+      solutionsShown: solutions.slice(0, 4).map(s => s.id),
+    }));
+  };
+
+  const handleExploreArea = (area: string) => {
+    const areaProblems = problems.filter(p => p.category === area);
+    const allSolutions = areaProblems.flatMap(p => p.solutions);
+    setAvailableSolutions(allSolutions);
+    setSolutionPage(0);
+    setCurrentStep(2);
+    
+    // Set default filters and step labels for the category
+    setCurrentFilters(getDefaultFiltersForCategory(area));
+    setStepLabels({ step2: 'Solution Type', step3: 'Refine' });
+    
+    setJourney(prev => ({
+      ...prev,
+      problemCategory: area,
+      solutionsShown: allSolutions.slice(0, 4).map(s => s.id),
+    }));
+  };
+
+  const handleVisualCategorySelect = (category: string) => {
+    setShowVisualExplore(false);
+    handleExploreArea(category);
+  };
+
+  const handlePopularSearch = async (searchTerm: string) => {
+    setShowVisualExplore(false);
+    setLoading(true);
+    setCurrentStep(4);
+    
+    try {
+      const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.products || []);
+        
+        // Create a temporary problem for the search results
+        const searchProblem: Problem = {
+          id: `search_${Date.now()}`,
+          name: searchTerm,
+          category: 'Product Search',
+          description: `Products matching "${searchTerm}"`,
+          keywords: [searchTerm],
+          solutions: []
+        };
+        setSelectedProblem(searchProblem);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConversationalSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!conversationalInput.trim()) return;
+    
+    await handlePopularSearch(conversationalInput);
+    setConversationalInput('');
+  };
+
+  const handleSolutionSelect = async (solutionId: string) => {
+    const solution = availableSolutions.find(s => s.id === solutionId);
+    if (!solution) return;
+    
+    setSelectedSolution(solution);
+    setJourney(prev => ({ ...prev, solutionSelected: solutionId }));
+    
+    // Check if this problem should skip the refine step
+    if (selectedProblem?.skipRefineStep) {
+      // Go directly to products (step 4)
+      setCurrentStep(4);
+      setLoading(true);
+      try {
+        const searchTerm = solution.keywords?.[0] || solution.name;
+        const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}`);
+        
+        if (response.status === 429) {
+          const data = await response.json();
+          alert(`Rate limit exceeded. Please try again in ${data.resetIn} minutes.`);
+          return;
+        }
+        
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data.products || []);
+          // Scroll to products
+          setTimeout(() => {
+            document.getElementById('product-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Show refine/style step (step 3)
+      setLoading(true);
+      try {
+        const searchTerm = solution.keywords?.[0] || solution.name;
+        const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}`);
+        
+        if (response.status === 429) {
+          const data = await response.json();
+          alert(`Rate limit exceeded. Please try again in ${data.resetIn} minutes.`);
+          return;
+        }
+        
+        if (response.ok) {
+          const data = await response.json();
+          const styleReps = getRepresentativeProductPerStyle(data.products || []);
+          setAvailableStyles(styleReps);
+          setStylePage(0);
+          setCurrentStep(3);
+          setJourney(prev => ({
+            ...prev,
+            stylesShown: styleReps.map(s => s.style.id),
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleStyleSelect = async (styleId: string) => {
+    const style = availableStyles.find(s => s.style.id === styleId);
+    if (!style) return;
+    
+    setSelectedStyle(style);
+    setJourney(prev => ({ ...prev, styleSelected: styleId }));
+    setCurrentStep(4);
+    
+    // Fetch filtered products
+    setLoading(true);
+    try {
+      const searchTerm = `${selectedSolution?.keywords?.[0] || ''} ${style.style.name}`.trim();
+      const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}`);
+      
+      if (response.status === 429) {
+        const data = await response.json();
+        alert(`Rate limit exceeded. Please try again in ${data.resetIn} minutes.`);
+        return;
+      }
+      
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.products || []);
+        // Scroll to products
+        setTimeout(() => {
+          document.getElementById('product-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSolutionPrevious = () => {
+    if (solutionPage > 0) {
+      setSolutionPage(solutionPage - 1);
+    }
+  };
+
+  const handleSolutionNext = () => {
+    const maxPage = Math.ceil(availableSolutions.length / 4) - 1;
+    if (solutionPage < maxPage) {
+      setSolutionPage(solutionPage + 1);
+      setJourney(prev => ({
+        ...prev,
+        solutionsTryAgainCount: prev.solutionsTryAgainCount + 1,
+        solutionsShown: [...prev.solutionsShown, ...availableSolutions.slice((solutionPage + 1) * 4, (solutionPage + 2) * 4).map(s => s.id)],
+      }));
+    }
+  };
+
+  const handleStylePrevious = () => {
+    if (stylePage > 0) {
+      setStylePage(stylePage - 1);
+    }
+  };
+
+  const handleStyleNext = () => {
+    const maxPage = Math.ceil(availableStyles.length / 4) - 1;
+    if (stylePage < maxPage) {
+      setStylePage(stylePage + 1);
+      setJourney(prev => ({
+        ...prev,
+        stylesTryAgainCount: prev.stylesTryAgainCount + 1,
+      }));
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep === 3) {
+      setCurrentStep(2);
+      setSelectedSolution(null);
+    } else if (currentStep === 2) {
+      setCurrentStep(1);
+      setSelectedProblem(null);
+      setAvailableSolutions([]);
+    }
+  };
+
+  const handleDirectProductSearch = (searchProducts: Product[]) => {
+    setProducts(searchProducts);
+    setCurrentStep(4);
+    // Skip normal flow and go straight to products
+    setTimeout(() => {
+      document.getElementById('product-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
+
+  const handleStartOver = () => {
+    setMode(null);
+    setCurrentStep(1);
+    setSelectedProblem(null);
+    setAvailableSolutions([]);
+    setSelectedSolution(null);
+    setShowVisualExplore(false);
+    setAvailableStyles([]);
+    setSelectedStyle(null);
+    setProducts([]);
+    setCurrentFilters([]);
+    setStepLabels({ step2: 'Product Type', step3: 'Refine' });
+    setJourney(createSession());
+    window.scrollTo(0, 0);
+  };
+
+  const handleStepClick = (step: number) => {
+    if (step < currentStep) {
+      setCurrentStep(step as 1 | 2 | 3 | 4);
+      if (step <= 2) {
+        setSelectedSolution(null);
+        setSelectedStyle(null);
+      }
+      if (step <= 1) {
+        setSelectedProblem(null);
+        setAvailableSolutions([]);
+      }
+    }
+  };
+
+  // Get current solutions to display (paginated)
+  const displayedSolutions = availableSolutions.slice(solutionPage * 4, (solutionPage + 1) * 4);
+  const hasMoreSolutions = availableSolutions.length > 4;
+
+  // Get current styles to display (paginated)
+  const displayedStyles = availableStyles.slice(stylePage * 4, (stylePage + 1) * 4);
+  const hasMoreStyles = availableStyles.length > 4;
+
+  return (
+    <div className="min-h-screen flex flex-col bg-warm-50">
+      {/* Header */}
+      <header className="px-4 py-8 bg-slate-700">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Logo and Title - Same Line, Larger */}
+          <div className="flex items-center justify-center gap-4 mb-3">
+            {/* Prox Logo - bigger */}
+            <img 
+              src="/logo-white.png" 
+              alt="Prox" 
+              className="h-20 w-auto"
+            />
+            
+            {/* Divider - taller */}
+            <div className="h-16 w-px bg-white/30"></div>
+            
+            {/* Product Discovery - lighter weight */}
+            <h1 className="text-3xl font-light text-white">Product Discovery</h1>
+          </div>
+          
+          {/* Tagline */}
+          <p className="text-oak-200 text-lg mb-4">
+            AI-powered recommendations to solve your home problems
+          </p>
+          
+          {/* Buttons Row */}
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={() => setShowHowItWorks(true)}
+              className="inline-flex items-center gap-1.5 px-5 py-2 text-sm text-white hover:bg-white/10 rounded-full transition-colors border border-white/30"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              How it Works
+            </button>
+            
+            <button
+              onClick={() => setShowWhyProx(true)}
+              className="inline-flex items-center gap-1.5 px-5 py-2 text-sm text-white hover:bg-white/10 rounded-full transition-colors border border-white/30"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Why Prox?
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main content area - grows to fill space */}
+      <main className="flex-1 flex flex-col">
+        <section className="flex-1 px-4 py-8">
+          <div className="max-w-2xl mx-auto space-y-4">
+          
+          {/* Step Indicator Banner - At the very top */}
+          {mode && currentStep >= 1 && (
+            <div className="animate-fadeIn">
+              <StepIndicator
+                mode={mode}
+                currentStep={currentStep}
+                stepLabels={stepLabels}
+                skipRefineStep={selectedProblem?.skipRefineStep}
+                onStepClick={handleStepClick}
+                onStartOver={handleStartOver}
+                onBack={handleBack}
+                canGoBack={currentStep > 1}
+              />
+            </div>
+          )}
+          
+          {/* Human-Agent Centered Explore Mode */}
+          {showVisualExplore && (
+            <div className="max-w-5xl mx-auto space-y-12">
+              
+              {/* Agent Greeting & Conversational Input */}
+              <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-oak-100 rounded-full flex items-center justify-center">
+                      <svg className="w-6 h-6 text-oak-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-xl font-medium text-gray-900 mb-2">
+                      Hi! I'm here to help you discover the perfect products for your home.
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                      Tell me what you're looking for, or browse the categories below. I'll find products that match your needs and style.
+                    </p>
+                    
+                    {/* Conversational Input */}
+                    <form onSubmit={handleConversationalSearch} className="flex gap-3">
+                      <div className="flex-1">
+                        <input
+                          type="text"
+                          value={conversationalInput}
+                          onChange={(e) => setConversationalInput(e.target.value)}
+                          placeholder="Describe what you're looking for... (e.g., 'spice rack for small kitchen' or 'storage for kids toys')"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-oak-500 focus:border-transparent text-gray-900 placeholder-gray-500"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={!conversationalInput.trim()}
+                        className="px-6 py-3 bg-oak-600 hover:bg-oak-700 disabled:bg-gray-300 text-white rounded-xl font-medium transition-colors flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                        Search
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
+                {/* Alternative Path */}
+                <div className="pt-4 border-t border-gray-100">
+                  <button
+                    onClick={() => setShowVisualExplore(false)}
+                    className="text-oak-600 hover:text-oak-700 font-medium text-sm flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4z" />
+                    </svg>
+                    Have a specific problem? Let me help you solve it
+                  </button>
+                </div>
+              </div>
+
+              {/* Combined Section: Explore by Space & Style */}
+              <section>
+                <div className="mb-8">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Explore by Space & Style</h3>
+                  <p className="text-gray-600">Find solutions for every room, matched to your aesthetic</p>
+                </div>
+                
+                {/* Space Cards */}
+                <div className="mb-8">
+                  <h4 className="text-lg font-semibold text-gray-800 mb-4">Browse by Space</h4>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[
+                      {
+                        name: "Kitchen",
+                        image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&q=80",
+                        description: "Spice racks, utensil holders, cabinet organizers"
+                      },
+                      {
+                        name: "Living Room", 
+                        image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop&q=80",
+                        description: "Storage ottomans, TV stands, coffee tables"
+                      },
+                      {
+                        name: "Bedroom",
+                        image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&h=300&fit=crop&q=80", 
+                        description: "Under-bed storage, closet organizers"
+                      },
+                      {
+                        name: "Home Organization",
+                        image: "https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=400&h=300&fit=crop&q=80",
+                        description: "Toy storage, entryway organization, closet solutions"
+                      },
+                      {
+                        name: "Bathroom",
+                        image: "https://images.unsplash.com/photo-1620626011761-996317b8d101?w=400&h=300&fit=crop&q=80",
+                        description: "Shower organizers, vanity storage"
+                      },
+                      {
+                        name: "Office",
+                        image: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400&h=300&fit=crop&q=80",
+                        description: "Desk accessories, cable management, file storage"
+                      }
+                    ].map((category) => (
+                      <div
+                        key={category.name}
+                        onClick={() => handleVisualCategorySelect(category.name)}
+                        className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer group"
+                      >
+                        <div className="relative h-48 overflow-hidden">
+                          <img 
+                            src={category.image}
+                            alt={category.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                          <h4 className="absolute bottom-4 left-4 text-white font-bold text-xl">{category.name}</h4>
+                        </div>
+                        <div className="p-4">
+                          <p className="text-gray-600 text-sm">{category.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Style Cards */}
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-800 mb-4">Browse by Style</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    {[
+                      { 
+                        name: "Modern", 
+                        image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&h=150&fit=crop&q=80"
+                      },
+                      { 
+                        name: "Rustic", 
+                        image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=200&h=150&fit=crop&q=80"
+                      },
+                      { 
+                        name: "Industrial", 
+                        image: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=200&h=150&fit=crop&q=80"
+                      },
+                      { 
+                        name: "Minimalist", 
+                        image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=200&h=150&fit=crop&q=80"
+                      },
+                      { 
+                        name: "Scandinavian", 
+                        image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=200&h=150&fit=crop&q=80"
+                      },
+                      { 
+                        name: "Bohemian", 
+                        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&h=150&fit=crop&q=80"
+                      }
+                    ].map((style) => (
+                      <div
+                        key={style.name}
+                        onClick={() => handlePopularSearch(style.name)}
+                        className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all cursor-pointer group"
+                      >
+                        <div className="relative h-24 overflow-hidden">
+                          <img 
+                            src={style.image}
+                            alt={style.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                        </div>
+                        <div className="p-3">
+                          <div className="font-medium text-gray-800 text-sm text-center group-hover:text-gray-900">{style.name}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* Section 2: Everyday Essentials Carousel */}
+              <section>
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Everyday Essentials</h3>
+                  <p className="text-gray-600">Practical solutions for daily life</p>
+                </div>
+                <div className="relative">
+                  {/* Carousel container */}
+                  <div className="overflow-x-auto scrollbar-hide">
+                    <div className="flex gap-4 pb-4" style={{width: 'max-content'}}>
+                      {[
+                        {
+                          name: "Cleaning Supplies",
+                          image: "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=300&h=200&fit=crop&q=80",
+                          description: "Keep your home spotless"
+                        },
+                        {
+                          name: "Pet Care",
+                          image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&h=200&fit=crop&q=80",
+                          description: "Everything for your furry friends"
+                        },
+                        {
+                          name: "Kitchen Gadgets",
+                          image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=200&fit=crop&q=80",
+                          description: "Make cooking easier"
+                        },
+                        {
+                          name: "Laundry Organization",
+                          image: "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=300&h=200&fit=crop&q=80",
+                          description: "Streamline your laundry routine"
+                        }
+                      ].map((essential) => (
+                        <div
+                          key={essential.name}
+                          onClick={() => handlePopularSearch(essential.name)}
+                          className="flex-shrink-0 w-64 bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer group"
+                        >
+                          <div className="relative h-32 overflow-hidden">
+                            <img 
+                              src={essential.image}
+                              alt={essential.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                          </div>
+                          <div className="p-4">
+                            <h4 className="font-semibold text-gray-800 mb-1">{essential.name}</h4>
+                            <p className="text-gray-600 text-sm">{essential.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Section 3: Popular Searches */}
+              <section>
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Popular Searches</h3>
+                  <p className="text-gray-600">What others are discovering</p>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    "Desk Organizer", "Storage Bins", "Spice Rack", "Shoe Storage", 
+                    "Cable Management", "Closet Organizer", "Pantry Storage", "Bathroom Caddy"
+                  ].map((search) => (
+                    <button
+                      key={search}
+                      onClick={() => handlePopularSearch(search)}
+                      className="px-4 py-3 bg-white border border-gray-200 hover:border-oak-300 hover:shadow-sm text-gray-700 hover:text-oak-700 rounded-xl text-sm font-medium transition-all flex items-center gap-2"
+                    >
+                      <svg className="w-3 h-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
+                      </svg>
+                      {search}
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+            </div>
+          )}
+
+          {/* Chat */}
+          {!showVisualExplore && (
+            <ChatInterface
+            mode={mode}
+            onModeSelect={handleModeSelect}
+            onProblemIdentified={handleProblemIdentified}
+            onExploreArea={handleExploreArea}
+            onDirectProductSearch={handleDirectProductSearch}
+            // Card props for Step 2 & 3
+            showCards={currentStep === 2 || currentStep === 3}
+            cards={currentStep === 2 
+              ? displayedSolutions.map(s => ({ id: s.id, label: s.name, image: s.image }))
+              : currentStep === 3 
+              ? displayedStyles.map(s => ({ id: s.style.id, label: s.style.name, image: s.product?.image }))
+              : []
+            }
+            onCardSelect={currentStep === 2 ? handleSolutionSelect : handleStyleSelect}
+            onCardPrevious={currentStep === 2 ? handleSolutionPrevious : handleStylePrevious}
+            onCardNext={currentStep === 2 ? handleSolutionNext : handleStyleNext}
+            hasCardPrevious={currentStep === 2 ? solutionPage > 0 : stylePage > 0}
+            hasCardNext={currentStep === 2 
+              ? solutionPage < Math.ceil(availableSolutions.length / 4) - 1
+              : stylePage < Math.ceil(availableStyles.length / 4) - 1
+            }
+            cardStep={currentStep === 2 ? 2 : currentStep === 3 ? 3 : undefined}
+            stepMessage={
+              currentStep === 2 
+                ? `Select a product type for "${selectedProblem?.name?.split('–')[0]?.trim() || 'your problem'}"` 
+                : currentStep === 3 
+                ? `Choose a ${(stepLabels?.step3 || 'style').toLowerCase()}` 
+                : undefined
+            }
+          />
+          )}
+
+        </div>
+      </section>
+
+
+      {/* Products Section - Only shows at Step 4 */}
+      {currentStep === 4 && (
+        <section id="product-grid" className="px-4 pb-16">
+          <div className="max-w-7xl mx-auto">
+            {/* Affiliate Disclosure */}
+            <div className="bg-oak-50 border border-oak-200 rounded-lg p-3 text-center text-sm text-oak-700 mb-6">
+              <span className="font-medium">Affiliate Disclosure:</span> We earn commissions from purchases made through links on this page.
+            </div>
+
+            {/* Product count */}
+            <p className="text-sm text-neutral-500 text-center mb-6">
+              Showing {products.length} products for {selectedStyle?.style.name} {selectedSolution?.name}
+            </p>
+
+            {/* Loading */}
+            {loading && (
+              <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div key={i} className="break-inside-avoid mb-4">
+                    <div className="bg-white rounded-2xl overflow-hidden shadow-sm animate-pulse">
+                      <div className="bg-neutral-200" style={{ height: `${200 + (i % 4) * 30}px` }} />
+                      <div className="p-3 space-y-2">
+                        <div className="h-4 bg-neutral-200 rounded w-full" />
+                        <div className="h-4 bg-neutral-200 rounded w-2/3" />
+                        <div className="h-3 bg-neutral-200 rounded w-1/4" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Products Grid */}
+            {!loading && products.length > 0 && (
+              <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+                {products.map((product, index) => (
+                  <div key={product.asin || index} className="break-inside-avoid mb-4">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Empty state */}
+            {!loading && products.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-neutral-600">No products found. Try a different style or product type.</p>
+                <button
+                  onClick={handleBack}
+                  className="mt-4 text-oak-600 hover:text-oak-700 font-medium"
+                >
+                  ← Go Back
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      </main>
+
+      {/* Footer - will stay at bottom */}
+      <Footer />
+      
+      {/* Modals */}
+      <HowItWorksModal 
+        isOpen={showHowItWorks} 
+        onClose={() => setShowHowItWorks(false)} 
+      />
+      <WhyProxModal 
+        isOpen={showWhyProx} 
+        onClose={() => setShowWhyProx(false)} 
+      />
+    </div>
+  );
+}

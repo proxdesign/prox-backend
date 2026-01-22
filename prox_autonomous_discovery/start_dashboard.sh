@@ -29,7 +29,7 @@ if ! python3 -c "import flask" 2>/dev/null; then
 fi
 
 # Set environment variables
-export PYTHONPATH="/Volumes/Dave's Mac/prox-product-discovery/prox_trend_discovery:$PYTHONPATH"
+export PYTHONPATH="$SCRIPT_DIR:$PYTHONPATH"
 
 # Navigate to dashboard directory
 cd "$DASHBOARD_DIR"
