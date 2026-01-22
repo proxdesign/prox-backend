@@ -13,6 +13,43 @@ interface Product {
   affiliateLink?: string;
 }
 
+// In-memory cache for product searches
+interface CacheEntry {
+  products: Product[];
+  timestamp: number;
+}
+
+const productCache = new Map<string, CacheEntry>();
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
+
+function getCachedProducts(key: string): Product[] | null {
+  const entry = productCache.get(key);
+  if (!entry) return null;
+
+  // Check if cache is still valid
+  if (Date.now() - entry.timestamp > CACHE_TTL) {
+    productCache.delete(key);
+    return null;
+  }
+
+  return entry.products;
+}
+
+function setCachedProducts(key: string, products: Product[]): void {
+  productCache.set(key, {
+    products,
+    timestamp: Date.now(),
+  });
+}
+
+// Export for cache stats/management
+export function getCacheStats() {
+  return {
+    size: productCache.size,
+    keys: Array.from(productCache.keys()),
+  };
+}
+
 const AMAZON_ASSOCIATE_TAG = process.env.AMAZON_ASSOCIATE_TAG || '';
 
 export function addAffiliateTag(url: string): string {
@@ -41,24 +78,13 @@ function transformProductWithAffiliateTag(product: any): Product {
   };
 }
 
-// Category to Amazon search query mapping
-const CATEGORY_QUERIES: Record<string, string> = {
-  'all': 'furniture sofa couch chair desk table lamp pillow',
-  'seating': 'sofa couch sectional sofa loveseat',
-  'chairs': 'dining chair office chair accent chair armchair',
-  'dining': 'dining table dining chair dining set',
-  'desks': 'desk computer desk writing desk office desk',
-  'storage': 'bookshelf bookcase shelving unit',
-  'lighting': 'table lamp floor lamp desk lamp reading lamp',
-  'decor': 'throw pillow decorative pillow cushion home decor',
-};
-
 // Backend API URL for real product data
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://prox-autonomous-discovery.fly.dev';
 
 // Map search terms to solution IDs
+// These map to products stored in the backend database under specific solution categories
 const SEARCH_TO_SOLUTION_MAP: { [key: string]: number } = {
-  // Kitchen terms (most popular)
+  // Kitchen terms
   "spice": 44,
   "rack": 44,
   "utensil": 46,
@@ -68,7 +94,6 @@ const SEARCH_TO_SOLUTION_MAP: { [key: string]: number } = {
   "susan": 41,
   "turntable": 41,
   "counter": 37,
-  "organizer": 37,
   "cutting": 37,
   "board": 37,
   "appliance": 38,
@@ -83,8 +108,10 @@ const SEARCH_TO_SOLUTION_MAP: { [key: string]: number } = {
   "rolling": 15,
   "cart": 15,
   "kitchen": 37,
-  
-  // Living Room / Furniture repair terms
+  "pantry": 40,
+  "dish": 37,
+
+  // Living Room / Furniture terms
   "fiberfill": 47,
   "stuffing": 47,
   "polyester": 47,
@@ -99,14 +126,44 @@ const SEARCH_TO_SOLUTION_MAP: { [key: string]: number } = {
   "sofa": 47,
   "saggy": 47,
   "flat": 47,
-  
-  // General storage terms
-  "storage": 17,
+  "living room": 47,
+  "coffee table": 47,
+  "ottoman": 17,
   "ottomans": 17,
-  "multipurpose": 17,
-  "furniture": 17,
-  "living": 17,
-  
+
+  // Bedroom terms
+  "bedroom": 11,
+  "nightstand": 11,
+  "bed": 11,
+  "closet": 8,
+  "clothes": 8,
+  "hanger": 8,
+
+  // Bathroom terms
+  "bathroom": 39,
+  "shower": 39,
+  "toilet": 39,
+  "towel": 39,
+  "medicine": 39,
+  "vanity": 39,
+
+  // Home Office terms
+  "desk": 36,
+  "office": 36,
+  "cable": 36,
+  "monitor": 36,
+  "ergonomic": 36,
+  "chair": 36,
+
+  // Storage terms
+  "storage": 8,
+  "bin": 8,
+  "basket": 8,
+  "container": 8,
+  "organizer": 37,
+  "shelf": 11,
+  "shelving": 11,
+
   // Installation terms
   "wall": 5,
   "mounted": 5,
@@ -115,7 +172,7 @@ const SEARCH_TO_SOLUTION_MAP: { [key: string]: number } = {
   "bracket": 14,
   "heavy": 12,
   "duty": 12,
-  
+
   // Room/space terms
   "divider": 1,
   "modular": 2,
@@ -124,7 +181,133 @@ const SEARCH_TO_SOLUTION_MAP: { [key: string]: number } = {
   "corner": 11,
   "compact": 36,
   "entryway": 36,
+
+  // Cleaning terms
+  "cleaning": 40,
+  "grout": 40,
+  "window": 40,
+  "glass": 40,
+  "dust": 40,
+  "vacuum": 40,
+  "mop": 40,
+  "stain": 40,
+  "remover": 40,
+
+  // Pet terms
+  "pet": 17,
+  "dog": 17,
+  "cat": 17,
+  "litter": 17,
+  "paw": 17,
+  "fur": 17,
+  "hair": 17,
+  "feeding": 17,
+  "bowl": 17,
+
+  // Furniture categories
+  "table": 47,
+  "tables": 47,
+  "chairs": 36,
+  "seating": 36,
+  "bookshelf": 11,
+  "bookcase": 11,
+  "dresser": 8,
+  "wardrobe": 8,
+  "tv stand": 47,
+  "entertainment": 47,
+
+  // Decor terms
+  "rug": 47,
+  "rugs": 47,
+  "lamp": 47,
+  "lighting": 47,
+  "mirror": 39,
+  "curtain": 47,
+  "curtains": 47,
+  "pillow": 47,
+  "pillows": 47,
+  "throw": 47,
+  "art": 47,
+  "decor": 47,
+
+  // Style terms
+  "modern": 47,
+  "rustic": 47,
+  "industrial": 47,
+  "minimalist": 47,
+  "traditional": 47,
+  "bohemian": 47,
+  "boho": 47,
 };
+
+// Canopy API search for Amazon products (primary method)
+async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): Promise<Product[]> {
+  // Check cache first
+  const cacheKey = `canopy:${searchTerm.toLowerCase()}:${limit}`;
+  const cached = getCachedProducts(cacheKey);
+  if (cached) {
+    console.log(`⚡ Cache hit for "${searchTerm}" (${cached.length} products)`);
+    return cached;
+  }
+
+  const apiKey = process.env.CANOPY_API_KEY;
+  if (!apiKey) {
+    console.warn('❌ Canopy API key not configured, falling back to demo data');
+    return getDemoProducts(searchTerm);
+  }
+
+  try {
+    console.log(`🌿 Canopy API search for: "${searchTerm}"`);
+    const response = await fetch(
+      `https://rest.canopyapi.co/api/amazon/search?searchTerm=${encodeURIComponent(searchTerm)}&domain=US&limit=${limit}`,
+      {
+        method: 'GET',
+        headers: {
+          'API-KEY': apiKey,
+        },
+        // Next.js fetch caching - cache for 1 hour
+        next: { revalidate: 3600 },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Canopy API responded with status ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Navigate to the correct path in the response
+    const results = data?.data?.amazonProductSearchResults?.productResults?.results || [];
+
+    if (results.length > 0) {
+      const products = results.map((item: any) =>
+        transformProductWithAffiliateTag({
+          title: item.title || 'Product Title Not Available',
+          brand: item.brand || extractBrand(item.title || ''),
+          price: item.price?.value ? `$${item.price.value}` : 'Price unavailable',
+          currency: 'USD',
+          image: item.mainImageUrl || '',
+          link: `https://www.amazon.com/dp/${item.asin}`,
+          rating: item.rating || 0,
+          reviews: item.ratingsTotal || 0,
+          source: 'Amazon',
+          asin: item.asin || '',
+          trendScore: calculateTrendScoreSync({ rating: item.rating, ratings_total: item.ratingsTotal }),
+        })
+      );
+      console.log(`✅ Canopy returned ${products.length} products for "${searchTerm}"`);
+      // Cache the results
+      setCachedProducts(cacheKey, products);
+      return products;
+    }
+
+    console.warn(`⚠️ No results from Canopy for "${searchTerm}"`);
+    return getDemoProducts(searchTerm);
+  } catch (error) {
+    console.error('Canopy API search error:', error);
+    return getDemoProducts(searchTerm);
+  }
+}
 
 // Connect to our real backend API with kitchen products
 export async function searchProductsFromBackend(searchTerm: string): Promise<Product[]> {
@@ -200,185 +383,48 @@ function extractAsinFromUrl(url: string): string {
   return match ? match[1] : '';
 }
 
+// Generic category terms that should use Canopy API directly
+// (backend doesn't have products organized by these categories)
+const GENERIC_CATEGORY_TERMS = [
+  'bathroom', 'bedroom', 'living room', 'kitchen', 'office', 'entryway',
+  'modern', 'rustic', 'industrial', 'minimalist', 'traditional', 'bohemian', 'boho',
+  'sofa', 'couch', 'chair', 'table', 'desk', 'bed', 'dresser', 'rug', 'lamp',
+  'mirror', 'curtain', 'pillow', 'art', 'decor', 'lighting',
+  'cleaning', 'grout', 'window', 'dust', 'vacuum', 'mop', 'stain',
+  'pet', 'dog', 'cat', 'litter', 'paw', 'feeding'
+];
+
+function isGenericCategorySearch(term: string): boolean {
+  const lowerTerm = term.toLowerCase();
+  return GENERIC_CATEGORY_TERMS.some(cat => lowerTerm.includes(cat));
+}
+
 export async function searchProductsByKeyword(searchTerm: string): Promise<Product[]> {
   console.log(`🔍 Searching for products: "${searchTerm}"`);
-  
-  // ALWAYS try our backend API first with real kitchen products
+
+  // For generic category searches (rooms, styles, furniture types),
+  // use Canopy API for real Amazon product search
+  if (isGenericCategorySearch(searchTerm)) {
+    console.log(`📦 Generic category search detected, using Canopy API for: "${searchTerm}"`);
+    return searchProductsViaCanopy(searchTerm, 24);
+  }
+
+  // For specific solution-type searches, try backend first
   const backendProducts = await searchProductsFromBackend(searchTerm);
   if (backendProducts.length > 0) {
     console.log(`🎉 Using ${backendProducts.length} real products from backend!`);
     return backendProducts;
   }
-  
-  console.warn('⚠️ Backend returned no products, trying Rainforest API...');
-  
-  // Fallback to Rainforest API if backend fails
-  const apiKey = process.env.RAINFOREST_API_KEY;
-  if (!apiKey || apiKey === 'your_rainforest_api_key_here') {
-    console.warn('❌ Backend and Rainforest API not available, using demo data');
-    return getDemoProducts('all');
-  }
-  
-  const params = {
-    api_key: apiKey,
-    type: 'search',
-    amazon_domain: 'amazon.com',
-    search_term: searchTerm,
-    sort_by: 'featured',
-    page: '1',
-  };
 
-  const queryString = new URLSearchParams(params).toString();
+  console.warn('⚠️ Backend returned no products, trying Canopy API...');
 
-  try {
-    const response = await fetch(
-      `https://api.rainforestapi.com/request?${queryString}`,
-      {
-        method: 'GET',
-        headers: {
-          'User-Agent': 'ProductDiscovery/1.0'
-        }
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`API responded with status ${response.status}`);
-    }
-
-    const data = await response.json();
-    
-    if (data.search_results && Array.isArray(data.search_results)) {
-      const products = data.search_results.slice(0, 12).map((item: any) => 
-        transformProductWithAffiliateTag({
-          title: item.title || 'Product Title Not Available',
-          brand: item.brand || '',
-          price: item.price?.raw || item.price_upper?.raw || 'Price unavailable',
-          currency: 'USD',
-          image: item.image || '',
-          link: item.link || '#',
-          rating: item.rating || 0,
-          reviews: item.ratings_total || 0,
-          source: 'Amazon',
-          asin: item.asin || '',
-          trendScore: calculateTrendScoreSync(item),
-        })
-      );
-      
-      // Enhance with social trend data in background
-      enhanceProductsWithSocialTrends(products.slice(0, 6)).then(enhanced => {
-        console.log('Enhanced keyword search products with social trend data');
-      }).catch(error => {
-        console.warn('Failed to enhance keyword products with social trends:', error);
-      });
-      
-      return products;
-    }
-
-    return [];
-  } catch (error) {
-    console.error('Rainforest API search error:', error);
-    return getDemoProducts('all');
-  }
-}
-
-// Enhance products with real social trend scores
-export async function enhanceProductsWithSocialTrends(products: Product[]): Promise<Product[]> {
-  try {
-    const enhancedProducts = await Promise.all(
-      products.map(async (product) => {
-        try {
-          const socialTrendScore = await calculateTrendScore(product);
-          return { ...product, trendScore: socialTrendScore };
-        } catch (error) {
-          console.warn(`Failed to enhance product ${product.title} with social trends:`, error);
-          return product; // Return original product if enhancement fails
-        }
-      })
-    );
-    return enhancedProducts;
-  } catch (error) {
-    console.warn('Failed to enhance products with social trends:', error);
-    return products; // Return original products if enhancement fails
-  }
+  // Fallback to Canopy API if backend fails
+  return searchProductsViaCanopy(searchTerm, 12);
 }
 
 export async function searchProductsByCategory(category: string): Promise<Product[]> {
-  // Check if API key is properly configured
-  const apiKey = process.env.RAINFOREST_API_KEY;
-  if (!apiKey || apiKey === 'your_rainforest_api_key_here') {
-    console.warn('Rainforest API key not configured, using demo data');
-    return getDemoProducts(category);
-  }
-  
-  const query = CATEGORY_QUERIES[category.toLowerCase()] || CATEGORY_QUERIES['all'];
-  
-  const params = {
-    api_key: apiKey,
-    type: 'search',
-    amazon_domain: 'amazon.com',
-    search_term: query,
-    sort_by: 'featured',
-    page: '1',
-  };
-
-  const queryString = new URLSearchParams(params).toString();
-
-  try {
-    const response = await fetch(
-      `https://api.rainforestapi.com/request?${queryString}`,
-      { 
-        next: { revalidate: 3600 }, // Cache for 1 hour
-        cache: 'force-cache',
-      }
-    );
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Rainforest API error:', response.status, errorText);
-      console.warn('Falling back to demo data');
-      return getDemoProducts(category);
-    }
-
-    const data = await response.json();
-
-    if (!data.search_results || data.search_results.length === 0) {
-      console.warn(`No results for category: ${category}`);
-      return getDemoProducts(category);
-    }
-
-    // Transform to our product format and limit to 12
-    const products = data.search_results
-      .slice(0, 12)
-      .map((item: any) => transformProductWithAffiliateTag({
-        title: item.title || 'Unknown Product',
-        brand: extractBrand(item.title),
-        price: formatPrice(item.price),
-        currency: item.price?.currency || 'USD',
-        image: item.image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800',
-        link: item.link || `https://amazon.com/dp/${item.asin}`,
-        rating: item.rating || null,
-        reviews: item.ratings_total || 0,
-        source: 'Amazon',
-        asin: item.asin,
-        trendScore: calculateTrendScoreSync(item),
-      }));
-
-    console.log(`Fetched ${products.length} products for category: ${category}`);
-    
-    // Enhance with social trend data in background
-    enhanceProductsWithSocialTrends(products.slice(0, 6)).then(enhanced => {
-      console.log('Enhanced first 6 products with social trend data');
-    }).catch(error => {
-      console.warn('Failed to enhance products with social trends:', error);
-    });
-    
-    return products;
-      
-  } catch (error) {
-    console.error('Rainforest API error:', error);
-    console.warn('Falling back to demo data');
-    return getDemoProducts(category);
-  }
+  // Use Canopy API for category searches
+  return searchProductsViaCanopy(category, 12);
 }
 
 // Extract brand name from product title
@@ -406,55 +452,7 @@ function extractBrand(title: string): string {
   return firstWord.length > 15 ? 'Various' : firstWord;
 }
 
-// Format price from API response
-function formatPrice(priceData: any): string {
-  if (!priceData) return 'N/A';
-  
-  if (priceData.value) {
-    return `$${priceData.value}`;
-  }
-  
-  if (priceData.raw) {
-    // Extract number from raw price string
-    const match = priceData.raw.match(/\$?([\d,]+\.?\d*)/);
-    if (match) {
-      const price = parseFloat(match[1].replace(',', ''));
-      return `$${price.toFixed(2)}`;
-    }
-  }
-  
-  return 'N/A';
-}
-
-// Calculate trend score based on rating, review count, and social signals
-async function calculateTrendScore(item: any): Promise<number> {
-  const rating = item.rating || 0;
-  const reviews = item.ratings_total || 0;
-  const title = item.title || '';
-  
-  // Base score from rating and reviews (60% of total)
-  const ratingScore = (rating / 5) * 4; // Max 4 points
-  const reviewScore = Math.min((reviews / 1000) * 2, 2); // Max 2 points (caps at 1000 reviews)
-  const baseScore = ratingScore + reviewScore;
-  
-  // Try to get social trend score (40% of total)
-  let socialScore = 2; // Default fallback
-  try {
-    // Dynamic import to avoid SSR issues
-    const { getQuickTrendScore } = await import('./api/trendAggregator');
-    const socialTrendScore = await getQuickTrendScore(title);
-    socialScore = (socialTrendScore / 10) * 4; // Convert 0-10 to 0-4 scale
-  } catch (error) {
-    console.warn('Could not get social trend score, using fallback:', error);
-  }
-  
-  const totalScore = baseScore + socialScore;
-  
-  // Round to 1 decimal place
-  return Math.min(Math.round(totalScore * 10) / 10, 10);
-}
-
-// Synchronous version for when async isn't available
+// Calculate trend score based on rating and review count
 function calculateTrendScoreSync(item: any): number {
   const rating = item.rating || 0;
   const reviews = item.ratings_total || 0;
@@ -470,189 +468,86 @@ function calculateTrendScoreSync(item: any): number {
   return Math.min(Math.round(totalScore * 10) / 10, 10);
 }
 
+// Category-specific demo products for when APIs are unavailable
+const DEMO_PRODUCTS_BY_CATEGORY: Record<string, Product[]> = {
+  bathroom: [
+    { title: "SimpleHuman Tension Shower Caddy, Stainless Steel", brand: "SimpleHuman", price: "$69.99", currency: "USD", image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", link: "https://amazon.com/dp/B001ET76AI", rating: 4.6, reviews: 8234, source: "Amazon", asin: "B001ET76AI", trendScore: 8.4 },
+    { title: "mDesign Over-Toilet Bathroom Storage Organizer", brand: "mDesign", price: "$44.99", currency: "USD", image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", link: "https://amazon.com/dp/B07BNQR51B", rating: 4.5, reviews: 12453, source: "Amazon", asin: "B07BNQR51B", trendScore: 8.2 },
+    { title: "SONGMICS Bamboo Bathroom Shelf, 4-Tier Storage Rack", brand: "SONGMICS", price: "$39.99", currency: "USD", image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", link: "https://amazon.com/dp/B073P52Y2Y", rating: 4.7, reviews: 5678, source: "Amazon", asin: "B073P52Y2Y", trendScore: 8.6 },
+    { title: "iDesign Clarity Vanity Organizer, 3-Drawer", brand: "iDesign", price: "$24.99", currency: "USD", image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", link: "https://amazon.com/dp/B002BWPTEM", rating: 4.4, reviews: 3456, source: "Amazon", asin: "B002BWPTEM", trendScore: 7.8 },
+  ],
+  bedroom: [
+    { title: "Zinus Platform Bed Frame with Headboard, Queen", brand: "Zinus", price: "$249.99", currency: "USD", image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800", link: "https://amazon.com/dp/B0BHMD8P65", rating: 4.6, reviews: 23456, source: "Amazon", asin: "B0BHMD8P65", trendScore: 9.1 },
+    { title: "South Shore Vito Nightstand with Drawer", brand: "South Shore", price: "$119.99", currency: "USD", image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800", link: "https://amazon.com/dp/B00RKWAWBQ", rating: 4.4, reviews: 6543, source: "Amazon", asin: "B00RKWAWBQ", trendScore: 7.6 },
+    { title: "SONGMICS Cube Storage Organizer, 16-Cube Closet System", brand: "SONGMICS", price: "$159.99", currency: "USD", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", link: "https://amazon.com/dp/B0C7X8Q9Y2", rating: 4.6, reviews: 15678, source: "Amazon", asin: "B0C7X8Q9Y2", trendScore: 9.2 },
+    { title: "VASAGLE Dresser with 6 Drawers, Wood Top", brand: "VASAGLE", price: "$89.99", currency: "USD", image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800", link: "https://amazon.com/dp/B08CXNWJ9H", rating: 4.5, reviews: 8765, source: "Amazon", asin: "B08CXNWJ9H", trendScore: 8.3 },
+  ],
+  kitchen: [
+    { title: "Joseph Joseph Expandable Drawer Organizer", brand: "Joseph Joseph", price: "$29.99", currency: "USD", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800", link: "https://amazon.com/dp/B007CGXQTA", rating: 4.5, reviews: 4567, source: "Amazon", asin: "B007CGXQTA", trendScore: 8.1 },
+    { title: "SimpleHuman Tension Arm Paper Towel Holder", brand: "SimpleHuman", price: "$39.99", currency: "USD", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800", link: "https://amazon.com/dp/B00JGKGG5Q", rating: 4.7, reviews: 12345, source: "Amazon", asin: "B00JGKGG5Q", trendScore: 8.8 },
+    { title: "Rev-A-Shelf Pull Out Organizer for Base Cabinet", brand: "Rev-A-Shelf", price: "$79.99", currency: "USD", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800", link: "https://amazon.com/dp/B00092RKB4", rating: 4.6, reviews: 5678, source: "Amazon", asin: "B00092RKB4", trendScore: 8.4 },
+    { title: "OXO Good Grips Expandable Spice Rack", brand: "OXO", price: "$49.99", currency: "USD", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800", link: "https://amazon.com/dp/B00NCJC7HG", rating: 4.4, reviews: 3456, source: "Amazon", asin: "B00NCJC7HG", trendScore: 7.9 },
+  ],
+  'living room': [
+    { title: "Modway Engage Mid-Century Modern Sofa", brand: "Modway", price: "$899.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B00S2YFQD4", rating: 4.5, reviews: 2345, source: "Amazon", asin: "B00S2YFQD4", trendScore: 8.7 },
+    { title: "Walker Edison Farmhouse Coffee Table with Storage", brand: "Walker Edison", price: "$129.99", currency: "USD", image: "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800", link: "https://amazon.com/dp/B075QFTGYM", rating: 4.3, reviews: 5432, source: "Amazon", asin: "B075QFTGYM", trendScore: 7.2 },
+    { title: "Christopher Knight Home Accent Chair, Beige Fabric", brand: "Christopher Knight", price: "$169.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B01CRHFXGE", rating: 4.3, reviews: 11234, source: "Amazon", asin: "B01CRHFXGE", trendScore: 7.9 },
+    { title: "Nathan James Theo Wood Ladder Bookshelf, 4-Tier", brand: "Nathan James", price: "$149.99", currency: "USD", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800", link: "https://amazon.com/dp/B07Y4JQ8KR", rating: 4.8, reviews: 7891, source: "Amazon", asin: "B07Y4JQ8KR", trendScore: 8.7 },
+  ],
+  desk: [
+    { title: "Sauder North Avenue Desk with Drawers", brand: "Sauder", price: "$199.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B01N5HQZ2O", rating: 4.1, reviews: 4567, source: "Amazon", asin: "B01N5HQZ2O", trendScore: 6.9 },
+    { title: "FLEXISPOT Standing Desk Converter", brand: "FLEXISPOT", price: "$259.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B01HQUCEVY", rating: 4.5, reviews: 8765, source: "Amazon", asin: "B01HQUCEVY", trendScore: 8.4 },
+    { title: "Bush Furniture Somerset L-Shaped Desk", brand: "Bush Furniture", price: "$349.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B00UFHV5PC", rating: 4.4, reviews: 3456, source: "Amazon", asin: "B00UFHV5PC", trendScore: 7.8 },
+    { title: "Furinno Computer Desk with Keyboard Tray", brand: "Furinno", price: "$59.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B00TRVX1UY", rating: 4.0, reviews: 2109, source: "Amazon", asin: "B00TRVX1UY", trendScore: 5.8 },
+  ],
+  cleaning: [
+    { title: "iRobot Roomba i3+ Robot Vacuum with Auto Dirt Disposal", brand: "iRobot", price: "$349.99", currency: "USD", image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800", link: "https://amazon.com/dp/B08C4LC7TN", rating: 4.4, reviews: 15678, source: "Amazon", asin: "B08C4LC7TN", trendScore: 9.1 },
+    { title: "Bissell CrossWave All-in-One Multi-Surface Cleaner", brand: "Bissell", price: "$279.99", currency: "USD", image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800", link: "https://amazon.com/dp/B01DTYAZO4", rating: 4.3, reviews: 23456, source: "Amazon", asin: "B01DTYAZO4", trendScore: 8.7 },
+    { title: "Dyson V15 Detect Cordless Vacuum", brand: "Dyson", price: "$749.99", currency: "USD", image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800", link: "https://amazon.com/dp/B0916S55FL", rating: 4.7, reviews: 8765, source: "Amazon", asin: "B0916S55FL", trendScore: 9.4 },
+    { title: "O-Cedar EasyWring Microfiber Spin Mop", brand: "O-Cedar", price: "$34.99", currency: "USD", image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800", link: "https://amazon.com/dp/B00WSWGVZQ", rating: 4.5, reviews: 45678, source: "Amazon", asin: "B00WSWGVZQ", trendScore: 8.9 },
+  ],
+  pet: [
+    { title: "Furminator deShedding Tool for Dogs", brand: "Furminator", price: "$32.99", currency: "USD", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800", link: "https://amazon.com/dp/B0040QW35A", rating: 4.6, reviews: 34567, source: "Amazon", asin: "B0040QW35A", trendScore: 9.2 },
+    { title: "IRIS USA Top Entry Cat Litter Box", brand: "IRIS USA", price: "$24.99", currency: "USD", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800", link: "https://amazon.com/dp/B01AQPV5U2", rating: 4.5, reviews: 12345, source: "Amazon", asin: "B01AQPV5U2", trendScore: 8.6 },
+    { title: "PetSafe Drinkwell Pet Water Fountain", brand: "PetSafe", price: "$39.99", currency: "USD", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800", link: "https://amazon.com/dp/B000L3XYZ4", rating: 4.4, reviews: 23456, source: "Amazon", asin: "B000L3XYZ4", trendScore: 8.3 },
+    { title: "ChomChom Roller Pet Hair Remover", brand: "ChomChom", price: "$29.99", currency: "USD", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800", link: "https://amazon.com/dp/B00BAGTNAQ", rating: 4.6, reviews: 56789, source: "Amazon", asin: "B00BAGTNAQ", trendScore: 9.1 },
+  ],
+  sofa: [
+    { title: "Modway Engage Mid-Century Modern Sofa", brand: "Modway", price: "$899.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B00S2YFQD4", rating: 4.5, reviews: 2345, source: "Amazon", asin: "B00S2YFQD4", trendScore: 8.7 },
+    { title: "Stone & Beam Lauren Down-Filled Loveseat", brand: "Stone & Beam", price: "$699.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B076JLX4ZX", rating: 4.4, reviews: 1234, source: "Amazon", asin: "B076JLX4ZX", trendScore: 8.2 },
+    { title: "Rivet Revolve Modern Upholstered Sofa", brand: "Rivet", price: "$799.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B075X4T2ZK", rating: 4.3, reviews: 3456, source: "Amazon", asin: "B075X4T2ZK", trendScore: 8.0 },
+    { title: "HONBAY Reversible Sectional Sofa Couch", brand: "HONBAY", price: "$499.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B07BFGX1HQ", rating: 4.2, reviews: 5678, source: "Amazon", asin: "B07BFGX1HQ", trendScore: 7.8 },
+  ],
+  storage: [
+    { title: "SONGMICS Cube Storage Organizer, 16-Cube", brand: "SONGMICS", price: "$159.99", currency: "USD", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", link: "https://amazon.com/dp/B0C7X8Q9Y2", rating: 4.6, reviews: 15678, source: "Amazon", asin: "B0C7X8Q9Y2", trendScore: 9.2 },
+    { title: "IRIS USA Plastic Storage Bins with Lids, Set of 6", brand: "IRIS USA", price: "$89.99", currency: "USD", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", link: "https://amazon.com/dp/B07H8QXPFL", rating: 4.6, reviews: 9876, source: "Amazon", asin: "B07H8QXPFL", trendScore: 8.3 },
+    { title: "VASAGLE 4-Tier Storage Shelf with Hooks", brand: "VASAGLE", price: "$79.99", currency: "USD", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800", link: "https://amazon.com/dp/B0D9Q7GQVK", rating: 4.7, reviews: 12453, source: "Amazon", asin: "B0D9Q7GQVK", trendScore: 8.5 },
+    { title: "Sterilite 3-Drawer Cart, White", brand: "Sterilite", price: "$24.99", currency: "USD", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", link: "https://amazon.com/dp/B001NXMN72", rating: 4.5, reviews: 23456, source: "Amazon", asin: "B001NXMN72", trendScore: 8.8 },
+  ],
+};
+
 // Demo products for when API key is not configured
 function getDemoProducts(category: string): Product[] {
-  const allProducts = [
-    {
-      title: "VASAGLE 4-Tier Storage Shelf with Hooks, Industrial Bookshelf",
-      brand: "VASAGLE",
-      price: "$79.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
-      link: "https://amazon.com/dp/B0D9Q7GQVK",
-      rating: 4.7,
-      reviews: 12453,
-      source: "Amazon",
-      asin: "B0D9Q7GQVK",
-      trendScore: 8.5
-    },
-    {
-      title: "Modern Office Chair with Lumbar Support, Ergonomic Desk Chair",
-      brand: "Flash Furniture",
-      price: "$189.99",
-      currency: "USD", 
-      image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800",
-      link: "https://amazon.com/dp/B0C2SD33DQ",
-      rating: 4.4,
-      reviews: 8726,
-      source: "Amazon",
-      asin: "B0C2SD33DQ",
-      trendScore: 7.8
-    },
-    {
-      title: "SONGMICS Cube Storage Organizer, 16-Cube Closet System",
-      brand: "SONGMICS",
-      price: "$159.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
-      link: "https://amazon.com/dp/B0C7X8Q9Y2",
-      rating: 4.6,
-      reviews: 15678,
-      source: "Amazon",
-      asin: "B0C7X8Q9Y2",
-      trendScore: 9.2
-    },
-    {
-      title: "Walker Edison Farmhouse Coffee Table with Storage",
-      brand: "Walker Edison",
-      price: "$129.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800",
-      link: "https://amazon.com/dp/B075QFTGYM",
-      rating: 4.3,
-      reviews: 5432,
-      source: "Amazon",
-      asin: "B075QFTGYM",
-      trendScore: 7.2
-    },
-    {
-      title: "Zinus Platform Bed Frame with Headboard, King Size",
-      brand: "Zinus",
-      price: "$299.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800",
-      link: "https://amazon.com/dp/B0BHMD8P65",
-      rating: 4.5,
-      reviews: 23456,
-      source: "Amazon",
-      asin: "B0BHMD8P65", 
-      trendScore: 8.9
-    },
-    {
-      title: "HOMCOM Ottoman Storage Bench with Cushioned Seat",
-      brand: "HOMCOM",
-      price: "$69.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
-      link: "https://amazon.com/dp/B084RHDP9X",
-      rating: 4.2,
-      reviews: 3210,
-      source: "Amazon",
-      asin: "B084RHDP9X",
-      trendScore: 6.8
-    },
-    {
-      title: "Nathan James Theo Wood Ladder Bookshelf, 4-Tier",
-      brand: "Nathan James",
-      price: "$149.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
-      link: "https://amazon.com/dp/B07Y4JQ8KR",
-      rating: 4.8,
-      reviews: 7891,
-      source: "Amazon",
-      asin: "B07Y4JQ8KR",
-      trendScore: 8.7
-    },
-    {
-      title: "Sauder North Avenue Desk with Drawers, Charter Oak",
-      brand: "Sauder",
-      price: "$199.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800",
-      link: "https://amazon.com/dp/B01N5HQZ2O",
-      rating: 4.1,
-      reviews: 4567,
-      source: "Amazon",
-      asin: "B01N5HQZ2O",
-      trendScore: 6.9
-    },
-    {
-      title: "IRIS USA Plastic Storage Bins with Lids, Set of 6",
-      brand: "IRIS USA",
-      price: "$89.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
-      link: "https://amazon.com/dp/B07H8QXPFL",
-      rating: 4.6,
-      reviews: 9876,
-      source: "Amazon", 
-      asin: "B07H8QXPFL",
-      trendScore: 8.3
-    },
-    {
-      title: "South Shore Vito Nightstand with Drawer, Weathered Oak",
-      brand: "South Shore",
-      price: "$119.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800",
-      link: "https://amazon.com/dp/B00RKWAWBQ",
-      rating: 4.4,
-      reviews: 6543,
-      source: "Amazon",
-      asin: "B00RKWAWBQ",
-      trendScore: 7.6
-    },
-    {
-      title: "Christopher Knight Home Accent Chair, Beige Fabric",
-      brand: "Christopher Knight",
-      price: "$169.99", 
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800",
-      link: "https://amazon.com/dp/B01CRHFXGE",
-      rating: 4.3,
-      reviews: 11234,
-      source: "Amazon",
-      asin: "B01CRHFXGE",
-      trendScore: 7.9
-    },
-    {
-      title: "Furinno Computer Desk with Keyboard Tray, Espresso",
-      brand: "Furinno",
-      price: "$59.99",
-      currency: "USD",
-      image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800",
-      link: "https://amazon.com/dp/B00TRVX1UY",
-      rating: 4.0,
-      reviews: 2109,
-      source: "Amazon",
-      asin: "B00TRVX1UY",
-      trendScore: 5.8
-    }
-  ];
+  const lowerCategory = category.toLowerCase();
 
-  // Filter products by category
-  const categoryMap: Record<string, string[]> = {
-    seating: ['sofa', 'couch', 'sectional', 'loveseat'],
-    chairs: ['chair', 'dining chair', 'office chair', 'accent chair'],
-    dining: ['dining', 'table'],
-    desks: ['desk', 'computer desk', 'writing desk'],
-    storage: ['bookshelf', 'bookcase', 'shelf'],
-    lighting: ['lamp', 'table lamp', 'floor lamp'],
-    decor: ['pillow', 'cushion', 'decor'],
-  };
-
-  if (category === 'all') {
-    return allProducts.slice(0, 12).map(product => transformProductWithAffiliateTag(product));
+  // Check for direct category match
+  if (DEMO_PRODUCTS_BY_CATEGORY[lowerCategory]) {
+    return DEMO_PRODUCTS_BY_CATEGORY[lowerCategory].map(p => transformProductWithAffiliateTag(p));
   }
 
-  const keywords = categoryMap[category.toLowerCase()] || [];
-  const filtered = allProducts.filter(product => 
-    keywords.some(keyword => 
-      product.title.toLowerCase().includes(keyword.toLowerCase())
-    )
-  );
+  // Check for keyword matches in category names
+  for (const [catKey, products] of Object.entries(DEMO_PRODUCTS_BY_CATEGORY)) {
+    if (lowerCategory.includes(catKey) || catKey.includes(lowerCategory)) {
+      return products.map(p => transformProductWithAffiliateTag(p));
+    }
+  }
 
-  // Apply affiliate tags to demo products too
-  return filtered.slice(0, 12).map(product => transformProductWithAffiliateTag(product));
+  // Default fallback - return a mix of popular products
+  const allProducts = [
+    ...DEMO_PRODUCTS_BY_CATEGORY['living room'],
+    ...DEMO_PRODUCTS_BY_CATEGORY.storage,
+    ...DEMO_PRODUCTS_BY_CATEGORY.desk,
+  ];
+
+  return allProducts.slice(0, 12).map(p => transformProductWithAffiliateTag(p));
 }

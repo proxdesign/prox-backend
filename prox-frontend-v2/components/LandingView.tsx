@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { trackUseCaseClick } from '@/lib/analytics';
 
 interface LandingViewProps {
@@ -7,6 +8,8 @@ interface LandingViewProps {
 }
 
 export default function LandingView({ onStartConversation }: LandingViewProps) {
+  const router = useRouter();
+
   const useCases = [
     {
       icon: '🔧',
@@ -67,14 +70,17 @@ export default function LandingView({ onStartConversation }: LandingViewProps) {
           <p className="text-gray-500">Fix something that's been bothering you</p>
         </button>
         
-        {/* Explore - top right */}
-        <button 
-          onClick={() => handleUseCaseClick(useCases[1])}
+        {/* Explore - top right - navigates to /explore page */}
+        <button
+          onClick={() => {
+            trackUseCaseClick('explore');
+            router.push('/explore');
+          }}
           className="p-6 bg-white/80 backdrop-blur rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-[#5C7C5C]/30 transition-all duration-300 text-left animate-fade-in-up-2"
         >
           <span className="text-3xl mb-3 block">✨</span>
           <h3 className="font-semibold text-lg text-gray-900 mb-1">Explore</h3>
-          <p className="text-sm text-gray-500">See what's trending</p>
+          <p className="text-sm text-gray-500">Browse by category</p>
         </button>
         
         {/* Buy a Gift - middle right */}

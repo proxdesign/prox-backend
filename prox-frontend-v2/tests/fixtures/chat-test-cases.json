@@ -1,0 +1,459 @@
+{
+  "testCases": [
+    {
+      "id": "tile-solve-problem",
+      "category": "Tiles",
+      "problemId": "initial",
+      "userInput": "I have a problem to solve",
+      "description": "Solve a Problem tile should ask clarifying question",
+      "expectedBehavior": {
+        "shouldAskClarifying": true,
+        "shouldShowProducts": false,
+        "shouldContainKeywords": ["room", "space", "help"]
+      }
+    },
+    {
+      "id": "tile-gift",
+      "category": "Tiles",
+      "problemId": "initial",
+      "userInput": "I'm looking for a gift",
+      "description": "Buy a Gift tile should ask about recipient and budget",
+      "expectedBehavior": {
+        "shouldAskClarifying": true,
+        "shouldShowProducts": false,
+        "shouldContainKeywords": ["who", "budget", "gift"]
+      }
+    },
+    {
+      "id": "tile-quick-fix",
+      "category": "Tiles",
+      "problemId": "initial",
+      "userInput": "I need a quick fix under $30",
+      "description": "Quick Fix tile should show products under $30",
+      "expectedBehavior": {
+        "shouldShowProducts": true,
+        "shouldAskClarifying": false
+      }
+    },
+    {
+      "id": "org-rental-restrictions",
+      "category": "Home Organization",
+      "problemId": "rental-restrictions",
+      "userInput": "I'm renting and can't drill holes in the walls but need more storage",
+      "description": "Should recognize rental restrictions and suggest non-permanent solutions",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["renter", "damage-free", "command", "adhesive", "freestanding"]
+      }
+    },
+    {
+      "id": "org-toys-everywhere",
+      "category": "Home Organization",
+      "problemId": "kids-toys-everywhere",
+      "userInput": "My kids' toys are everywhere and I keep stepping on legos",
+      "description": "Should recognize toy clutter problem",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["toy", "storage", "organize", "bin"]
+      }
+    },
+    {
+      "id": "org-entryway",
+      "category": "Home Organization",
+      "problemId": "entryway-chaos",
+      "userInput": "My entryway is a mess with shoes and coats everywhere, keys always lost",
+      "description": "Should recognize entryway chaos",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["entryway", "shoe", "coat", "key", "organiz"]
+      }
+    },
+    {
+      "id": "org-closet",
+      "category": "Home Organization",
+      "problemId": "closet-overflow",
+      "userInput": "My closet is overflowing and clothes keep falling off hangers",
+      "description": "Should recognize closet overflow problem",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["closet", "hanger", "space", "organiz"]
+      }
+    },
+    {
+      "id": "org-seasonal",
+      "category": "Home Organization",
+      "problemId": "seasonal-storage",
+      "userInput": "I have no place to store winter clothes and holiday decorations",
+      "description": "Should recognize seasonal storage needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["storage", "seasonal", "vacuum", "container"]
+      }
+    },
+    {
+      "id": "kitchen-counter-space",
+      "category": "Kitchen",
+      "problemId": "no-counter-space",
+      "userInput": "My tiny kitchen has no counter space for food prep",
+      "description": "Should recognize counter space problem",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["counter", "space", "kitchen", "prep"]
+      }
+    },
+    {
+      "id": "kitchen-clutter",
+      "category": "Kitchen",
+      "problemId": "kitchen-counter-clutter",
+      "userInput": "My kitchen counters are covered with appliances and clutter",
+      "description": "Should recognize counter clutter",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["counter", "clutter", "organiz"]
+      }
+    },
+    {
+      "id": "kitchen-pantry",
+      "category": "Kitchen",
+      "problemId": "pantry-chaos",
+      "userInput": "Food keeps expiring in my pantry because I can't see what I have",
+      "description": "Should recognize pantry organization needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["pantry", "see", "container", "organiz"]
+      }
+    },
+    {
+      "id": "kitchen-tupperware",
+      "category": "Kitchen",
+      "problemId": "tupperware-avalanche",
+      "userInput": "My tupperware drawer is a disaster, can never find matching lids",
+      "description": "Should recognize tupperware organization needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["lid", "container", "organiz"]
+      }
+    },
+    {
+      "id": "kitchen-under-sink",
+      "category": "Kitchen",
+      "problemId": "under-sink-mess",
+      "userInput": "Under my kitchen sink is a total mess with cleaning supplies everywhere",
+      "description": "Should recognize under-sink organization needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["under", "sink", "organiz"]
+      }
+    },
+    {
+      "id": "kitchen-dish-drying",
+      "category": "Kitchen",
+      "problemId": "no-dish-drying-space",
+      "userInput": "I have no room for a dish rack in my tiny kitchen",
+      "description": "Should recognize dish drying space constraints",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["dish", "dry", "rack", "space"]
+      }
+    },
+    {
+      "id": "office-cables",
+      "category": "Home Office",
+      "problemId": "cable-mess",
+      "userInput": "The cables under my desk are a tangled mess",
+      "description": "Should recognize cable management needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["cable", "wire", "manage", "organiz"]
+      }
+    },
+    {
+      "id": "office-back-pain",
+      "category": "Home Office",
+      "problemId": "wfh-back-pain",
+      "userInput": "My back hurts from working at home on a dining chair",
+      "description": "Should recognize ergonomic needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["ergonomic", "chair", "posture", "support"]
+      }
+    },
+    {
+      "id": "office-desk-clutter",
+      "category": "Home Office",
+      "problemId": "cluttered-desk",
+      "userInput": "My desk is covered in papers and I can't find anything",
+      "description": "Should recognize desk organization needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["desk", "organiz", "clutter"]
+      }
+    },
+    {
+      "id": "office-video-bg",
+      "category": "Home Office",
+      "problemId": "messy-video-background",
+      "userInput": "My Zoom background shows my messy bedroom",
+      "description": "Should recognize video background concerns",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["background", "video", "zoom", "professional"]
+      }
+    },
+    {
+      "id": "office-no-space",
+      "category": "Home Office",
+      "problemId": "no-dedicated-office",
+      "userInput": "I don't have a spare room for an office in my apartment",
+      "description": "Should recognize space constraints for home office",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["space", "desk", "small", "apartment"]
+      }
+    },
+    {
+      "id": "living-tv-cables",
+      "category": "Living Room",
+      "problemId": "tv-cables-visible",
+      "userInput": "The cables hanging from my wall-mounted TV look terrible",
+      "description": "Should recognize TV cable management needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["cable", "tv", "hide", "cover"]
+      }
+    },
+    {
+      "id": "living-small-room",
+      "category": "Living Room",
+      "problemId": "small-living-room",
+      "userInput": "My couch is too big for my small living room",
+      "description": "Should recognize small space furniture needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["small", "space", "furniture", "apartment"]
+      }
+    },
+    {
+      "id": "living-no-storage",
+      "category": "Living Room",
+      "problemId": "no-living-room-storage",
+      "userInput": "I have blankets and stuff piling up with nowhere to put them",
+      "description": "Should recognize living room storage needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["storage", "blanket", "organiz"]
+      }
+    },
+    {
+      "id": "living-pet-furniture",
+      "category": "Living Room",
+      "problemId": "pet-damaged-furniture",
+      "userInput": "My cat scratched up my couch and now it looks terrible",
+      "description": "Should recognize pet furniture protection needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["pet", "scratch", "protect", "cover"]
+      }
+    },
+    {
+      "id": "living-saggy-couch",
+      "category": "Living Room",
+      "problemId": "saggy-couch",
+      "userInput": "My couch cushions are saggy and flat",
+      "description": "Should recognize cushion restoration needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["cushion", "sag", "support", "foam"]
+      }
+    },
+    {
+      "id": "bedroom-light",
+      "category": "Bedroom",
+      "problemId": "light-disrupting-sleep",
+      "userInput": "Street lights keep me awake, my curtains don't block light",
+      "description": "Should recognize light blocking needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["light", "blackout", "curtain", "sleep"]
+      }
+    },
+    {
+      "id": "bedroom-noise",
+      "category": "Bedroom",
+      "problemId": "noise-keeping-awake",
+      "userInput": "I can't sleep because of traffic noise outside",
+      "description": "Should recognize noise blocking needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["noise", "sound", "sleep"]
+      }
+    },
+    {
+      "id": "bedroom-small",
+      "category": "Bedroom",
+      "problemId": "small-bedroom",
+      "userInput": "My bedroom is so small the bed takes up the whole room",
+      "description": "Should recognize small bedroom constraints",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["small", "space", "storage", "bed"]
+      }
+    },
+    {
+      "id": "bedroom-clothes",
+      "category": "Bedroom",
+      "problemId": "worn-once-clothes",
+      "userInput": "I have clothes on my chair that I wore once but aren't dirty",
+      "description": "Should recognize worn-once clothes problem",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["clothes", "worn", "chair"]
+      }
+    },
+    {
+      "id": "bedroom-nightstand",
+      "category": "Bedroom",
+      "problemId": "no-nightstand-space",
+      "userInput": "My nightstand is too small for my phone, glasses and water",
+      "description": "Should recognize nightstand space needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["nightstand", "bedside", "space"]
+      }
+    },
+    {
+      "id": "bathroom-caddy",
+      "category": "Bathroom",
+      "problemId": "shower-caddy-falling",
+      "userInput": "My shower caddy keeps falling off with a crash at 3am",
+      "description": "Should recognize shower caddy stability needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["shower", "caddy", "fall", "suction"]
+      }
+    },
+    {
+      "id": "bathroom-no-cabinet",
+      "category": "Bathroom",
+      "problemId": "no-medicine-cabinet",
+      "userInput": "My bathroom has a pedestal sink with no storage",
+      "description": "Should recognize bathroom storage needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["bathroom", "storage", "cabinet"]
+      }
+    },
+    {
+      "id": "bathroom-toilet-space",
+      "category": "Bathroom",
+      "problemId": "wasted-space-above-toilet",
+      "userInput": "The space above my toilet is completely wasted",
+      "description": "Should recognize over-toilet storage opportunity",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["toilet", "above", "shelf", "storage"]
+      }
+    },
+    {
+      "id": "bathroom-under-sink",
+      "category": "Bathroom",
+      "problemId": "under-sink-bathroom-chaos",
+      "userInput": "Under my bathroom sink is chaos with old products everywhere",
+      "description": "Should recognize bathroom under-sink organization",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["under", "sink", "organiz"]
+      }
+    },
+    {
+      "id": "bathroom-hair-tools",
+      "category": "Bathroom",
+      "problemId": "hair-tools-clutter",
+      "userInput": "My hair dryer and straightener have nowhere to go safely",
+      "description": "Should recognize hair tool storage needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["hair", "tool", "organiz", "holder"]
+      }
+    },
+    {
+      "id": "pet-hair",
+      "category": "Pet Owners",
+      "problemId": "pet-hair-everywhere",
+      "userInput": "Dog hair is everywhere - on my couch, clothes, car seats",
+      "description": "Should recognize pet hair removal needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["hair", "pet", "remov", "fur"]
+      }
+    },
+    {
+      "id": "pet-litter",
+      "category": "Pet Owners",
+      "problemId": "litter-box-odor",
+      "userInput": "My cat's litter box smell is taking over the house",
+      "description": "Should recognize litter odor control needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["litter", "odor", "smell", "cat"]
+      }
+    },
+    {
+      "id": "pet-muddy-paws",
+      "category": "Pet Owners",
+      "problemId": "muddy-paws",
+      "userInput": "My dog tracks mud through the house after every walk",
+      "description": "Should recognize muddy paw cleaning needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["mud", "paw", "dog", "clean"]
+      }
+    },
+    {
+      "id": "pet-feeding",
+      "category": "Pet Owners",
+      "problemId": "messy-feeding-area",
+      "userInput": "My dog splashes water everywhere when he drinks",
+      "description": "Should recognize messy feeding area needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["water", "spill", "bowl", "mess"]
+      }
+    },
+    {
+      "id": "pet-urine",
+      "category": "Pet Owners",
+      "problemId": "pet-urine-stains",
+      "userInput": "I can't get the pet urine smell out of my carpet",
+      "description": "Should recognize pet stain/odor removal needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["urine", "stain", "smell", "enzyme", "clean"]
+      }
+    },
+    {
+      "id": "clean-grout",
+      "category": "Cleaning",
+      "problemId": "dirty-grout",
+      "userInput": "The grout in my bathroom tile is disgusting and won't come clean",
+      "description": "Should recognize grout cleaning needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["grout", "tile", "clean"]
+      }
+    },
+    {
+      "id": "clean-windows",
+      "category": "Cleaning",
+      "problemId": "streaky-windows",
+      "userInput": "My windows are streaky no matter what I use",
+      "description": "Should recognize window cleaning needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["window", "streak", "glass", "clean"]
+      }
+    },
+    {
+      "id": "clean-dust",
+      "category": "Cleaning",
+      "problemId": "dust-allergies",
+      "userInput": "Cleaning makes my allergies worse from all the dust",
+      "description": "Should recognize dust allergy concerns",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["dust", "allerg", "hepa", "clean"]
+      }
+    },
+    {
+      "id": "clean-soap-scum",
+      "category": "Cleaning",
+      "problemId": "soap-scum-hard-water",
+      "userInput": "Hard water buildup on my shower door won't come off",
+      "description": "Should recognize hard water cleaning needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["water", "shower", "buildup", "clean"]
+      }
+    },
+    {
+      "id": "clean-overwhelmed",
+      "category": "Cleaning",
+      "problemId": "cleaning-takes-too-long",
+      "userInput": "Cleaning takes all day and my house never stays clean",
+      "description": "Should recognize cleaning efficiency needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["clean", "time", "quick", "easy"]
+      }
+    },
+    {
+      "id": "clean-stains",
+      "category": "Cleaning",
+      "problemId": "clothing-stains",
+      "userInput": "I got a coffee stain on my shirt and can't get it out",
+      "description": "Should recognize stain removal needs",
+      "expectedBehavior": {
+        "shouldContainKeywords": ["stain", "remov", "clean"]
+      }
+    }
+  ]
+}
