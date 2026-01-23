@@ -54,13 +54,17 @@ test.describe('UI Elements', () => {
   });
 
   test('How it Works link is visible in header', async ({ page }) => {
-    // The link is in the header
-    await expect(page.locator('header').getByText('How it Works')).toBeVisible();
+    // The link is in the header (has mobile + desktop versions, check desktop one is visible)
+    const howItWorksButtons = page.locator('header').getByText('How it Works');
+    // At least one should be visible (desktop version on large screens)
+    await expect(howItWorksButtons.nth(1)).toBeVisible();
   });
 
   test('Why Prox link is visible in header', async ({ page }) => {
-    // The link is in the header
-    await expect(page.locator('header').getByText('Why Prox?')).toBeVisible();
+    // The link is in the header (has mobile + desktop versions, check desktop one is visible)
+    const whyProxButtons = page.locator('header').getByText('Why Prox?');
+    // At least one should be visible (desktop version on large screens)
+    await expect(whyProxButtons.nth(1)).toBeVisible();
   });
 
   test('footer is present', async ({ page }) => {
