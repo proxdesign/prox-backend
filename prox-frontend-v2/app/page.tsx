@@ -708,24 +708,6 @@ export default function Home() {
                     AI-powered recommendations to solve your home problems
                   </p>
                 )}
-                {/* Mobile: How it Works & Why Prox links below tagline */}
-                {currentStep !== 4 && (
-                  <div className="flex md:hidden items-center gap-2 text-sm mt-2">
-                    <button
-                      onClick={() => setShowHowItWorks(true)}
-                      className="text-white/80 hover:text-white transition-colors"
-                    >
-                      How it Works
-                    </button>
-                    <span className="text-white/40">•</span>
-                    <button
-                      onClick={() => setShowWhyProx(true)}
-                      className="text-white/80 hover:text-white transition-colors"
-                    >
-                      Why Prox?
-                    </button>
-                  </div>
-                )}
               </div>
             </button>
 
@@ -786,6 +768,25 @@ export default function Home() {
               ) : null}
             </div>
           </div>
+
+          {/* Mobile: How it Works & Why Prox links - centered below header */}
+          {currentStep !== 4 && (
+            <div className="flex md:hidden items-center justify-center gap-2 text-sm mt-4">
+              <button
+                onClick={() => setShowHowItWorks(true)}
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                How it Works
+              </button>
+              <span className="text-white/40">•</span>
+              <button
+                onClick={() => setShowWhyProx(true)}
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                Why Prox?
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
