@@ -94,7 +94,10 @@ export default function ExplorePage() {
               />
               <div className="w-px bg-white/30 h-10" />
               <div>
-                <h1 className="text-2xl font-light text-white">Explore</h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-light text-white">Explore</h1>
+                  <span className="px-2 py-0.5 text-xs font-medium bg-white/20 text-white rounded-full">beta</span>
+                </div>
                 <p className="text-white/80 text-sm">Browse by category</p>
               </div>
             </div>

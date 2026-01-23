@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Raleway, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "../contexts/UserContext";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import ScrollToTop from "../components/ScrollToTop";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const raleway = Raleway({
+  variable: "--font-raleway",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
@@ -127,7 +128,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${raleway.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <GoogleAnalytics />
         <ScrollToTop />
