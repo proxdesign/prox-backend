@@ -107,7 +107,7 @@ export default function SolutionTypesPanel({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col h-fit max-h-[calc(100vh-280px)]">
+    <div data-testid="solutions-panel" className="bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col h-fit max-h-[calc(100vh-280px)]">
       {/* Header */}
       <div className="p-6 border-b border-gray-100 flex-shrink-0">
         <h3 className="text-lg font-semibold text-gray-900 mb-1">Explore Solutions</h3>
@@ -144,6 +144,7 @@ export default function SolutionTypesPanel({
             {solutions.map((solution) => (
               <button
                 key={solution.id}
+                data-testid="solution-card"
                 onClick={() => onSolutionClick(solution)}
                 className="w-full p-4 bg-gray-50 hover:bg-oak-50 border border-gray-200 hover:border-oak-200 rounded-xl transition-all duration-200 flex items-start gap-4 text-left group"
               >

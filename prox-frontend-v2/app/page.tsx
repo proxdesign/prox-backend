@@ -172,19 +172,19 @@ export default function Home() {
         case 'home':
           handleStartOver();
           break;
+        case 'chatting':
+          // User pressed back while in chat - stay in chat, push state back
+          // This prevents accidental navigation from resetting the conversation
+          window.history.pushState({ isProxApp: true, stage: 'chatting' }, '', window.location.pathname);
+          break;
         case 'preview':
-          if (currentStage === 'browse') {
-            // Going back from browse to preview
-            setCurrentStage('preview');
-            setFilters([]);
-          } else {
-            // If we're not in browse, stay in discovery
-            setCurrentStage('discovery');
-          }
+          // Going back from preview to chatting - stay in discovery with chat
+          setCurrentStage('discovery');
+          setFilters([]);
           break;
         case 'browse':
-          // Stay in browse stage
-          setCurrentStage('browse');
+          // Going back from browse - go to preview
+          setCurrentStage('preview');
           break;
         default:
           // Unknown stage, go to home
@@ -528,13 +528,8 @@ export default function Home() {
   const handleChatSolutionsUpdate = (newSolutions: any[]) => {
     console.log('💡 Solutions updated:', newSolutions.length, 'solutions, current stage:', currentStage);
     setChatSolutions(newSolutions);
-    // Stage 1 → 2: When solutions first appear
-    if (newSolutions.length > 0 && currentStage === 'discovery') {
-      console.log('🔄 Stage transition: discovery → preview (solutions)');
-      setCurrentStage('preview');
-      // Push new state for back button navigation
-      window.history.pushState({ isProxApp: true, stage: 'preview' }, '', window.location.pathname);
-    }
+    // Stay in discovery stage when solutions arrive - SolutionTypesPanel will display them
+    // Only transition to preview when products arrive (handled by handleChatProductsUpdate)
   };
 
   // Stage transition handlers

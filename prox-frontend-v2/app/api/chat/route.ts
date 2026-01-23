@@ -59,14 +59,44 @@ export async function POST(request: NextRequest) {
     // Detect gift intent - "I'm looking for a gift"
     const giftKeywords = ['looking for a gift', 'gift', 'present', 'someone else'];
     const isGiftRequest = giftKeywords.some(keyword => lowerMessage.includes(keyword));
-    
-    console.log('Request type detection:', { 
-      isTrendingRequest, 
-      isQuickFixRequest, 
-      isProblemRequest, 
+
+    // Detect "skip chat" intent - user wants products without conversation
+    const skipChatKeywords = ['show me products', 'just show products', 'skip to products', 'browse products', 'see products', 'show products'];
+    const isSkipChatRequest = skipChatKeywords.some(keyword => lowerMessage.includes(keyword));
+
+    console.log('Request type detection:', {
+      isTrendingRequest,
+      isQuickFixRequest,
+      isProblemRequest,
       isGiftRequest,
-      message: lowerMessage 
+      isSkipChatRequest,
+      message: lowerMessage
     });
+
+    // Handle "skip chat" requests - show products directly without conversation
+    if (isSkipChatRequest) {
+      try {
+        const apiUrl = process.env.API_URL || 'https://prox-autonomous-discovery.fly.dev';
+        const response = await fetch(`${apiUrl}/trending-products?limit=12`);
+        if (response.ok) {
+          const products = await response.json();
+          return NextResponse.json({
+            response: "Here are some popular products to browse:",
+            showProductGrid: true,
+            products: Array.isArray(products) ? products : [],
+            solutions: []
+          }, {
+            headers: {
+              'X-RateLimit-Remaining': String(rateLimit.remaining),
+              'X-RateLimit-Reset': String(Math.ceil(rateLimit.resetIn / 1000))
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching products for skip chat:', error);
+        // Fall through to normal AI response
+      }
+    }
     
     if (isTrendingRequest) {
       // Fetch trending products from database
@@ -177,41 +207,10 @@ export async function POST(request: NextRequest) {
       }, { headers: rateLimitHeaders });
     }
 
-    // Detect specific room/problem descriptions that should show solutions
-    const roomKeywords = ['kitchen', 'bathroom', 'bedroom', 'closet', 'office', 'living room', 'garage', 'pantry', 'entryway'];
-    const problemDescriptors = ['cluttered', 'messy', 'disorganized', 'no space', 'too small', 'need storage', 'organize'];
-
-    const mentionsRoom = roomKeywords.some(room => lowerMessage.includes(room));
-    const describesProblem = problemDescriptors.some(desc => lowerMessage.includes(desc));
-
-    if (mentionsRoom && describesProblem) {
-      console.log('User described a specific problem - fetching relevant solutions');
-      
-      // Find matching problem category
-      const matchedProblems = findProblemsForQuery(message);
-      
-      if (matchedProblems.length > 0) {
-        const solutions = matchedProblems.flatMap(p => 
-          p.solutions.map(s => ({
-            ...s,
-            problemId: p.id,
-            problemName: p.name
-          }))
-        ).slice(0, 6); // Max 6 solution cards
-
-        return NextResponse.json({
-          response: "I've seen this problem a lot! Here are some solution types that work well:",
-          solutions: solutions,
-          products: [],
-          showSolutionGrid: true
-        }, {
-          headers: {
-            'X-RateLimit-Remaining': String(rateLimit.remaining),
-            'X-RateLimit-Reset': String(Math.ceil(rateLimit.resetIn / 1000))
-          }
-        });
-      }
-    }
+    // REMOVED: Room+problem shortcut that bypassed Claude AI probing questions
+    // Previously, if user mentioned a room AND a problem descriptor (e.g., "kitchen cluttered"),
+    // we would immediately return solutions. Now we let Claude ask follow-up questions
+    // to better understand the user's specific situation before recommending solutions.
 
     // If no API key, provide helpful fallback
     if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === 'your-key-here') {

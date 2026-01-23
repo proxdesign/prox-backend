@@ -94,7 +94,7 @@ export default function LandingView({ onStartConversation }: LandingViewProps) {
         </button>
         
         {/* Quick Fix - spans full width at bottom */}
-        <button 
+        <button
           onClick={() => handleUseCaseClick(useCases[3])}
           className="col-span-1 sm:col-span-2 p-6 bg-white/80 backdrop-blur rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-[#5C7C5C]/30 transition-all duration-300 flex items-center gap-6 animate-fade-in-up-4"
         >

@@ -188,11 +188,14 @@ export default function ChatInterface({
   const handleStartConversation = (prompt: string) => {
     // Prevent any automatic scrolling during conversation start
     const currentScrollY = window.scrollY;
-    
+
     // Temporarily disable smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'auto';
     document.body.style.scrollBehavior = 'auto';
-    
+
+    // Push new history state to prevent accidental back navigation to homepage
+    window.history.pushState({ isProxApp: true, stage: 'chatting' }, '', window.location.pathname);
+
     setConversationStarted(true);
     setInput(prompt);
     // Track chat start based on prompt type
@@ -592,7 +595,7 @@ export default function ChatInterface({
   }
 
   return (
-    <div className="min-h-[24rem] flex flex-col bg-gradient-to-b from-gray-50 to-white rounded-lg border border-gray-200 shadow-sm">
+    <div data-testid="chat-interface" className="min-h-[24rem] flex flex-col bg-gradient-to-b from-gray-50 to-white rounded-lg border border-gray-200 shadow-sm">
       {/* Messages Area - Scrollable */}
       <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6">
         <div className="flex flex-col gap-4">
@@ -677,6 +680,7 @@ export default function ChatInterface({
         <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-3">
           <div className="flex-1 relative">
             <textarea
+              data-testid="chat-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
@@ -701,10 +705,11 @@ export default function ChatInterface({
             />
             <button
               type="submit"
+              data-testid="send-button"
               disabled={!input.trim() || isLoading}
               className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#8B7355] text-white rounded-full hover:bg-[#7A6449] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
             </button>

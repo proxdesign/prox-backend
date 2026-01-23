@@ -252,8 +252,8 @@ async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): 
 
   const apiKey = process.env.CANOPY_API_KEY;
   if (!apiKey) {
-    console.warn('❌ Canopy API key not configured, falling back to demo data');
-    return getDemoProducts(searchTerm);
+    console.warn('❌ Canopy API key not configured');
+    return [];
   }
 
   try {
@@ -302,10 +302,10 @@ async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): 
     }
 
     console.warn(`⚠️ No results from Canopy for "${searchTerm}"`);
-    return getDemoProducts(searchTerm);
+    return [];
   } catch (error) {
     console.error('Canopy API search error:', error);
-    return getDemoProducts(searchTerm);
+    return [];
   }
 }
 
@@ -468,86 +468,3 @@ function calculateTrendScoreSync(item: any): number {
   return Math.min(Math.round(totalScore * 10) / 10, 10);
 }
 
-// Category-specific demo products for when APIs are unavailable
-const DEMO_PRODUCTS_BY_CATEGORY: Record<string, Product[]> = {
-  bathroom: [
-    { title: "SimpleHuman Tension Shower Caddy, Stainless Steel", brand: "SimpleHuman", price: "$69.99", currency: "USD", image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", link: "https://amazon.com/dp/B001ET76AI", rating: 4.6, reviews: 8234, source: "Amazon", asin: "B001ET76AI", trendScore: 8.4 },
-    { title: "mDesign Over-Toilet Bathroom Storage Organizer", brand: "mDesign", price: "$44.99", currency: "USD", image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", link: "https://amazon.com/dp/B07BNQR51B", rating: 4.5, reviews: 12453, source: "Amazon", asin: "B07BNQR51B", trendScore: 8.2 },
-    { title: "SONGMICS Bamboo Bathroom Shelf, 4-Tier Storage Rack", brand: "SONGMICS", price: "$39.99", currency: "USD", image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", link: "https://amazon.com/dp/B073P52Y2Y", rating: 4.7, reviews: 5678, source: "Amazon", asin: "B073P52Y2Y", trendScore: 8.6 },
-    { title: "iDesign Clarity Vanity Organizer, 3-Drawer", brand: "iDesign", price: "$24.99", currency: "USD", image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800", link: "https://amazon.com/dp/B002BWPTEM", rating: 4.4, reviews: 3456, source: "Amazon", asin: "B002BWPTEM", trendScore: 7.8 },
-  ],
-  bedroom: [
-    { title: "Zinus Platform Bed Frame with Headboard, Queen", brand: "Zinus", price: "$249.99", currency: "USD", image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800", link: "https://amazon.com/dp/B0BHMD8P65", rating: 4.6, reviews: 23456, source: "Amazon", asin: "B0BHMD8P65", trendScore: 9.1 },
-    { title: "South Shore Vito Nightstand with Drawer", brand: "South Shore", price: "$119.99", currency: "USD", image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800", link: "https://amazon.com/dp/B00RKWAWBQ", rating: 4.4, reviews: 6543, source: "Amazon", asin: "B00RKWAWBQ", trendScore: 7.6 },
-    { title: "SONGMICS Cube Storage Organizer, 16-Cube Closet System", brand: "SONGMICS", price: "$159.99", currency: "USD", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", link: "https://amazon.com/dp/B0C7X8Q9Y2", rating: 4.6, reviews: 15678, source: "Amazon", asin: "B0C7X8Q9Y2", trendScore: 9.2 },
-    { title: "VASAGLE Dresser with 6 Drawers, Wood Top", brand: "VASAGLE", price: "$89.99", currency: "USD", image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800", link: "https://amazon.com/dp/B08CXNWJ9H", rating: 4.5, reviews: 8765, source: "Amazon", asin: "B08CXNWJ9H", trendScore: 8.3 },
-  ],
-  kitchen: [
-    { title: "Joseph Joseph Expandable Drawer Organizer", brand: "Joseph Joseph", price: "$29.99", currency: "USD", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800", link: "https://amazon.com/dp/B007CGXQTA", rating: 4.5, reviews: 4567, source: "Amazon", asin: "B007CGXQTA", trendScore: 8.1 },
-    { title: "SimpleHuman Tension Arm Paper Towel Holder", brand: "SimpleHuman", price: "$39.99", currency: "USD", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800", link: "https://amazon.com/dp/B00JGKGG5Q", rating: 4.7, reviews: 12345, source: "Amazon", asin: "B00JGKGG5Q", trendScore: 8.8 },
-    { title: "Rev-A-Shelf Pull Out Organizer for Base Cabinet", brand: "Rev-A-Shelf", price: "$79.99", currency: "USD", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800", link: "https://amazon.com/dp/B00092RKB4", rating: 4.6, reviews: 5678, source: "Amazon", asin: "B00092RKB4", trendScore: 8.4 },
-    { title: "OXO Good Grips Expandable Spice Rack", brand: "OXO", price: "$49.99", currency: "USD", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800", link: "https://amazon.com/dp/B00NCJC7HG", rating: 4.4, reviews: 3456, source: "Amazon", asin: "B00NCJC7HG", trendScore: 7.9 },
-  ],
-  'living room': [
-    { title: "Modway Engage Mid-Century Modern Sofa", brand: "Modway", price: "$899.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B00S2YFQD4", rating: 4.5, reviews: 2345, source: "Amazon", asin: "B00S2YFQD4", trendScore: 8.7 },
-    { title: "Walker Edison Farmhouse Coffee Table with Storage", brand: "Walker Edison", price: "$129.99", currency: "USD", image: "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800", link: "https://amazon.com/dp/B075QFTGYM", rating: 4.3, reviews: 5432, source: "Amazon", asin: "B075QFTGYM", trendScore: 7.2 },
-    { title: "Christopher Knight Home Accent Chair, Beige Fabric", brand: "Christopher Knight", price: "$169.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B01CRHFXGE", rating: 4.3, reviews: 11234, source: "Amazon", asin: "B01CRHFXGE", trendScore: 7.9 },
-    { title: "Nathan James Theo Wood Ladder Bookshelf, 4-Tier", brand: "Nathan James", price: "$149.99", currency: "USD", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800", link: "https://amazon.com/dp/B07Y4JQ8KR", rating: 4.8, reviews: 7891, source: "Amazon", asin: "B07Y4JQ8KR", trendScore: 8.7 },
-  ],
-  desk: [
-    { title: "Sauder North Avenue Desk with Drawers", brand: "Sauder", price: "$199.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B01N5HQZ2O", rating: 4.1, reviews: 4567, source: "Amazon", asin: "B01N5HQZ2O", trendScore: 6.9 },
-    { title: "FLEXISPOT Standing Desk Converter", brand: "FLEXISPOT", price: "$259.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B01HQUCEVY", rating: 4.5, reviews: 8765, source: "Amazon", asin: "B01HQUCEVY", trendScore: 8.4 },
-    { title: "Bush Furniture Somerset L-Shaped Desk", brand: "Bush Furniture", price: "$349.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B00UFHV5PC", rating: 4.4, reviews: 3456, source: "Amazon", asin: "B00UFHV5PC", trendScore: 7.8 },
-    { title: "Furinno Computer Desk with Keyboard Tray", brand: "Furinno", price: "$59.99", currency: "USD", image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=800", link: "https://amazon.com/dp/B00TRVX1UY", rating: 4.0, reviews: 2109, source: "Amazon", asin: "B00TRVX1UY", trendScore: 5.8 },
-  ],
-  cleaning: [
-    { title: "iRobot Roomba i3+ Robot Vacuum with Auto Dirt Disposal", brand: "iRobot", price: "$349.99", currency: "USD", image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800", link: "https://amazon.com/dp/B08C4LC7TN", rating: 4.4, reviews: 15678, source: "Amazon", asin: "B08C4LC7TN", trendScore: 9.1 },
-    { title: "Bissell CrossWave All-in-One Multi-Surface Cleaner", brand: "Bissell", price: "$279.99", currency: "USD", image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800", link: "https://amazon.com/dp/B01DTYAZO4", rating: 4.3, reviews: 23456, source: "Amazon", asin: "B01DTYAZO4", trendScore: 8.7 },
-    { title: "Dyson V15 Detect Cordless Vacuum", brand: "Dyson", price: "$749.99", currency: "USD", image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800", link: "https://amazon.com/dp/B0916S55FL", rating: 4.7, reviews: 8765, source: "Amazon", asin: "B0916S55FL", trendScore: 9.4 },
-    { title: "O-Cedar EasyWring Microfiber Spin Mop", brand: "O-Cedar", price: "$34.99", currency: "USD", image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800", link: "https://amazon.com/dp/B00WSWGVZQ", rating: 4.5, reviews: 45678, source: "Amazon", asin: "B00WSWGVZQ", trendScore: 8.9 },
-  ],
-  pet: [
-    { title: "Furminator deShedding Tool for Dogs", brand: "Furminator", price: "$32.99", currency: "USD", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800", link: "https://amazon.com/dp/B0040QW35A", rating: 4.6, reviews: 34567, source: "Amazon", asin: "B0040QW35A", trendScore: 9.2 },
-    { title: "IRIS USA Top Entry Cat Litter Box", brand: "IRIS USA", price: "$24.99", currency: "USD", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800", link: "https://amazon.com/dp/B01AQPV5U2", rating: 4.5, reviews: 12345, source: "Amazon", asin: "B01AQPV5U2", trendScore: 8.6 },
-    { title: "PetSafe Drinkwell Pet Water Fountain", brand: "PetSafe", price: "$39.99", currency: "USD", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800", link: "https://amazon.com/dp/B000L3XYZ4", rating: 4.4, reviews: 23456, source: "Amazon", asin: "B000L3XYZ4", trendScore: 8.3 },
-    { title: "ChomChom Roller Pet Hair Remover", brand: "ChomChom", price: "$29.99", currency: "USD", image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800", link: "https://amazon.com/dp/B00BAGTNAQ", rating: 4.6, reviews: 56789, source: "Amazon", asin: "B00BAGTNAQ", trendScore: 9.1 },
-  ],
-  sofa: [
-    { title: "Modway Engage Mid-Century Modern Sofa", brand: "Modway", price: "$899.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B00S2YFQD4", rating: 4.5, reviews: 2345, source: "Amazon", asin: "B00S2YFQD4", trendScore: 8.7 },
-    { title: "Stone & Beam Lauren Down-Filled Loveseat", brand: "Stone & Beam", price: "$699.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B076JLX4ZX", rating: 4.4, reviews: 1234, source: "Amazon", asin: "B076JLX4ZX", trendScore: 8.2 },
-    { title: "Rivet Revolve Modern Upholstered Sofa", brand: "Rivet", price: "$799.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B075X4T2ZK", rating: 4.3, reviews: 3456, source: "Amazon", asin: "B075X4T2ZK", trendScore: 8.0 },
-    { title: "HONBAY Reversible Sectional Sofa Couch", brand: "HONBAY", price: "$499.99", currency: "USD", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", link: "https://amazon.com/dp/B07BFGX1HQ", rating: 4.2, reviews: 5678, source: "Amazon", asin: "B07BFGX1HQ", trendScore: 7.8 },
-  ],
-  storage: [
-    { title: "SONGMICS Cube Storage Organizer, 16-Cube", brand: "SONGMICS", price: "$159.99", currency: "USD", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", link: "https://amazon.com/dp/B0C7X8Q9Y2", rating: 4.6, reviews: 15678, source: "Amazon", asin: "B0C7X8Q9Y2", trendScore: 9.2 },
-    { title: "IRIS USA Plastic Storage Bins with Lids, Set of 6", brand: "IRIS USA", price: "$89.99", currency: "USD", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", link: "https://amazon.com/dp/B07H8QXPFL", rating: 4.6, reviews: 9876, source: "Amazon", asin: "B07H8QXPFL", trendScore: 8.3 },
-    { title: "VASAGLE 4-Tier Storage Shelf with Hooks", brand: "VASAGLE", price: "$79.99", currency: "USD", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800", link: "https://amazon.com/dp/B0D9Q7GQVK", rating: 4.7, reviews: 12453, source: "Amazon", asin: "B0D9Q7GQVK", trendScore: 8.5 },
-    { title: "Sterilite 3-Drawer Cart, White", brand: "Sterilite", price: "$24.99", currency: "USD", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", link: "https://amazon.com/dp/B001NXMN72", rating: 4.5, reviews: 23456, source: "Amazon", asin: "B001NXMN72", trendScore: 8.8 },
-  ],
-};
-
-// Demo products for when API key is not configured
-function getDemoProducts(category: string): Product[] {
-  const lowerCategory = category.toLowerCase();
-
-  // Check for direct category match
-  if (DEMO_PRODUCTS_BY_CATEGORY[lowerCategory]) {
-    return DEMO_PRODUCTS_BY_CATEGORY[lowerCategory].map(p => transformProductWithAffiliateTag(p));
-  }
-
-  // Check for keyword matches in category names
-  for (const [catKey, products] of Object.entries(DEMO_PRODUCTS_BY_CATEGORY)) {
-    if (lowerCategory.includes(catKey) || catKey.includes(lowerCategory)) {
-      return products.map(p => transformProductWithAffiliateTag(p));
-    }
-  }
-
-  // Default fallback - return a mix of popular products
-  const allProducts = [
-    ...DEMO_PRODUCTS_BY_CATEGORY['living room'],
-    ...DEMO_PRODUCTS_BY_CATEGORY.storage,
-    ...DEMO_PRODUCTS_BY_CATEGORY.desk,
-  ];
-
-  return allProducts.slice(0, 12).map(p => transformProductWithAffiliateTag(p));
-}
