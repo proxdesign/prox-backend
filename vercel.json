@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "installCommand": "cd prox-frontend-v2 && npm install",
-  "buildCommand": "cd prox-frontend-v2 && npm run build",
+  "installCommand": "npm install --prefix prox-frontend-v2",
+  "buildCommand": "npm run build --prefix prox-frontend-v2",
   "outputDirectory": "prox-frontend-v2/.next"
 }

@@ -8,6 +8,7 @@
 !CLAUDE.md
 !prox-setup.sh
 !vercel.json
+!package.json
 
 # Backend ignores
 prox_autonomous_discovery/.env*

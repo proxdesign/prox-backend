@@ -1,0 +1,8 @@
+{
+  "name": "prox-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "cd prox-frontend-v2 && npm install && npm run build",
+    "dev": "cd prox-frontend-v2 && npm run dev"
+  }
+}
