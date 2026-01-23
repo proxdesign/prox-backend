@@ -103,11 +103,6 @@ export default function BottomDrawer({ isOpen, onClose, category }: BottomDrawer
         `}
         style={{ height: '80vh' }}
       >
-        {/* Drag handle */}
-        <div className="flex justify-center pt-3 pb-2">
-          <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
-        </div>
-
         {/* Header */}
         <div className="flex items-center justify-between px-6 pb-4 border-b border-gray-100">
           <div>

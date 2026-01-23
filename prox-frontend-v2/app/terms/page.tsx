@@ -49,8 +49,7 @@ export default function TermsOfService() {
             </p>
             <ul className="list-disc pl-6 text-neutral-600 space-y-2">
               <li><strong>YouTube</strong> - Content usage follows YouTube Data API policies</li>
-              <li><strong>Reddit</strong> - Data accessed through official OAuth flows</li>
-              <li><strong>Google Trends</strong> - Used for trend analysis and search volume insights</li>
+              <li><strong>Blogs & RSS</strong> - Publicly available content from home and design publications</li>
               <li><strong>Amazon</strong> - Product data and pricing information</li>
             </ul>
             <p className="text-neutral-600 mt-4">

@@ -37,9 +37,8 @@ export default function PrivacyPolicy() {
               We aggregate publicly available trend data from multiple social platforms to power our recommendations:
             </p>
             <ul className="list-disc pl-6 text-neutral-600 space-y-2">
-              <li><strong>Reddit</strong> - Community discussions and product recommendations</li>
-              <li><strong>Google Trends</strong> - Search volume and rising product interest</li>
               <li><strong>YouTube</strong> - Product reviews and video engagement metrics</li>
+              <li><strong>Blogs & RSS</strong> - Home and design publication content</li>
               <li><strong>Amazon</strong> - Product details, pricing, and availability</li>
             </ul>
             <p className="text-neutral-600 mt-4">

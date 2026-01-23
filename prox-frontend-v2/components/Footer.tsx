@@ -6,7 +6,7 @@ export default function Footer() {
           
           {/* Brand */}
           <div>
-            <h3 className="font-bold text-neutral-900 text-lg mb-3">Product Discovery</h3>
+            <h3 className="font-bold text-neutral-900 text-lg mb-3">Prox</h3>
             <p className="text-neutral-600 text-sm">
               AI-powered product recommendations based on real social media trends.
             </p>
@@ -46,7 +46,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-neutral-200 pt-8 text-center text-sm text-neutral-500">
-          © {new Date().getFullYear()} Product Discovery. All rights reserved.
+          © {new Date().getFullYear()} Prox LLC. All rights reserved.
         </div>
       </div>
     </footer>
