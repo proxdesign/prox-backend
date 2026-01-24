@@ -17,7 +17,11 @@
     "test:save": "vitest run && cp tests/results/latest.json tests/results/$(date +%Y%m%d-%H%M%S).json",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "warmup": "./scripts/warmup-categories.sh all production",
+    "warmup:local": "./scripts/warmup-categories.sh all local",
+    "warmup:quickfix": "./scripts/warmup-categories.sh quickfix production",
+    "warmup:quickfix:local": "./scripts/warmup-categories.sh quickfix local"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.1",

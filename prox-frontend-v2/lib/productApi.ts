@@ -391,7 +391,12 @@ const GENERIC_CATEGORY_TERMS = [
   'sofa', 'couch', 'chair', 'table', 'desk', 'bed', 'dresser', 'rug', 'lamp',
   'mirror', 'curtain', 'pillow', 'art', 'decor', 'lighting',
   'cleaning', 'grout', 'window', 'dust', 'vacuum', 'mop', 'stain',
-  'pet', 'dog', 'cat', 'litter', 'paw', 'feeding'
+  'pet', 'dog', 'cat', 'litter', 'paw', 'feeding',
+  // Quick Fix specific terms - search Amazon directly
+  'lazy susan', 'spice rack', 'under cabinet', 'utensil holder',
+  'wall hooks', 'adhesive hooks', 'coat rack', 'storage bins',
+  'under sink', 'shelf riser', 'cable clips', 'drawer organizer',
+  'sink caddy', 'sponge holder'
 ];
 
 function isGenericCategorySearch(term: string): boolean {

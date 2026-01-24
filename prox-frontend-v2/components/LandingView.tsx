@@ -5,9 +5,10 @@ import { trackUseCaseClick } from '@/lib/analytics';
 
 interface LandingViewProps {
   onStartConversation: (prompt: string) => void;
+  onQuickFix?: () => void;
 }
 
-export default function LandingView({ onStartConversation }: LandingViewProps) {
+export default function LandingView({ onStartConversation, onQuickFix }: LandingViewProps) {
   const router = useRouter();
 
   const useCases = [
@@ -95,8 +96,15 @@ export default function LandingView({ onStartConversation }: LandingViewProps) {
         
         {/* Quick Fix - spans full width at bottom */}
         <button
-          onClick={() => handleUseCaseClick(useCases[3])}
-          className="col-span-1 sm:col-span-2 p-6 bg-white/80 backdrop-blur rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-[#5C7C5C]/30 transition-all duration-300 flex items-center gap-6 animate-fade-in-up-4"
+          onClick={() => {
+            trackUseCaseClick('quick_fix');
+            if (onQuickFix) {
+              onQuickFix();
+            } else {
+              onStartConversation('I need a quick fix under $30');
+            }
+          }}
+          className="col-span-1 sm:col-span-2 p-6 bg-white/80 backdrop-blur rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-amber-300/30 transition-all duration-300 flex items-center gap-6 animate-fade-in-up-4"
         >
           <span className="text-4xl">⚡</span>
           <div className="text-left">

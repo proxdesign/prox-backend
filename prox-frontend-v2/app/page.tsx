@@ -106,6 +106,9 @@ export default function Home() {
   
   // Screen transition state
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Conversation started state (to show/hide solutions panel)
+  const [conversationStarted, setConversationStarted] = useState(false);
   
   // Reference for card shelf
   const shelfRef = useRef<HTMLDivElement>(null);
@@ -514,7 +517,9 @@ export default function Home() {
   };
 
   const handleChatProductsUpdate = (newProducts: any[]) => {
-    console.log('🛍️ Products updated:', newProducts.length, 'products, current stage:', currentStage);
+    console.log('🛍️ Products updated:', newProducts.length, 'products');
+    console.log('🎭 Current stage:', currentStage);
+    console.log('💬 Conversation started:', conversationStarted);
     setChatProducts(newProducts);
     // Stage 1 → 2: When products first appear (if no solutions yet)
     if (newProducts.length > 0 && currentStage === 'discovery') {
@@ -634,7 +639,8 @@ export default function Home() {
     setIsChatOpen(false);
     setMessages([]);
     setIsLoading(false);
-    
+    setConversationStarted(false);
+
     // Trigger chat reset
     setChatResetTrigger(prev => prev + 1);
     // Scroll will be handled by useEffect when isStartingOver is true
@@ -855,14 +861,14 @@ export default function Home() {
           </>
         )}
 
-        {/* Stage 1: Discovery - Chat + Context Panel */}
-        {currentStage === 'discovery' && (
+        {/* Stage 1 & 2: Discovery/Preview - Single ChatInterface with dynamic right panel */}
+        {(currentStage === 'discovery' || currentStage === 'preview') && (
           <div className="flex-1 px-4 max-w-7xl mx-auto w-full">
             <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Chat Section - Full width when no conversation started, 2/3 width when conversation active */}
-              <div className={messages.length > 0 || chatSolutions.length > 0 ? "lg:col-span-2" : "lg:col-span-3"}>
+              {/* Chat Section - Full width before conversation, 2/3 width after */}
+              <div className={conversationStarted ? "lg:col-span-2" : "lg:col-span-3"}>
                 <ChatInterface
-                  mode="conversational" 
+                  mode="conversational"
                   onModeSelect={handleModeSelect}
                   onProblemIdentified={handleProblemIdentified}
                   onExploreArea={handleExploreArea}
@@ -877,57 +883,28 @@ export default function Home() {
                       return updated;
                     });
                   }}
+                  onConversationStart={() => setConversationStarted(true)}
                   resetTrigger={chatResetTrigger}
                 />
               </div>
 
-              {/* Solution Types Panel - Only show after conversation begins */}
-              {(messages.length > 0 || chatSolutions.length > 0) && (
+              {/* Right Panel - Solutions or Products based on stage */}
+              {conversationStarted && (
                 <div className="lg:col-span-1">
-                  <SolutionTypesPanel 
-                    solutions={chatSolutions}
-                    onSolutionClick={handleSolutionClick}
-                    contextSummary={buildContextSummary(context)}
-                  />
+                  {currentStage === 'preview' && chatProducts.length > 0 ? (
+                    <ProductPreview
+                      products={chatProducts}
+                      onSeeAll={handleSeeAllProducts}
+                    />
+                  ) : (
+                    <SolutionTypesPanel
+                      solutions={chatSolutions}
+                      onSolutionClick={handleSolutionClick}
+                      contextSummary={buildContextSummary(context)}
+                    />
+                  )}
                 </div>
               )}
-            </div>
-          </div>
-        )}
-
-        {/* Stage 2: Preview - Chat + Product Preview */}
-        {currentStage === 'preview' && (
-          <div className="flex-1 px-4 max-w-7xl mx-auto w-full">
-            <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Chat Section - 2/3 width on desktop */}
-              <div className="lg:col-span-2">
-                <ChatInterface
-                  mode="conversational" 
-                  onModeSelect={handleModeSelect}
-                  onProblemIdentified={handleProblemIdentified}
-                  onExploreArea={handleExploreArea}
-                  onDirectProductSearch={handleDirectProductSearch}
-                  onProductsUpdate={handleChatProductsUpdate}
-                  onSolutionsUpdate={handleChatSolutionsUpdate}
-                  onContextUpdate={(newContext) => {
-                    console.log('📝 Page.tsx received context update:', newContext);
-                    setContext(prev => {
-                      const updated = { ...prev, ...newContext };
-                      console.log('📝 Updated context state:', updated);
-                      return updated;
-                    });
-                  }}
-                  resetTrigger={chatResetTrigger}
-                />
-              </div>
-
-              {/* Product Preview - 1/3 width on desktop */}
-              <div className="lg:col-span-1">
-                <ProductPreview 
-                  products={chatProducts} 
-                  onSeeAll={handleSeeAllProducts} 
-                />
-              </div>
             </div>
           </div>
         )}

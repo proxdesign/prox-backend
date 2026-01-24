@@ -34,14 +34,23 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get('category')?.toLowerCase() || 'all';
   const search = searchParams.get('search');
   const limit = parseInt(searchParams.get('limit') || '12', 10);
-  
-  console.log(`API Route: Fetching products for ${search ? `search: ${search}` : `category: ${category}`} (limit: ${limit})`);
-  
+  const maxPrice = searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')!) : null;
+
+  console.log(`API Route: Fetching products for ${search ? `search: ${search}` : `category: ${category}`} (limit: ${limit}${maxPrice ? `, maxPrice: $${maxPrice}` : ''})`);
+
   try {
-    const allProducts = search 
+    let allProducts = search
       ? await searchProductsByKeyword(search)
       : await searchProductsByCategory(category);
-    
+
+    // Filter by max price if specified
+    if (maxPrice !== null) {
+      allProducts = allProducts.filter(p => {
+        const price = typeof p.price === 'number' ? p.price : parseFloat(String(p.price || '0').replace(/[^0-9.]/g, ''));
+        return !isNaN(price) && price <= maxPrice;
+      });
+    }
+
     const products = allProducts.slice(0, limit);
     
     return NextResponse.json({ 

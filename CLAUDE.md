@@ -113,6 +113,150 @@ Active collectors (runs every 6 hours):
 | `prox-frontend-v2/app/page.tsx` | Homepage |
 | `prox-frontend-v2/components/ChatInterface.tsx` | Main chat UI |
 | `prox_autonomous_discovery/CHANGELOG.json` | Version history |
+| `prox-frontend-v2/lib/productApi.ts` | Product search & affiliate API logic |
+| `prox-frontend-v2/app/api/warmup/route.ts` | Category warmup endpoint |
+| `prox-frontend-v2/components/QuickFixView.tsx` | Quick Fix categories (under $30) |
+
+## Affiliate API System
+
+### Current Architecture
+Products are fetched from affiliate APIs and cached for 1 hour. The system is designed to support multiple affiliate sources.
+
+**Current Sources:**
+- **Amazon (via Canopy API)** - Primary source, searches Amazon product catalog
+
+**Planned Sources:**
+- CJ Affiliates
+- ShareASale
+- Other affiliate networks
+
+### Key Files for Affiliate Integration
+
+| File | Purpose |
+|------|---------|
+| `lib/productApi.ts` | Main product search logic, affiliate source routing |
+| `app/api/products/route.ts` | Product API endpoint |
+| `app/api/warmup/route.ts` | Cache warmup for all categories |
+
+### How Product Search Works
+
+1. Search term comes in (e.g., "cable clips cord management")
+2. `lib/productApi.ts` checks if it's a "generic category" term
+3. If generic → goes directly to Canopy API (Amazon search)
+4. If specific → tries backend first, falls back to Canopy
+5. Results are cached for 1 hour
+
+**Important:** The `GENERIC_CATEGORY_TERMS` array in `lib/productApi.ts` determines which searches go directly to Canopy. Quick Fix categories are included here to ensure correct product matching.
+
+### Adding a New Affiliate API
+
+When a new affiliate source (e.g., CJ Affiliates) is ready to implement:
+
+#### Step 1: Create the API client
+```typescript
+// lib/cjApi.ts
+export async function searchCJProducts(searchTerm: string, limit: number = 12): Promise<Product[]> {
+  const apiKey = process.env.CJ_API_KEY;
+  if (!apiKey) return [];
+
+  // Implement CJ API search
+  // Return products in standard Product format
+}
+```
+
+#### Step 2: Add to productApi.ts
+```typescript
+// In lib/productApi.ts, add import and integrate into search flow
+import { searchCJProducts } from './cjApi';
+
+// Option A: Search all sources and merge results
+export async function searchProductsByKeyword(searchTerm: string): Promise<Product[]> {
+  const [amazonProducts, cjProducts] = await Promise.all([
+    searchProductsViaCanopy(searchTerm),
+    searchCJProducts(searchTerm),
+  ]);
+  return mergeAndDedupeProducts([...amazonProducts, ...cjProducts]);
+}
+
+// Option B: Use CJ for specific categories only
+// Add logic to route certain categories to CJ
+```
+
+#### Step 3: Enable in warmup system
+```typescript
+// In app/api/warmup/route.ts, uncomment and configure:
+const AFFILIATE_SOURCES: AffiliateSource[] = [
+  {
+    name: 'amazon',
+    enabled: true,
+    warmupFn: async (searchTerm) => {
+      const products = await searchProductsByKeyword(searchTerm);
+      return products.length;
+    },
+  },
+  {
+    name: 'cj',
+    enabled: true,  // Enable this
+    warmupFn: async (searchTerm) => {
+      const products = await searchCJProducts(searchTerm);
+      return products.length;
+    },
+  },
+];
+```
+
+#### Step 4: Add environment variable
+```bash
+# .env.local
+CJ_API_KEY=your_cj_api_key
+CJ_WEBSITE_ID=your_website_id
+```
+
+#### Step 5: Run warmup to populate cache
+```bash
+npm run warmup:local   # Test locally first
+npm run warmup         # Production
+```
+
+### Category Warmup System
+
+The warmup system pre-fetches products for all categories to ensure fast user experience.
+
+**Endpoint:** `/api/warmup`
+
+**Parameters:**
+- `?type=quickfix` - Quick Fix categories only (12 categories, under $30)
+- `?type=general` - General browse categories (8 categories)
+- `?type=all` - All categories (default)
+- `?source=amazon` - Specific affiliate source only
+
+**Automation:**
+- Vercel cron job runs every 6 hours (`vercel.json`)
+- Manual trigger: `npm run warmup` or `npm run warmup:local`
+
+**Quick Fix Categories** (defined in `QuickFixView.tsx` and `warmup/route.ts`):
+- Lazy Susans, Spice Racks, Under Cabinet Hooks, Utensil Holders
+- Wall Hooks, Coat Racks, Storage Bins, Under Sink
+- Shelf Risers, Cable Clips, Drawer Organizers, Sink Caddies
+
+### Warmup Commands
+
+```bash
+# Warmup all categories (production)
+npm run warmup
+
+# Warmup all categories (local dev)
+npm run warmup:local
+
+# Warmup Quick Fix only (production)
+npm run warmup:quickfix
+
+# Warmup Quick Fix only (local)
+npm run warmup:quickfix:local
+
+# Direct API call with curl
+curl "https://proxdesign.co/api/warmup?type=quickfix"
+```
 
 ## Common Commands
 
@@ -194,3 +338,17 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-...
 6. **Reddit collector is disabled** - don't re-enable without ToS review
 7. **Production API is on Fly.dev**, not Railway
 8. **Always push changes** to GitHub after significant work sessions
+
+### Affiliate API Guidelines
+
+9. **Quick Fix searches use Canopy API directly** - Terms in `GENERIC_CATEGORY_TERMS` bypass backend
+10. **When adding new affiliate APIs:**
+    - Create API client in `lib/` (e.g., `lib/cjApi.ts`)
+    - Integrate into `lib/productApi.ts` search flow
+    - Enable in `app/api/warmup/route.ts` for cache warmup
+    - Add API keys to `.env.local`
+    - Run `npm run warmup` after setup
+11. **Keep Quick Fix categories in sync** - Update in both:
+    - `components/QuickFixView.tsx` (user-facing tiles)
+    - `app/api/warmup/route.ts` (cache warmup)
+12. **Test affiliate changes locally first** - Use `npm run warmup:local` before deploying

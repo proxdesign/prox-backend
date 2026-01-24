@@ -108,12 +108,6 @@ export default function SolutionTypesPanel({
 
   return (
     <div data-testid="solutions-panel" className="bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col h-fit max-h-[calc(100vh-280px)]">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-100 flex-shrink-0">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">Explore Solutions</h3>
-        <p className="text-sm text-gray-600">or keep chatting to narrow down</p>
-      </div>
-
       {/* Loading State */}
       {isLoading && (
         <div className="flex-1 flex items-center justify-center py-12">
@@ -127,12 +121,12 @@ export default function SolutionTypesPanel({
       {/* Empty State */}
       {!isLoading && (!solutions || solutions.length === 0) && (
         <div className="flex-1 flex items-center justify-center py-12">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="text-center px-6">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">💡</span>
             </div>
-            <p className="text-sm text-gray-600 mb-2">No solutions yet</p>
-            <p className="text-xs text-gray-500">Start a conversation to see relevant solutions</p>
+            <p className="text-base font-medium text-gray-700 mb-2">Solutions will appear here</p>
+            <p className="text-sm text-gray-500">Describe your problem in the chat box and I'll suggest product types that can help</p>
           </div>
         </div>
       )}

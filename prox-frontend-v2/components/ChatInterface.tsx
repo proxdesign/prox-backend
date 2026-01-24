@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { findProblemsForQuery, problems, Problem } from '../lib/mockData';
 import TypingIndicator from './TypingIndicator';
 import LandingView from './LandingView';
+import QuickFixView from './QuickFixView';
 import { trackChatMessage, trackChatStart, trackChatComplete, trackError } from '@/lib/analytics';
 
 interface Solution {
@@ -34,6 +35,7 @@ interface ChatInterfaceProps {
   onProductsUpdate?: (products: any[]) => void;
   onSolutionsUpdate?: (solutions: Solution[]) => void;
   onContextUpdate?: (context: Partial<{space: string, challenge: string, size: string, budget: string}>) => void;
+  onConversationStart?: () => void;
   mode: 'problem' | 'explore' | 'conversational' | null;
   resetTrigger?: number; // Add a reset trigger prop
 }
@@ -129,14 +131,15 @@ function extractContextFromConversation(userMessage: string, aiResponse: string)
   return context;
 }
 
-export default function ChatInterface({ 
-  onModeSelect, 
-  onProblemIdentified, 
-  onExploreArea, 
+export default function ChatInterface({
+  onModeSelect,
+  onProblemIdentified,
+  onExploreArea,
   onDirectProductSearch,
   onProductsUpdate,
   onSolutionsUpdate,
   onContextUpdate,
+  onConversationStart,
   mode,
   resetTrigger
 }: ChatInterfaceProps) {
@@ -144,6 +147,7 @@ export default function ChatInterface({
   const [input, setInput] = useState('');
   const [conversationStarted, setConversationStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showQuickFix, setShowQuickFix] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -185,7 +189,7 @@ export default function ChatInterface({
     return () => clearInterval(interval);
   }, [hasUserMessages, placeholderExamples.length]);
 
-  const handleStartConversation = (prompt: string) => {
+  const handleStartConversation = async (prompt: string) => {
     // Prevent any automatic scrolling during conversation start
     const currentScrollY = window.scrollY;
 
@@ -197,7 +201,12 @@ export default function ChatInterface({
     window.history.pushState({ isProxApp: true, stage: 'chatting' }, '', window.location.pathname);
 
     setConversationStarted(true);
-    setInput(prompt);
+
+    // Notify parent that conversation has started
+    if (onConversationStart) {
+      onConversationStart();
+    }
+
     // Track chat start based on prompt type
     if (prompt.includes('explore')) {
       trackChatStart('explore');
@@ -208,28 +217,86 @@ export default function ChatInterface({
     } else {
       trackChatStart('solve_problem');
     }
-    
+
     // Aggressively maintain scroll position
     const maintainPosition = () => {
       window.scrollTo({ top: currentScrollY, behavior: 'instant' });
     };
-    
+
     // Run multiple times to catch any layout shifts
     requestAnimationFrame(maintainPosition);
     setTimeout(maintainPosition, 0);
     setTimeout(maintainPosition, 16);
     setTimeout(maintainPosition, 50);
     setTimeout(maintainPosition, 100);
-    
+
     // Re-enable smooth scrolling after transition is complete
     setTimeout(() => {
       document.documentElement.style.scrollBehavior = '';
       document.body.style.scrollBehavior = '';
     }, 200);
-    
-    setTimeout(() => {
-      handleSendWithMessage(prompt);
-    }, 100);
+
+    // For tile clicks, fetch AI response without showing user message
+    setIsLoading(true);
+    console.log('🚀 Starting conversation with prompt:', prompt);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: prompt, history: [] }),
+      });
+
+      console.log('📡 API response status:', response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('📦 API response data:', {
+          response: data.response?.substring(0, 50),
+          productsCount: data.products?.length || 0,
+          solutionsCount: data.solutions?.length || 0,
+          showProductGrid: data.showProductGrid
+        });
+
+        // Add only the AI's response (no user message)
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: data.response,
+          solutions: data.solutions || [],
+          products: data.products || [],
+          showProductGrid: data.showProductGrid || false,
+        };
+        setMessages([assistantMessage]);
+
+        // Handle products if returned (e.g., Quick Fix, Trending)
+        if (data.products && data.products.length > 0 && onProductsUpdate) {
+          console.log('🛍️ Calling onProductsUpdate with', data.products.length, 'products');
+          onProductsUpdate(data.products);
+        }
+
+        // Handle solutions if returned
+        if (data.solutions && data.solutions.length > 0 && onSolutionsUpdate) {
+          console.log('💡 Calling onSolutionsUpdate with', data.solutions.length, 'solutions');
+          onSolutionsUpdate(data.solutions);
+        }
+      } else {
+        console.error('❌ API response not ok:', response.status);
+      }
+    } catch (error) {
+      console.error('❌ Error starting conversation:', error);
+      // Fallback opening messages
+      const lowerPrompt = prompt.toLowerCase();
+      let fallbackMessage = "What can I help you with today?";
+      if (lowerPrompt.includes('problem')) {
+        fallbackMessage = "I'd love to help! What room or space is giving you trouble?";
+      } else if (lowerPrompt.includes('gift')) {
+        fallbackMessage = "Great! Who's the gift for and what's your budget?";
+      } else if (lowerPrompt.includes('quick fix')) {
+        fallbackMessage = "Looking for quick solutions under $30! What area needs help?";
+      }
+      setMessages([{ role: 'assistant', content: fallbackMessage }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Add this useEffect to watch for mode changes and reset
@@ -248,6 +315,7 @@ export default function ChatInterface({
       setMessages([]);
       setInput('');
       setConversationStarted(false);
+      setShowQuickFix(false);
     }
   }, [resetTrigger]);
 
@@ -589,9 +657,26 @@ export default function ChatInterface({
     setIsLoading(false);
   };
 
+  // Handle Quick Fix back button
+  const handleQuickFixBack = () => {
+    setShowQuickFix(false);
+  };
+
+  // Show Quick Fix view
+  if (showQuickFix) {
+    return (
+      <QuickFixView onBack={handleQuickFixBack} />
+    );
+  }
+
   // Show landing view if conversation hasn't started and no messages
   if (!conversationStarted && messages.length === 0) {
-    return <LandingView onStartConversation={handleStartConversation} />;
+    return (
+      <LandingView
+        onStartConversation={handleStartConversation}
+        onQuickFix={() => setShowQuickFix(true)}
+      />
+    );
   }
 
   return (
@@ -715,6 +800,16 @@ export default function ChatInterface({
             </button>
           </div>
         </form>
+        {/* Skip chat option */}
+        <div className="mt-3 text-center">
+          <button
+            onClick={() => handleSendWithMessage('show me products')}
+            disabled={isLoading}
+            className="text-sm text-gray-500 hover:text-gray-700 hover:underline disabled:opacity-50 transition-colors"
+          >
+            Just show me products →
+          </button>
+        </div>
       </div>
     </div>
   );

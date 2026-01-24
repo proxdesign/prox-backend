@@ -130,7 +130,7 @@ export const homeCleaningCategories: ExploreCategory[] = [
   {
     id: 'dust-allergies',
     name: 'Dust & Allergies',
-    keywords: ['dust', 'vacuum', 'air purifier'],
+    keywords: ['air purifier', 'HEPA vacuum', 'allergen reducer'],
     icon: '🌬️',
     image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop&q=80',
     type: 'cleaning',
@@ -157,7 +157,7 @@ export const homeCleaningCategories: ExploreCategory[] = [
   {
     id: 'stain-removal',
     name: 'Stain Removal',
-    keywords: ['stain', 'remover', 'carpet cleaner'],
+    keywords: ['fabric stain remover', 'carpet stain cleaner', 'upholstery cleaner'],
     icon: '✨',
     image: 'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?w=400&h=300&fit=crop&q=80',
     type: 'cleaning',
@@ -170,7 +170,7 @@ export const petCleaningCategories: ExploreCategory[] = [
   {
     id: 'pet-hair',
     name: 'Pet Hair',
-    keywords: ['pet', 'fur', 'hair remover'],
+    keywords: ['pet hair remover', 'fur removal brush', 'lint roller pet'],
     icon: '🐕',
     image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop&q=80',
     type: 'pet',
@@ -179,7 +179,7 @@ export const petCleaningCategories: ExploreCategory[] = [
   {
     id: 'litter-odor',
     name: 'Litter & Odor',
-    keywords: ['litter', 'cat', 'odor control'],
+    keywords: ['cat litter box', 'litter odor control', 'cat litter deodorizer'],
     icon: '🐱',
     image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=300&fit=crop&q=80',
     type: 'pet',
@@ -188,7 +188,7 @@ export const petCleaningCategories: ExploreCategory[] = [
   {
     id: 'paw-care',
     name: 'Paw Care',
-    keywords: ['paw', 'dog', 'muddy paws'],
+    keywords: ['dog paw cleaner', 'paw washer', 'muddy paw cleaner'],
     icon: '🐾',
     image: 'https://images.unsplash.com/photo-1587402092301-725e37c70fd8?w=400&h=300&fit=crop&q=80',
     type: 'pet',
@@ -197,7 +197,7 @@ export const petCleaningCategories: ExploreCategory[] = [
   {
     id: 'feeding',
     name: 'Feeding',
-    keywords: ['feeding', 'bowl', 'pet feeder'],
+    keywords: ['pet food bowl', 'dog feeder', 'elevated pet bowl'],
     icon: '🍽️',
     image: 'https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=400&h=300&fit=crop&q=80',
     type: 'pet',
@@ -206,7 +206,7 @@ export const petCleaningCategories: ExploreCategory[] = [
   {
     id: 'pet-stains',
     name: 'Pet Stains',
-    keywords: ['pet', 'stain', 'enzyme cleaner'],
+    keywords: ['pet stain remover', 'enzyme cleaner pet', 'pet urine cleaner'],
     icon: '💧',
     image: 'https://images.unsplash.com/photo-1587764379873-97837921fd44?w=400&h=300&fit=crop&q=80',
     type: 'pet',
