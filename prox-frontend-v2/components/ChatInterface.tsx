@@ -800,16 +800,6 @@ export default function ChatInterface({
             </button>
           </div>
         </form>
-        {/* Skip chat option */}
-        <div className="mt-3 text-center">
-          <button
-            onClick={() => handleSendWithMessage('show me products')}
-            disabled={isLoading}
-            className="text-sm text-gray-500 hover:text-gray-700 hover:underline disabled:opacity-50 transition-colors"
-          >
-            Just show me products →
-          </button>
-        </div>
       </div>
     </div>
   );

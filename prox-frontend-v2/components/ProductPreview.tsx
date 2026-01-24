@@ -24,8 +24,19 @@ interface ProductPreviewProps {
 }
 
 export default function ProductPreview({ products, onSeeAll }: ProductPreviewProps) {
+  // Show empty state when no products found
   if (!products || products.length === 0) {
-    return null;
+    return (
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+        <div className="text-center py-8">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">📦</span>
+          </div>
+          <p className="text-base font-medium text-gray-700 mb-2">No products found</p>
+          <p className="text-sm text-gray-500">Sorry, we don't have products for this category yet.</p>
+        </div>
+      </div>
+    );
   }
 
   // Show up to 3 products
