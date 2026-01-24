@@ -396,7 +396,10 @@ const GENERIC_CATEGORY_TERMS = [
   'lazy susan', 'spice rack', 'under cabinet', 'utensil holder',
   'wall hooks', 'adhesive hooks', 'coat rack', 'storage bins',
   'under sink', 'shelf riser', 'cable clips', 'drawer organizer',
-  'sink caddy', 'sponge holder'
+  'sink caddy', 'sponge holder',
+  // Gardening terms
+  'planter', 'garden tool', 'watering can', 'plant food', 'potting soil',
+  'garden decor', 'solar lights', 'herb garden', 'pruning', 'gardening'
 ];
 
 function isGenericCategorySearch(term: string): boolean {

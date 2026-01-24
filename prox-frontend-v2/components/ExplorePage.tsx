@@ -12,6 +12,7 @@ import {
   homeSpaces,
   homeStyles,
   homeCleaningCategories,
+  gardeningCategories,
   petCleaningCategories,
   furnitureExploreCategories,
   decorExploreCategories,
@@ -28,6 +29,7 @@ export default function ExplorePage() {
       ...homeSpaces,
       ...homeStyles,
       ...homeCleaningCategories,
+      ...gardeningCategories,
       ...petCleaningCategories,
       ...furnitureExploreCategories,
       ...decorExploreCategories,
@@ -165,7 +167,24 @@ export default function ExplorePage() {
           </div>
         </section>
 
-        {/* Section 3: Pet Cleaning */}
+        {/* Section 3: Gardening & Outdoor */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+            Gardening & Outdoor
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {gardeningCategories.map(category => (
+              <CategoryCard
+                key={category.id}
+                category={category}
+                onClick={handleCategoryClick}
+                size="small"
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Section 4: Pet Cleaning */}
         <section className="mb-10">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
             Pet Cleaning
@@ -182,7 +201,7 @@ export default function ExplorePage() {
           </div>
         </section>
 
-        {/* Section 4: Browse Products (Chips) */}
+        {/* Section 5: Browse Products (Chips) */}
         <section className="mb-10">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
             Browse Products

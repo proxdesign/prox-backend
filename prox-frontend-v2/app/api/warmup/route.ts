@@ -27,6 +27,13 @@ const GENERAL_CATEGORIES = [
   'closet organizers',
   'pet supplies',
   'cleaning supplies',
+  // Gardening categories
+  'indoor planter',
+  'garden tool set',
+  'watering can',
+  'plant food fertilizer',
+  'garden decor outdoor',
+  'herb garden kit',
 ];
 
 // Affiliate source configuration (for future multi-affiliate support)

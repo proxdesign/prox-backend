@@ -9,7 +9,7 @@ export interface ExploreCategory {
   keywords: string[];
   icon: string;
   image?: string; // Optional background image URL
-  type: 'space' | 'style' | 'cleaning' | 'pet' | 'furniture' | 'decor';
+  type: 'space' | 'style' | 'cleaning' | 'gardening' | 'pet' | 'furniture' | 'decor';
   problemId?: string; // Maps to mockData problem ID for solution-based categories
 }
 
@@ -165,7 +165,59 @@ export const homeCleaningCategories: ExploreCategory[] = [
   },
 ];
 
-// Section 3: Pet Cleaning
+// Section 3: Gardening & Outdoor
+export const gardeningCategories: ExploreCategory[] = [
+  {
+    id: 'planters-pots',
+    name: 'Planters & Pots',
+    keywords: ['indoor planter', 'plant pot', 'ceramic planter'],
+    icon: '🪴',
+    image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&h=300&fit=crop&q=80',
+    type: 'gardening'
+  },
+  {
+    id: 'garden-tools',
+    name: 'Garden Tools',
+    keywords: ['garden tool set', 'pruning shears', 'gardening gloves'],
+    icon: '🧤',
+    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop&q=80',
+    type: 'gardening'
+  },
+  {
+    id: 'watering',
+    name: 'Watering',
+    keywords: ['watering can', 'plant watering system', 'garden hose'],
+    icon: '💧',
+    image: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=400&h=300&fit=crop&q=80',
+    type: 'gardening'
+  },
+  {
+    id: 'plant-care',
+    name: 'Plant Care',
+    keywords: ['plant food fertilizer', 'potting soil', 'plant stakes'],
+    icon: '🌱',
+    image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=400&h=300&fit=crop&q=80',
+    type: 'gardening'
+  },
+  {
+    id: 'outdoor-decor',
+    name: 'Outdoor Decor',
+    keywords: ['garden decor', 'outdoor solar lights', 'garden statue'],
+    icon: '🏡',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&q=80',
+    type: 'gardening'
+  },
+  {
+    id: 'herb-garden',
+    name: 'Herb Garden',
+    keywords: ['herb garden kit', 'indoor herb planter', 'herb growing'],
+    icon: '🌿',
+    image: 'https://images.unsplash.com/photo-1515023115689-589c33041d3c?w=400&h=300&fit=crop&q=80',
+    type: 'gardening'
+  },
+];
+
+// Section 4: Pet Cleaning
 export const petCleaningCategories: ExploreCategory[] = [
   {
     id: 'pet-hair',
@@ -238,6 +290,7 @@ export function getAllExploreCategories(): ExploreCategory[] {
     ...homeSpaces,
     ...homeStyles,
     ...homeCleaningCategories,
+    ...gardeningCategories,
     ...petCleaningCategories,
     ...furnitureExploreCategories,
     ...decorExploreCategories,
