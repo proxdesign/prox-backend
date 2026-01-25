@@ -32,14 +32,19 @@ test.describe('Landing Page Tiles', () => {
     await expect(page.getByText(/who.*gift|budget|recipient/i)).toBeVisible({ timeout: 15000 });
   });
 
-  test('Quick Fix tile shows products under $30', async ({ page }) => {
+  test('Quick Fix tile shows category grid', async ({ page }) => {
     await page.getByRole('button', { name: /quick fix/i }).click();
 
-    // Wait for products to load
-    await expect(page.locator('[data-testid="chat-interface"]')).toBeVisible();
+    // Should navigate to /quick-fix
+    await expect(page).toHaveURL(/\/quick-fix/);
 
-    // Should show products (either in grid or mention of products) - use first() to avoid strict mode
-    await expect(page.getByText(/\$30|products|solutions/i).first()).toBeVisible({ timeout: 20000 });
+    // Should show Quick Fix header and category tiles
+    await expect(page.getByText('Quick Fixes')).toBeVisible();
+    await expect(page.getByText('All under $30')).toBeVisible();
+
+    // Should show category tiles (check for a few)
+    await expect(page.getByText('Lazy Susans')).toBeVisible();
+    await expect(page.getByText('Spice Racks')).toBeVisible();
   });
 
   test('Explore tile navigates to explore page', async ({ page }) => {
