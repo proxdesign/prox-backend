@@ -115,11 +115,7 @@ const quickFixCategories: QuickFixCategory[] = [
   },
 ];
 
-interface QuickFixViewProps {
-  onBack: () => void;
-}
-
-export default function QuickFixView({ onBack }: QuickFixViewProps) {
+export default function QuickFixView() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<QuickFixCategory | null>(null);
 
@@ -169,16 +165,6 @@ export default function QuickFixView({ onBack }: QuickFixViewProps) {
             </div>
           </button>
         ))}
-      </div>
-
-      {/* Back Link */}
-      <div className="mt-8 text-center">
-        <button
-          onClick={onBack}
-          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          ← Back to home
-        </button>
       </div>
 
       {/* Drawer */}
