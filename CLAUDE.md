@@ -303,11 +303,46 @@ git push origin main
 - `platform_posts` - Collected social media content
 - `problems` - Extracted furniture problems from posts
 - `solutions` - AI-generated solution mappings
-- `products` - 500+ Amazon affiliate products
+- `products` - Amazon affiliate products (270 current, 2,552 target)
 - `saved_products` - User's saved items
 - `product_feedback` - User feedback on recommendations
 - `magic_links` - Passwordless auth tokens
 - `collection_runs` - Data collection history
+- `product_allocation` - Product targets per solution by tier
+- `affiliate_partners` - Affiliate program tracking with status
+
+### Product Allocation Views
+- `product_allocation_status` - Current vs target products per solution
+- `product_allocation_summary` - Summary by tier
+- `products_by_source` - Product counts by affiliate source
+
+## Product Allocation Strategy
+
+Products are allocated by tier based on variety needs:
+
+| Tier | Category | Products/Solution | Variety Needs |
+|------|----------|-------------------|---------------|
+| 1 | Furniture | 100 | 5 styles × 4 price tiers |
+| 2 | Visible Storage | 50 | 3 styles × 4 price tiers |
+| 3 | Functional Items | 20 | 4 price tiers only |
+| 4 | DIY Supplies | 12 | 3 price tiers only |
+
+**Target totals:** 2,552 products (~6.2 MB, 1.2% of Railway free tier)
+
+### Quick Reference Queries
+```sql
+-- Check allocation progress
+SELECT * FROM product_allocation_summary;
+
+-- See detailed status per solution
+SELECT * FROM product_allocation_status WHERE tier = 1;
+
+-- Check affiliate partner status
+SELECT partner_name, status, notes FROM affiliate_partners;
+
+-- Products by source
+SELECT * FROM products_by_source;
+```
 
 ## Environment Variables Needed
 
@@ -356,14 +391,16 @@ JWT_SECRET=<required, generate with: openssl rand -base64 32>
 
 ### Affiliate API Guidelines
 
-9. **Quick Fix searches use Canopy API directly** - Terms in `GENERIC_CATEGORY_TERMS` bypass backend
-10. **When adding new affiliate APIs:**
+12. **Quick Fix searches use Canopy API directly** - Terms in `GENERIC_CATEGORY_TERMS` bypass backend
+13. **When adding new affiliate APIs:**
+    - Update `affiliate_partners` table status to 'active'
     - Create API client in `lib/` (e.g., `lib/cjApi.ts`)
     - Integrate into `lib/productApi.ts` search flow
     - Enable in `app/api/warmup/route.ts` for cache warmup
     - Add API keys to `.env.local`
     - Run `npm run warmup` after setup
-11. **Keep Quick Fix categories in sync** - Update in both:
+14. **Keep Quick Fix categories in sync** - Update in both:
     - `components/QuickFixView.tsx` (user-facing tiles)
     - `app/api/warmup/route.ts` (cache warmup)
-12. **Test affiliate changes locally first** - Use `npm run warmup:local` before deploying
+15. **Test affiliate changes locally first** - Use `npm run warmup:local` before deploying
+16. **Track product allocation** - Check `product_allocation_summary` view for progress toward targets
