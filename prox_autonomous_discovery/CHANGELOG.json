@@ -1,6 +1,15 @@
 {
   "changelog": [
     {
+      "date": "2026-01-24",
+      "version": "5.3.0",
+      "type": "added",
+      "component": "E2E Test Suite & Security Hardening",
+      "reason": "Affiliate program readiness check requiring comprehensive testing and security fixes before applying to CJ Affiliates and ShareASale",
+      "details": "Added Playwright E2E test suite with 30 tests across 5 spec files: landing.spec.ts (4 tests for page content), chat-flow.spec.ts (6 tests for AI interactions), stage-transitions.spec.ts (5 tests for navigation), mobile.spec.ts (8 tests for responsive layouts), ui-elements.spec.ts (7 tests for footer and legal pages). Security fixes: removed insecure JWT_SECRET fallback in lib/auth.ts (now throws error if not set), added production guards to /test-solutions and /analytics pages (return 404 in production). Added JWT_SECRET to Vercel production, preview, and development environments.",
+      "impact": "Production-ready security posture with required JWT_SECRET environment variable, debug pages hidden in production, and comprehensive E2E test coverage verifying affiliate disclosure compliance, legal pages, and responsive design across mobile/tablet/desktop viewports"
+    },
+    {
       "date": "2026-01-22",
       "version": "5.2.2",
       "type": "improved",

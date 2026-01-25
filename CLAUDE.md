@@ -114,8 +114,11 @@ Active collectors (runs every 6 hours):
 | `prox-frontend-v2/components/ChatInterface.tsx` | Main chat UI |
 | `prox_autonomous_discovery/CHANGELOG.json` | Version history |
 | `prox-frontend-v2/lib/productApi.ts` | Product search & affiliate API logic |
+| `prox-frontend-v2/lib/auth.ts` | JWT authentication (requires JWT_SECRET env var) |
 | `prox-frontend-v2/app/api/warmup/route.ts` | Category warmup endpoint |
 | `prox-frontend-v2/components/QuickFixView.tsx` | Quick Fix categories (under $30) |
+| `prox-frontend-v2/playwright.config.ts` | E2E test configuration |
+| `prox-frontend-v2/e2e/` | Playwright E2E tests (30 tests across 5 spec files) |
 
 ## Affiliate API System
 
@@ -268,6 +271,11 @@ cd ~/projects/prox-product-discovery
 cd prox-frontend-v2
 npm run dev                    # Starts at localhost:3000
 
+# E2E Testing (Playwright)
+npm run test:e2e               # Run all E2E tests
+npm run test:e2e:ui            # Run with Playwright UI
+npm run test:e2e:headed        # Run in headed browser mode
+
 # Backend development
 cd prox_autonomous_discovery
 source venv/bin/activate
@@ -321,6 +329,7 @@ CANOPY_API_KEY=...
 RAINFOREST_API_KEY=...
 AMAZON_ASSOCIATE_TAG=proxdesign20-20
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-...
+JWT_SECRET=<required, generate with: openssl rand -base64 32>
 ```
 
 ## Deployment
@@ -338,6 +347,12 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-...
 6. **Reddit collector is disabled** - don't re-enable without ToS review
 7. **Production API is on Fly.dev**, not Railway
 8. **Always push changes** to GitHub after significant work sessions
+
+### Security Notes
+
+9. **JWT_SECRET is required** - `lib/auth.ts` throws error if not set (no fallback)
+10. **Dev-only pages:** `/test-solutions` and `/analytics` return 404 in production
+11. **E2E tests verify affiliate compliance** - Run `npm run test:e2e` before deploying changes to legal pages or footer
 
 ### Affiliate API Guidelines
 
