@@ -530,11 +530,30 @@ export default function Home() {
     }
   };
 
-  const handleChatSolutionsUpdate = (newSolutions: any[]) => {
+  const handleChatSolutionsUpdate = async (newSolutions: any[]) => {
     console.log('💡 Solutions updated:', newSolutions.length, 'solutions, current stage:', currentStage);
     setChatSolutions(newSolutions);
-    // Stay in discovery stage when solutions arrive - SolutionTypesPanel will display them
-    // Only transition to preview when products arrive (handled by handleChatProductsUpdate)
+
+    // Automatically fetch products for the first solution
+    if (newSolutions.length > 0) {
+      try {
+        const firstSolution = newSolutions[0];
+        const searchTerm = firstSolution.keywords?.[0] || firstSolution.name;
+        console.log('🔍 Auto-fetching products for:', searchTerm);
+
+        const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}&limit=6`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.products && data.products.length > 0) {
+            console.log('📦 Auto-fetched', data.products.length, 'products');
+            setChatProducts(data.products);
+            setCurrentStage('preview');
+          }
+        }
+      } catch (error) {
+        console.error('Error auto-fetching products:', error);
+      }
+    }
   };
 
   // Stage transition handlers
@@ -594,20 +613,24 @@ export default function Home() {
   // Handle solution card clicks
   const handleSolutionClick = async (solution: any) => {
     try {
-      // Fetch products for this solution
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://prox-autonomous-discovery.fly.dev';
-      
-      // Try to get products by solution keywords or category
-      const searchTerms = solution.keywords?.join(' ') || solution.name;
-      const response = await fetch(`${apiUrl}/search?q=${encodeURIComponent(searchTerms)}&limit=12`);
-      
+      // Fetch products for this solution using frontend API (Canopy/Amazon search)
+      // Use the first keyword or solution name for search
+      const searchTerms = solution.keywords?.[0] || solution.name;
+      const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerms)}&limit=12`);
+
       if (response.ok) {
         const data = await response.json();
-        const products = data.products || data || [];
-        
+        const products = data.products || [];
+
         // Clear solutions and show products
         setChatSolutions([]);
         setChatProducts(products);
+
+        // Transition to preview stage if we have products
+        if (products.length > 0) {
+          setCurrentStage('preview');
+          window.history.pushState({ isProxApp: true, stage: 'preview' }, '', window.location.pathname);
+        }
       }
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -861,12 +884,12 @@ export default function Home() {
           </>
         )}
 
-        {/* Stage 1 & 2: Discovery/Preview - Single ChatInterface with dynamic right panel */}
+        {/* Stage 1 & 2: Discovery/Preview */}
         {(currentStage === 'discovery' || currentStage === 'preview') && (
           <div className="flex-1 px-4 max-w-7xl mx-auto w-full">
-            <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Chat Section - Full width before conversation, 2/3 width after */}
-              <div className={conversationStarted ? "lg:col-span-2" : "lg:col-span-3"}>
+            <div className={`h-full grid grid-cols-1 gap-6 ${conversationStarted ? 'lg:grid-cols-3' : ''}`}>
+              {/* Chat Section */}
+              <div className={conversationStarted ? "lg:col-span-2" : ""}>
                 <ChatInterface
                   mode="conversational"
                   onModeSelect={handleModeSelect}
@@ -888,21 +911,13 @@ export default function Home() {
                 />
               </div>
 
-              {/* Right Panel - Solutions or Products based on stage */}
+              {/* Context Panel - Only shows after conversation starts */}
               {conversationStarted && (
                 <div className="lg:col-span-1">
-                  {currentStage === 'preview' && chatProducts.length > 0 ? (
-                    <ProductPreview
-                      products={chatProducts}
-                      onSeeAll={handleSeeAllProducts}
-                    />
-                  ) : (
-                    <SolutionTypesPanel
-                      solutions={chatSolutions}
-                      onSolutionClick={handleSolutionClick}
-                      contextSummary={buildContextSummary(context)}
-                    />
-                  )}
+                  <ProductPreview
+                    products={chatProducts}
+                    onSeeAll={handleSeeAllProducts}
+                  />
                 </div>
               )}
             </div>

@@ -700,6 +700,54 @@ export const problems: Problem[] = [
       { id: "carpet-stain-remover", name: "Carpet & Upholstery Stain Remover", keywords: ["carpet stain remover", "upholstery cleaner", "fabric stain remover"] },
       { id: "laundry-booster", name: "Laundry Stain Booster", keywords: ["laundry booster", "stain booster pods", "pre-wash stain treatment"] }
     ]
+  },
+
+  // ==================== GARDENING ====================
+  {
+    id: "indoor-plant-care",
+    name: "Indoor Plant Care & Organization",
+    category: "Gardening",
+    description: "Caring for indoor plants, keeping them organized, and making sure they thrive.",
+    keywords: ["indoor plants", "houseplants", "plant care", "plant organization", "potted plants", "indoor gardening", "plant lover", "plant mom", "plant dad"],
+    skipRefineStep: true,
+    solutions: [
+      { id: "indoor-planters", name: "Indoor Planters & Pots", keywords: ["indoor planter", "ceramic plant pot", "decorative planter"] },
+      { id: "self-watering-planters", name: "Self-Watering Planters", keywords: ["self watering planter", "automatic watering pot", "self watering pot"] },
+      { id: "plant-stands", name: "Plant Stands & Shelves", keywords: ["plant stand indoor", "tiered plant shelf", "plant stand multi tier"] },
+      { id: "watering-tools", name: "Watering Cans & Tools", keywords: ["indoor watering can", "plant mister spray bottle", "watering globe"] },
+      { id: "plant-food", name: "Plant Food & Fertilizer", keywords: ["indoor plant food", "houseplant fertilizer", "plant food liquid"] },
+      { id: "potting-supplies", name: "Potting Soil & Supplies", keywords: ["indoor potting mix", "potting soil indoor plants", "plant drainage stones"] }
+    ]
+  },
+  {
+    id: "herb-garden",
+    name: "Herb Garden & Kitchen Gardening",
+    category: "Gardening",
+    description: "Growing herbs and small plants in the kitchen or indoors for cooking.",
+    keywords: ["herb garden", "kitchen herbs", "growing herbs", "indoor herbs", "basil", "mint", "cilantro", "parsley", "herb planter"],
+    skipRefineStep: true,
+    solutions: [
+      { id: "herb-garden-kit", name: "Herb Garden Starter Kit", keywords: ["herb garden kit indoor", "herb growing kit", "kitchen herb garden starter"] },
+      { id: "herb-planters", name: "Herb Planters & Pots", keywords: ["herb planter indoor", "kitchen herb pot", "windowsill herb planter"] },
+      { id: "grow-lights", name: "Grow Lights for Herbs", keywords: ["grow light herbs", "LED plant light small", "herb grow light"] },
+      { id: "herb-seeds", name: "Herb Seeds Variety Pack", keywords: ["herb seeds variety pack", "culinary herb seeds", "indoor herb seeds"] }
+    ]
+  },
+  {
+    id: "outdoor-gardening",
+    name: "Outdoor Gardening & Yard",
+    category: "Gardening",
+    description: "Outdoor gardening, yard care, and patio plants.",
+    keywords: ["outdoor garden", "yard", "patio plants", "garden tools", "backyard", "flower garden", "vegetable garden", "outdoor plants"],
+    skipRefineStep: true,
+    solutions: [
+      { id: "garden-tools", name: "Garden Tool Set", keywords: ["garden tool set", "gardening tools kit", "hand garden tools"] },
+      { id: "outdoor-planters", name: "Outdoor Planters", keywords: ["outdoor planter large", "patio planter", "deck planter box"] },
+      { id: "garden-gloves", name: "Gardening Gloves", keywords: ["gardening gloves", "garden work gloves", "thorn proof garden gloves"] },
+      { id: "kneeling-pad", name: "Garden Kneeling Pad", keywords: ["garden kneeler", "kneeling pad gardening", "garden knee pad"] },
+      { id: "hose-tools", name: "Watering Hose & Nozzle", keywords: ["garden hose expandable", "hose nozzle sprayer", "watering wand garden"] },
+      { id: "outdoor-decor", name: "Garden Decor & Lights", keywords: ["garden decor outdoor", "solar garden lights", "garden stakes decorative"] }
+    ]
   }
 ];
 
@@ -718,6 +766,7 @@ export function findProblemsForQuery(query: string): Problem[] {
     'Home Organization': ['storage', 'organize', 'clutter', 'mess', 'rental', 'apartment'],
     'Pet Owners': ['pet', 'dog', 'cat', 'litter', 'fur', 'hair'],
     'Cleaning': ['clean', 'dust', 'grout', 'window', 'mop', 'stain', 'stains', 'dirty', 'remove', 'remover', 'shirt', 'clothes', 'laundry', 'fabric', 'carpet'],
+    'Gardening': ['garden', 'gardening', 'plant', 'plants', 'planter', 'herb', 'herbs', 'outdoor', 'yard', 'patio', 'flower', 'flowers', 'vegetable', 'houseplant', 'houseplants', 'indoor plant', 'potting', 'watering'],
   };
   
   // Score each problem
@@ -1018,8 +1067,20 @@ export function getDefaultFiltersForCategory(category: string): FilterOption[] {
           { id: "freestanding", label: "Freestanding", keywords: ["freestanding", "portable"] }
         ]
       }
+    ],
+    'Gardening': [
+      {
+        id: "location",
+        label: "Location",
+        type: "single",
+        values: [
+          { id: "indoor", label: "Indoor", keywords: ["indoor", "houseplant", "inside"] },
+          { id: "outdoor", label: "Outdoor", keywords: ["outdoor", "patio", "yard", "garden"] },
+          { id: "both", label: "Indoor/Outdoor", keywords: [] }
+        ]
+      }
     ]
   };
-  
+
   return defaultFilters[category] || defaultFilters['Kitchen'];
 }

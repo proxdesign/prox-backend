@@ -61,9 +61,12 @@ export default function LandingView({ onStartConversation, onQuickFix }: Landing
 
       {/* Bento Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full">
-        {/* Solve a Problem - spans 2 rows on left */}
-        <button 
-          onClick={() => handleUseCaseClick(useCases[0])}
+        {/* Solve a Problem - spans 2 rows on left - navigates to /solve page */}
+        <button
+          onClick={() => {
+            trackUseCaseClick('solve_a_problem');
+            router.push('/solve');
+          }}
           className="row-span-2 p-8 bg-white/80 backdrop-blur rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-[#5C7C5C]/30 transition-all duration-300 flex flex-col justify-center text-left animate-fade-in-up-1"
         >
           <span className="text-5xl mb-4">🔧</span>
@@ -84,9 +87,12 @@ export default function LandingView({ onStartConversation, onQuickFix }: Landing
           <p className="text-sm text-gray-500">Browse by category</p>
         </button>
         
-        {/* Buy a Gift - middle right */}
-        <button 
-          onClick={() => handleUseCaseClick(useCases[2])}
+        {/* Buy a Gift - middle right - navigates to /gift page */}
+        <button
+          onClick={() => {
+            trackUseCaseClick('buy_a_gift');
+            router.push('/gift');
+          }}
           className="p-6 bg-white/80 backdrop-blur rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-[#5C7C5C]/30 transition-all duration-300 text-left animate-fade-in-up-3"
         >
           <span className="text-3xl mb-3 block">🎁</span>
@@ -94,15 +100,11 @@ export default function LandingView({ onStartConversation, onQuickFix }: Landing
           <p className="text-sm text-gray-500">Find something for someone else</p>
         </button>
         
-        {/* Quick Fix - spans full width at bottom */}
+        {/* Quick Fix - spans full width at bottom - navigates to /quick-fix page */}
         <button
           onClick={() => {
             trackUseCaseClick('quick_fix');
-            if (onQuickFix) {
-              onQuickFix();
-            } else {
-              onStartConversation('I need a quick fix under $30');
-            }
+            router.push('/quick-fix');
           }}
           className="col-span-1 sm:col-span-2 p-6 bg-white/80 backdrop-blur rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-amber-300/30 transition-all duration-300 flex items-center gap-6 animate-fade-in-up-4"
         >

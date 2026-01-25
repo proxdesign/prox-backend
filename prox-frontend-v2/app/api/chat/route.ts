@@ -42,27 +42,52 @@ export async function POST(request: NextRequest) {
 
     // Detect different request types
     const lowerMessage = message.toLowerCase();
-    console.log('Chat API received message:', message);
-    
-    // Detect trending intent - "Show me what's trending"
-    const trendingKeywords = ['trending', 'browse', 'explore', 'what\'s popular', 'show me', 'popular', 'hot right now', 'latest', 'current trends'];
-    const isTrendingRequest = trendingKeywords.some(keyword => lowerMessage.includes(keyword));
-    
-    // Detect quick fix intent - "I need a quick fix under $30"
-    const quickFixKeywords = ['quick fix', 'under $30', 'under 30', 'cheap', 'budget', 'affordable'];
-    const isQuickFixRequest = quickFixKeywords.some(keyword => lowerMessage.includes(keyword));
-    
-    // Detect solve problem intent - "I have a problem to solve"
-    const problemKeywords = ['problem to solve', 'have a problem', 'problem'];
-    const isProblemRequest = problemKeywords.some(keyword => lowerMessage.includes(keyword));
-    
-    // Detect gift intent - "I'm looking for a gift"
-    const giftKeywords = ['looking for a gift', 'gift', 'present', 'someone else'];
-    const isGiftRequest = giftKeywords.some(keyword => lowerMessage.includes(keyword));
+    const hasHistory = history && history.length > 0;
+    console.log('Chat API received message:', message, 'hasHistory:', hasHistory);
 
-    // Detect "skip chat" intent - user wants products without conversation
-    const skipChatKeywords = ['show me products', 'just show products', 'skip to products', 'browse products', 'see products', 'show products'];
-    const isSkipChatRequest = skipChatKeywords.some(keyword => lowerMessage.includes(keyword));
+    // Detect trending intent - only explicit trending requests (skip if mid-conversation)
+    const trendingKeywords = ['what\'s trending', 'show me trending', 'trending products', 'hot right now', 'current trends'];
+    const isTrendingRequest = !hasHistory && trendingKeywords.some(keyword => lowerMessage.includes(keyword));
+    
+    // Detect quick fix intent - "I need a quick fix under $30" (first message only)
+    const quickFixKeywords = ['quick fix', 'under $30', 'under 30'];
+    const isQuickFixRequest = !hasHistory && quickFixKeywords.some(keyword => lowerMessage.includes(keyword));
+
+    // Detect solve problem intent - "I have a problem to solve" (first message only)
+    const problemKeywords = ['problem to solve', 'have a problem'];
+    const isProblemRequest = !hasHistory && problemKeywords.some(keyword => lowerMessage.includes(keyword));
+
+    // Detect gift intent - "I'm looking for a gift" (first message only)
+    const giftKeywords = ['looking for a gift', 'i want to buy a gift'];
+    const isGiftRequest = !hasHistory && giftKeywords.some(keyword => lowerMessage.includes(keyword));
+
+    // Detect "skip chat" intent - user wants products without conversation (first message only)
+    const skipChatKeywords = ['show me products', 'just show products', 'skip to products', 'browse products'];
+    const isSkipChatRequest = !hasHistory && skipChatKeywords.some(keyword => lowerMessage.includes(keyword));
+
+    // Detect "show me X products" mid-conversation - user wants to see products now
+    const showProductsPatterns = ['show me', 'just show', 'show some', 'see some', 'see the products', 'show products'];
+    const wantsProductsNow = hasHistory && showProductsPatterns.some(p => lowerMessage.includes(p));
+
+    // Extract product category from message
+    const categoryKeywords: Record<string, string[]> = {
+      'gardening': ['garden', 'gardening', 'plant', 'plants', 'planter', 'herb', 'outdoor', 'yard'],
+      'kitchen': ['kitchen', 'counter', 'pantry', 'cooking', 'utensil', 'spice'],
+      'office': ['desk', 'office', 'cable', 'monitor', 'ergonomic'],
+      'bedroom': ['bed', 'sleep', 'closet', 'bedroom', 'mattress'],
+      'bathroom': ['bathroom', 'shower', 'toilet', 'bath'],
+      'cleaning': ['clean', 'cleaning', 'dust', 'mop', 'vacuum'],
+      'pet': ['pet', 'dog', 'cat', 'animal'],
+      'storage': ['storage', 'organize', 'organizer', 'shelf', 'bin'],
+    };
+
+    let detectedCategory = '';
+    for (const [category, keywords] of Object.entries(categoryKeywords)) {
+      if (keywords.some(kw => lowerMessage.includes(kw))) {
+        detectedCategory = category;
+        break;
+      }
+    }
 
     console.log('Request type detection:', {
       isTrendingRequest,
@@ -70,8 +95,57 @@ export async function POST(request: NextRequest) {
       isProblemRequest,
       isGiftRequest,
       isSkipChatRequest,
+      wantsProductsNow,
+      detectedCategory,
       message: lowerMessage
     });
+
+    // Handle "show me X products" mid-conversation - fetch and return products directly
+    if (wantsProductsNow && detectedCategory) {
+      console.log('User wants products now for category:', detectedCategory);
+
+      // Extract budget from conversation history
+      let maxBudget: number | null = null;
+      const allText = [...history.map((h: any) => h.content), message].join(' ').toLowerCase();
+      const budgetMatch = allText.match(/\$?\s*(\d+)\s*(?:dollars?|bucks?)?/);
+      if (budgetMatch) {
+        maxBudget = parseInt(budgetMatch[1], 10);
+        console.log('Detected budget:', maxBudget);
+      }
+
+      try {
+        const { searchProductsByKeyword } = await import('../../../lib/productApi');
+        let products = await searchProductsByKeyword(detectedCategory);
+
+        // Filter by budget if specified
+        if (maxBudget && products && products.length > 0) {
+          products = products.filter(p => {
+            const price = typeof p.price === 'number' ? p.price : parseFloat(String(p.price || '0').replace(/[^0-9.]/g, ''));
+            return !isNaN(price) && price <= maxBudget!;
+          });
+          console.log('Products after budget filter:', products.length);
+        }
+
+        if (products && products.length > 0) {
+          const categoryName = detectedCategory.charAt(0).toUpperCase() + detectedCategory.slice(1);
+          const budgetText = maxBudget ? ` under $${maxBudget}` : '';
+          return NextResponse.json({
+            response: `Here are some top ${categoryName.toLowerCase()} products${budgetText}:`,
+            showProductGrid: false,
+            products: products.slice(0, 6),
+            solutions: []
+          }, {
+            headers: {
+              'X-RateLimit-Remaining': String(rateLimit.remaining),
+              'X-RateLimit-Reset': String(Math.ceil(rateLimit.resetIn / 1000))
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching products for category:', error);
+        // Fall through to Claude AI
+      }
+    }
 
     // Handle "skip chat" requests - show products directly without conversation
     if (isSkipChatRequest) {

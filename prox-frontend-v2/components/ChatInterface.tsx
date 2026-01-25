@@ -38,6 +38,7 @@ interface ChatInterfaceProps {
   onConversationStart?: () => void;
   mode: 'problem' | 'explore' | 'conversational' | null;
   resetTrigger?: number; // Add a reset trigger prop
+  initialPrompt?: string; // Auto-start conversation with this prompt (skips LandingView)
 }
 
 // Helper function to extract context from conversation
@@ -141,7 +142,8 @@ export default function ChatInterface({
   onContextUpdate,
   onConversationStart,
   mode,
-  resetTrigger
+  resetTrigger,
+  initialPrompt
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -150,6 +152,7 @@ export default function ChatInterface({
   const [showQuickFix, setShowQuickFix] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Rotating placeholder examples
   const placeholderExamples = [
@@ -174,6 +177,16 @@ export default function ChatInterface({
       scrollToBottom();
     }
   }, [messages]);
+
+  // Autofocus input when conversation starts and loading completes
+  useEffect(() => {
+    if (conversationStarted && !isLoading && inputRef.current) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [conversationStarted, isLoading]);
 
   // Only rotate if no user messages have been sent
   const hasUserMessages = messages.some(m => m.role === 'user');
@@ -318,6 +331,13 @@ export default function ChatInterface({
       setShowQuickFix(false);
     }
   }, [resetTrigger]);
+
+  // Auto-start conversation with initial prompt (for dedicated route pages)
+  useEffect(() => {
+    if (initialPrompt && !conversationStarted && messages.length === 0) {
+      handleStartConversation(initialPrompt);
+    }
+  }, [initialPrompt]);
 
   const handleModeSelect = (selectedMode: 'problem' | 'explore') => {
     onModeSelect(selectedMode);
@@ -670,7 +690,8 @@ export default function ChatInterface({
   }
 
   // Show landing view if conversation hasn't started and no messages
-  if (!conversationStarted && messages.length === 0) {
+  // Skip if initialPrompt is provided (for dedicated route pages)
+  if (!conversationStarted && messages.length === 0 && !initialPrompt) {
     return (
       <LandingView
         onStartConversation={handleStartConversation}
@@ -680,7 +701,7 @@ export default function ChatInterface({
   }
 
   return (
-    <div data-testid="chat-interface" className="min-h-[24rem] flex flex-col bg-gradient-to-b from-gray-50 to-white rounded-lg border border-gray-200 shadow-sm">
+    <div data-testid="chat-interface" className="min-h-[32rem] flex flex-col bg-white rounded-lg border border-gray-200 shadow-sm h-full">
       {/* Messages Area - Scrollable */}
       <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6">
         <div className="flex flex-col gap-4">
@@ -765,6 +786,7 @@ export default function ChatInterface({
         <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-3">
           <div className="flex-1 relative">
             <textarea
+              ref={inputRef}
               data-testid="chat-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}

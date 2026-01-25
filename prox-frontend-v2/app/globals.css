@@ -209,14 +209,9 @@
 
 /* MODERN 2026 LANDING PAGE STYLES */
 
-/* Subtle gradient background */
+/* Solid sage background */
 .landing-container {
-  background: linear-gradient(
-    180deg,
-    #F0F2F1 0%,
-    #E8EDE9 50%,
-    #F0F2F1 100%
-  );
+  background: #F0F2F1;
 }
 
 /* Remove old bento grid styles - now using standard CSS Grid */
