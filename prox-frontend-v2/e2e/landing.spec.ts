@@ -38,8 +38,8 @@ test.describe('Landing Page Tiles', () => {
     // Wait for products to load
     await expect(page.locator('[data-testid="chat-interface"]')).toBeVisible();
 
-    // Should show products (either in grid or mention of products)
-    await expect(page.getByText(/\$30|products|solutions/i)).toBeVisible({ timeout: 20000 });
+    // Should show products (either in grid or mention of products) - use first() to avoid strict mode
+    await expect(page.getByText(/\$30|products|solutions/i).first()).toBeVisible({ timeout: 20000 });
   });
 
   test('Explore tile navigates to explore page', async ({ page }) => {

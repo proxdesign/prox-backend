@@ -30,11 +30,11 @@ test.describe('Stage Transitions', () => {
     await page.getByRole('button', { name: /solve a problem/i }).click();
     await expect(page.locator('[data-testid="chat-interface"]')).toBeVisible();
 
-    // Click logo to go back (the logo button with Prox text)
-    await page.locator('header button:has-text("Prox Discovery")').click();
+    // Click logo to go back (could be button, link, or image)
+    const logo = page.locator('header').locator('img[alt="Prox"]').first();
+    await logo.click();
 
     // Should reset - either show landing tiles or at least the welcome message area
-    // Note: This test may fail if the reset functionality has a bug
     await expect(page.locator('.landing-container, [data-testid="chat-interface"]')).toBeVisible({ timeout: 5000 });
   });
 
