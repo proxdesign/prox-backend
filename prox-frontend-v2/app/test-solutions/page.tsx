@@ -1,8 +1,13 @@
 'use client';
 
+import { notFound } from 'next/navigation';
 import { problems } from '../../lib/mockData';
 
 export default function TestSolutions() {
+  // Hide this debug page in production
+  if (process.env.NODE_ENV === 'production') {
+    notFound();
+  }
   // Get the first problem with solutions
   const testProblem = problems.find(p => p.solutions && p.solutions.length > 0);
   

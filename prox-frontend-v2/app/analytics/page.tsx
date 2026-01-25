@@ -1,7 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { notFound } from 'next/navigation';
 import { BarChart, Users, MessageSquare, Heart, Star, TrendingUp, Calendar } from 'lucide-react';
 import Link from 'next/link';
+
+// Hide this admin page in production
+if (process.env.NODE_ENV === 'production') {
+  notFound();
+}
 
 interface AnalyticsData {
   users: {
