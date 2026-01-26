@@ -685,7 +685,7 @@ export default function ChatInterface({
   // Show Quick Fix view
   if (showQuickFix) {
     return (
-      <QuickFixView onBack={handleQuickFixBack} />
+      <QuickFixView />
     );
   }
 
@@ -795,6 +795,12 @@ export default function ChatInterface({
                   e.preventDefault();
                   handleSend();
                 }
+              }}
+              onFocus={() => {
+                // On mobile, scroll input into view when keyboard opens
+                setTimeout(() => {
+                  inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
               }}
               disabled={isLoading || messages[0]?.showModeButtons}
               className="w-full text-base resize-none bg-white border border-gray-200 rounded-[20px] px-4 py-3 pr-12 outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 shadow-sm"

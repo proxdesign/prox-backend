@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import ChatInterface from './ChatInterface';
 import ProductPreview from './ProductPreview';
+import ProductDiscoveryDrawer from './ProductDiscoveryDrawer';
 import ProductGrid from './ProductGrid';
 import FilterBar from './FilterBar';
 import FloatingChat from './FloatingChat';
@@ -21,6 +22,10 @@ export default function SolveProblemPage() {
   const [context, setContext] = useState({ space: '', challenge: '', size: '', budget: '' });
   const [filters, setFilters] = useState<Array<{label: string, value: string}>>([]);
 
+  // Mobile drawer state
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [showProductPill, setShowProductPill] = useState(false);
+
   // Floating chat state (for browse stage)
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
@@ -32,6 +37,8 @@ export default function SolveProblemPage() {
     setChatProducts(newProducts);
     if (newProducts.length > 0 && currentStage === 'discovery') {
       setCurrentStage('preview');
+      // Show floating pill on mobile when products are found
+      setShowProductPill(true);
     }
   };
 
@@ -153,9 +160,9 @@ export default function SolveProblemPage() {
 
         {/* Stage 1 & 2: Discovery/Preview */}
         {(currentStage === 'discovery' || currentStage === 'preview') && (
-          <div className="flex-1 px-8 lg:px-16 max-w-6xl mx-auto w-full">
+          <div className="flex-1 px-4 lg:px-16 max-w-6xl mx-auto w-full">
             <div className="h-full grid grid-cols-1 lg:grid-cols-5 gap-6">
-              {/* Chat Section - narrower */}
+              {/* Chat Section - full width on mobile, narrower on desktop */}
               <div className="lg:col-span-3 min-h-[32rem]">
                 <ChatInterface
                   mode="conversational"
@@ -169,13 +176,37 @@ export default function SolveProblemPage() {
                 />
               </div>
 
-              {/* Context Panel */}
-              <div className="lg:col-span-2">
+              {/* Context Panel - hidden on mobile, visible on desktop */}
+              <div className="hidden lg:block lg:col-span-2">
                 <ProductPreview
                   products={chatProducts}
                   onSeeAll={handleSeeAllProducts}
                 />
               </div>
+            </div>
+
+            {/* Mobile: Floating Product Pill */}
+            {showProductPill && chatProducts.length > 0 && (
+              <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-30 animate-float-up">
+                <button
+                  onClick={() => setIsDrawerOpen(true)}
+                  className="relative flex items-center gap-2 bg-[#8B7355] text-white px-5 py-3 rounded-full shadow-lg hover:bg-[#7A6449] transition-colors product-pill-pulse"
+                >
+                  <ShoppingBag size={18} />
+                  <span className="font-medium">{chatProducts.length} products found</span>
+                </button>
+              </div>
+            )}
+
+            {/* Mobile: Product Discovery Drawer */}
+            <div className="lg:hidden">
+              <ProductDiscoveryDrawer
+                isOpen={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                products={chatProducts}
+                onSeeAll={handleSeeAllProducts}
+                onNarrowDown={() => setShowProductPill(true)}
+              />
             </div>
           </div>
         )}
