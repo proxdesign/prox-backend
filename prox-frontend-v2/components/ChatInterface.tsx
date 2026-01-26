@@ -206,20 +206,25 @@ export default function ChatInterface({
     }
   }, [initialPrompt, isMobile, conversationStarted, isLoading]);
 
-  // Maintain focus after AI responds (prevent keyboard dismiss)
+  // Maintain focus persistently on mobile - keep keyboard open
   useEffect(() => {
-    if (!isLoading && shouldMaintainFocus.current && inputRef.current) {
-      // Re-focus input after AI finishes responding
-      setTimeout(() => {
-        isProgrammaticFocus.current = true;
-        inputRef.current?.focus();
-        setTimeout(() => {
-          isProgrammaticFocus.current = false;
-        }, 50);
-      }, 50);
-      shouldMaintainFocus.current = false;
+    if (isMobile && initialPrompt && conversationStarted && inputRef.current) {
+      // Always re-focus when loading state changes (message sent or AI responded)
+      const refocus = () => {
+        if (inputRef.current && document.activeElement !== inputRef.current) {
+          isProgrammaticFocus.current = true;
+          inputRef.current.focus();
+          setTimeout(() => {
+            isProgrammaticFocus.current = false;
+          }, 50);
+        }
+      };
+
+      // Re-focus after a short delay to let any transitions complete
+      const timer = setTimeout(refocus, 100);
+      return () => clearTimeout(timer);
     }
-  }, [isLoading]);
+  }, [isLoading, messages.length, isMobile, initialPrompt, conversationStarted]);
 
   // Rotating placeholder examples
   const placeholderExamples = [
@@ -479,8 +484,11 @@ export default function ChatInterface({
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
-    // Keep keyboard open while AI responds
-    shouldMaintainFocus.current = true;
+
+    // Immediately re-focus to keep keyboard open
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 10);
 
     await sendMessageToAPI(userMessage);
   };
@@ -494,8 +502,11 @@ export default function ChatInterface({
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
-    // Keep keyboard open while AI responds
-    shouldMaintainFocus.current = true;
+
+    // Immediately re-focus to keep keyboard open
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 10);
 
     await sendMessageToAPI(userMessage);
   };
@@ -885,7 +896,15 @@ export default function ChatInterface({
               }}
               onFocus={() => {
                 // Let the browser handle keyboard appearance naturally
-                // Aggressive scrollIntoView was causing chat to scroll out of view
+              }}
+              onBlur={() => {
+                // On mobile, prevent keyboard from dismissing during conversation
+                if (isMobile && initialPrompt && conversationStarted && !isLoading) {
+                  // Re-focus after a tiny delay to keep keyboard open
+                  setTimeout(() => {
+                    inputRef.current?.focus();
+                  }, 10);
+                }
               }}
               disabled={isLoading || messages[0]?.showModeButtons}
               className="w-full text-base resize-none bg-white border border-gray-200 rounded-[20px] px-4 py-3 pr-12 outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 shadow-sm"
