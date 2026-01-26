@@ -16,7 +16,8 @@ test('Direct product request triggers pill', async ({ page }) => {
   
   // Very direct request that should trigger products immediately
   await input.fill('I need a spice rack for my kitchen, budget under $30');
-  await page.locator('[data-testid="send-button"]').click();
+  // Use Enter key to send (send button hidden on mobile)
+  await input.press('Enter');
   
   // Wait for response
   await page.waitForFunction(() => !document.querySelector('.ai-loading-dot'), { timeout: 30000 });

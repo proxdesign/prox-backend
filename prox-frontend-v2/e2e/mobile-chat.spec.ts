@@ -24,7 +24,7 @@ test.describe('Mobile Chat Experience', () => {
     await input.fill('my kitchen counter is always cluttered');
 
     // Send message
-    await page.locator('[data-testid="send-button"]').click();
+    await input.press('Enter');
 
     // Wait for AI response
     await page.waitForFunction(() => {
@@ -58,7 +58,7 @@ test.describe('Mobile Chat Experience', () => {
 
     // Type gift request
     await input.fill('looking for a gift for my mom who loves cooking');
-    await page.locator('[data-testid="send-button"]').click();
+    await input.press('Enter');
 
     // Wait for response
     await page.waitForFunction(() => {

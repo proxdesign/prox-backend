@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import ChatInterface from './ChatInterface';
@@ -106,8 +106,25 @@ export default function GiftPage() {
   const handleProblemIdentified = (problem: Problem, solutions: any[]) => {};
   const handleExploreArea = (area: string) => {};
 
+  // Check if mobile for conditional styles
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
-    <div className="min-h-screen lg:min-h-screen flex flex-col overflow-hidden" style={{ backgroundColor: '#F0F2F1', height: '100svh', paddingTop: 'env(safe-area-inset-top)' }}>
+    <div
+      className={`min-h-screen flex flex-col ${isMobile ? 'overflow-hidden' : ''}`}
+      style={{
+        backgroundColor: '#F0F2F1',
+        height: isMobile ? '100svh' : 'auto',
+        paddingTop: isMobile ? 'env(safe-area-inset-top)' : undefined
+      }}
+    >
       {/* Header - compact on mobile */}
       <header className="px-3 py-2 lg:px-4 lg:py-6 flex-shrink-0" style={{ backgroundColor: '#718479' }}>
         <div className="max-w-4xl mx-auto">

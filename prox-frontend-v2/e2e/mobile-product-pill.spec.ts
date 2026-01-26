@@ -10,17 +10,16 @@ test.describe('Mobile Product Pill', () => {
     await page.waitForFunction(() => !document.querySelector('.ai-loading-dot'), { timeout: 20000 });
     
     const input = page.locator('[data-testid="chat-input"]');
-    const sendBtn = page.locator('[data-testid="send-button"]');
-    
-    // First message - describe problem
+
+    // First message - describe problem (use Enter to send on mobile)
     await input.fill('my kitchen counter is cluttered with spices and cooking stuff');
-    await sendBtn.click();
+    await input.press('Enter');
     await page.waitForFunction(() => !document.querySelector('.ai-loading-dot'), { timeout: 30000 });
     await page.waitForTimeout(1000);
-    
+
     // Second message - provide more detail to trigger product recommendations
     await input.fill('mostly spices and oils, looking for under $50 solutions');
-    await sendBtn.click();
+    await input.press('Enter');
     await page.waitForFunction(() => !document.querySelector('.ai-loading-dot'), { timeout: 30000 });
     
     // Wait for potential products to load
