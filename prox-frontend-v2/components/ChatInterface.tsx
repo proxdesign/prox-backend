@@ -203,15 +203,39 @@ export default function ChatInterface({
   }, [hasUserMessages, placeholderExamples.length]);
 
   const handleStartConversation = async (prompt: string) => {
-    // Prevent any automatic scrolling during conversation start
-    const currentScrollY = window.scrollY;
+    // Only manage scroll position on homepage (not dedicated routes like /solve, /gift)
+    // Dedicated routes are identified by having initialPrompt set
+    const isDedicatedRoute = !!initialPrompt;
 
-    // Temporarily disable smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'auto';
-    document.body.style.scrollBehavior = 'auto';
+    if (!isDedicatedRoute) {
+      // Prevent any automatic scrolling during conversation start (homepage only)
+      const currentScrollY = window.scrollY;
 
-    // Push new history state to prevent accidental back navigation to homepage
-    window.history.pushState({ isProxApp: true, stage: 'chatting' }, '', window.location.pathname);
+      // Temporarily disable smooth scroll behavior
+      document.documentElement.style.scrollBehavior = 'auto';
+      document.body.style.scrollBehavior = 'auto';
+
+      // Push new history state to prevent accidental back navigation to homepage
+      window.history.pushState({ isProxApp: true, stage: 'chatting' }, '', window.location.pathname);
+
+      // Aggressively maintain scroll position
+      const maintainPosition = () => {
+        window.scrollTo({ top: currentScrollY, behavior: 'instant' });
+      };
+
+      // Run multiple times to catch any layout shifts
+      requestAnimationFrame(maintainPosition);
+      setTimeout(maintainPosition, 0);
+      setTimeout(maintainPosition, 16);
+      setTimeout(maintainPosition, 50);
+      setTimeout(maintainPosition, 100);
+
+      // Re-enable smooth scrolling after transition is complete
+      setTimeout(() => {
+        document.documentElement.style.scrollBehavior = '';
+        document.body.style.scrollBehavior = '';
+      }, 200);
+    }
 
     setConversationStarted(true);
 
@@ -230,24 +254,6 @@ export default function ChatInterface({
     } else {
       trackChatStart('solve_problem');
     }
-
-    // Aggressively maintain scroll position
-    const maintainPosition = () => {
-      window.scrollTo({ top: currentScrollY, behavior: 'instant' });
-    };
-
-    // Run multiple times to catch any layout shifts
-    requestAnimationFrame(maintainPosition);
-    setTimeout(maintainPosition, 0);
-    setTimeout(maintainPosition, 16);
-    setTimeout(maintainPosition, 50);
-    setTimeout(maintainPosition, 100);
-
-    // Re-enable smooth scrolling after transition is complete
-    setTimeout(() => {
-      document.documentElement.style.scrollBehavior = '';
-      document.body.style.scrollBehavior = '';
-    }, 200);
 
     // For tile clicks, fetch AI response without showing user message
     setIsLoading(true);
