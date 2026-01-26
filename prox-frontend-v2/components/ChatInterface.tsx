@@ -154,6 +154,49 @@ export default function ChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const isProgrammaticFocus = useRef(false);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const shouldMaintainFocus = useRef(false);
+
+  // Visual Viewport API - handle mobile keyboard
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+
+    const handleResize = () => {
+      // Calculate keyboard height
+      const newKeyboardHeight = window.innerHeight - viewport.height;
+      setKeyboardHeight(Math.max(0, newKeyboardHeight));
+
+      // Scroll messages to bottom when keyboard opens
+      if (newKeyboardHeight > 0) {
+        setTimeout(scrollToBottom, 100);
+      }
+    };
+
+    viewport.addEventListener('resize', handleResize);
+    viewport.addEventListener('scroll', handleResize);
+
+    return () => {
+      viewport.removeEventListener('resize', handleResize);
+      viewport.removeEventListener('scroll', handleResize);
+    };
+  }, []);
+
+  // Maintain focus after AI responds (prevent keyboard dismiss)
+  useEffect(() => {
+    if (!isLoading && shouldMaintainFocus.current && inputRef.current) {
+      // Re-focus input after AI finishes responding
+      setTimeout(() => {
+        isProgrammaticFocus.current = true;
+        inputRef.current?.focus();
+        setTimeout(() => {
+          isProgrammaticFocus.current = false;
+        }, 50);
+      }, 50);
+      shouldMaintainFocus.current = false;
+    }
+  }, [isLoading]);
 
   // Rotating placeholder examples
   const placeholderExamples = [
@@ -408,11 +451,13 @@ export default function ChatInterface({
     if (!message.trim() || isLoading) {
       return;
     }
-    
+
     const userMessage = message.trim();
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
+    // Keep keyboard open while AI responds
+    shouldMaintainFocus.current = true;
 
     await sendMessageToAPI(userMessage);
   };
@@ -421,11 +466,13 @@ export default function ChatInterface({
     if (!input.trim() || isLoading) {
       return;
     }
-    
+
     const userMessage = input.trim();
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
+    // Keep keyboard open while AI responds
+    shouldMaintainFocus.current = true;
 
     await sendMessageToAPI(userMessage);
   };
@@ -714,7 +761,15 @@ export default function ChatInterface({
   }
 
   return (
-    <div data-testid="chat-interface" className="min-h-[32rem] flex flex-col bg-white rounded-lg border border-gray-200 shadow-sm h-full">
+    <div
+      ref={chatContainerRef}
+      data-testid="chat-interface"
+      className="min-h-[32rem] flex flex-col bg-white rounded-lg border border-gray-200 shadow-sm h-full transition-all duration-200"
+      style={{
+        // Adjust for mobile keyboard
+        paddingBottom: keyboardHeight > 0 ? `${keyboardHeight}px` : undefined,
+      }}
+    >
       {/* Messages Area - Scrollable */}
       <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6">
         <div className="flex flex-col gap-4">

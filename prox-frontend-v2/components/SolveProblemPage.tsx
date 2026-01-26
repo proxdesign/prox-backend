@@ -34,28 +34,37 @@ export default function SolveProblemPage() {
 
   // Handlers
   const handleChatProductsUpdate = (newProducts: any[]) => {
+    console.log('📦 handleChatProductsUpdate:', { count: newProducts.length, currentStage });
     setChatProducts(newProducts);
-    if (newProducts.length > 0 && currentStage === 'discovery') {
-      setCurrentStage('preview');
-      // Show floating pill on mobile when products are found
+    if (newProducts.length > 0) {
+      // Always show pill when products are found (regardless of stage)
       setShowProductPill(true);
+      if (currentStage === 'discovery') {
+        setCurrentStage('preview');
+      }
+      console.log('✅ Product pill should show now');
     }
   };
 
   const handleChatSolutionsUpdate = async (newSolutions: any[]) => {
+    console.log('💡 handleChatSolutionsUpdate:', { count: newSolutions.length });
     setChatSolutions(newSolutions);
     if (newSolutions.length > 0) {
       try {
         const firstSolution = newSolutions[0];
         const searchTerm = firstSolution.keywords?.[0] || firstSolution.name;
+        console.log('🔍 Fetching products for solution:', searchTerm);
         const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}&limit=6`);
         if (response.ok) {
           const data = await response.json();
+          console.log('📦 Products from solutions:', data.products?.length || 0);
           if (data.products && data.products.length > 0) {
             setChatProducts(data.products);
-            setCurrentStage('preview');
-            // Show floating pill on mobile when products are found
             setShowProductPill(true);
+            if (currentStage === 'discovery') {
+              setCurrentStage('preview');
+            }
+            console.log('✅ Product pill should show now (via solutions)');
           }
         }
       } catch (error) {
