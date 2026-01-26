@@ -894,21 +894,10 @@ export default function ChatInterface({
                   handleSend();
                 }
               }}
-              onFocus={() => {
-                // Let the browser handle keyboard appearance naturally
-              }}
-              onBlur={() => {
-                // On mobile, prevent keyboard from dismissing during conversation
-                if (isMobile && initialPrompt && conversationStarted && !isLoading) {
-                  // Re-focus after a tiny delay to keep keyboard open
-                  setTimeout(() => {
-                    inputRef.current?.focus();
-                  }, 10);
-                }
-              }}
               disabled={isLoading || messages[0]?.showModeButtons}
-              className="w-full text-base resize-none bg-white border border-gray-200 rounded-[20px] px-4 py-3 pr-12 outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 shadow-sm"
-              placeholder="Type a message..."
+              enterKeyHint="send"
+              className={`w-full text-base resize-none bg-white border border-gray-200 rounded-[20px] px-4 py-3 outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 shadow-sm ${isMobile ? 'pr-4' : 'pr-12'}`}
+              placeholder={isMobile ? "Message (press Send ↵)" : "Type a message..."}
               rows={1}
               style={{
                 minHeight: '48px',
@@ -920,36 +909,17 @@ export default function ChatInterface({
                 target.style.height = Math.min(target.scrollHeight, 120) + 'px';
               }}
             />
-            <div
-              role="button"
-              aria-label="Send message"
+            {/* Send button - hidden on mobile (use Enter key instead) */}
+            <button
+              type="submit"
               data-testid="send-button"
-              className={`absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center touch-manipulation select-none ${
-                !input.trim() || isLoading
-                  ? 'bg-gray-300 cursor-not-allowed'
-                  : 'bg-[#8B7355] cursor-pointer active:bg-[#6A5A45]'
-              }`}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (input.trim() && !isLoading) {
-                  handleSend();
-                  // Keep focus on input
-                  inputRef.current?.focus();
-                }
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                if (input.trim() && !isLoading) {
-                  handleSend();
-                  inputRef.current?.focus();
-                }
-              }}
+              disabled={!input.trim() || isLoading}
+              className="hidden lg:flex absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#8B7355] text-white rounded-full hover:bg-[#7A6449] disabled:opacity-50 disabled:cursor-not-allowed transition-colors items-center justify-center"
             >
-              <svg className="w-5 h-5 rotate-90 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
-            </div>
+            </button>
           </div>
         </form>
       </div>
