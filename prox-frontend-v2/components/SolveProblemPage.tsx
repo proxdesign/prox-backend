@@ -54,6 +54,8 @@ export default function SolveProblemPage() {
           if (data.products && data.products.length > 0) {
             setChatProducts(data.products);
             setCurrentStage('preview');
+            // Show floating pill on mobile when products are found
+            setShowProductPill(true);
           }
         }
       } catch (error) {

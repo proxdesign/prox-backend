@@ -810,12 +810,8 @@ export default function ChatInterface({
                 }
               }}
               onFocus={() => {
-                // On mobile, scroll input into view when keyboard opens
-                // Skip if this is a programmatic focus (e.g., autofocus on page load)
-                if (isProgrammaticFocus.current) return;
-                setTimeout(() => {
-                  inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
+                // Let the browser handle keyboard appearance naturally
+                // Aggressive scrollIntoView was causing chat to scroll out of view
               }}
               disabled={isLoading || messages[0]?.showModeButtons}
               className="w-full text-base resize-none bg-white border border-gray-200 rounded-[20px] px-4 py-3 pr-12 outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/20 shadow-sm"
