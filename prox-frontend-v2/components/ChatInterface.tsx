@@ -921,25 +921,21 @@ export default function ChatInterface({
               }}
             />
             <button
-              type="submit"
+              type="button"
               data-testid="send-button"
               tabIndex={-1}
               disabled={!input.trim() || isLoading}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#8B7355] text-white rounded-full hover:bg-[#7A6449] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
-              onMouseDown={(e) => {
-                // Prevent button from stealing focus (keeps keyboard open on mobile)
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#8B7355] text-white rounded-full hover:bg-[#7A6449] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center touch-manipulation"
+              onPointerDown={(e) => {
+                // Prevent focus shift - this keeps keyboard open
                 e.preventDefault();
-              }}
-              onTouchStart={(e) => {
-                // Prevent focus shift on touch devices
-                e.preventDefault();
-                // Trigger the form submit manually
+                // Send the message
                 if (input.trim() && !isLoading) {
                   handleSend();
                 }
               }}
             >
-              <svg className="w-4 h-4 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
             </button>

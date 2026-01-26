@@ -108,33 +108,33 @@ export default function GiftPage() {
 
   return (
     <div className="min-h-screen lg:min-h-screen flex flex-col overflow-hidden" style={{ backgroundColor: '#F0F2F1', height: '100dvh' }}>
-      {/* Header with back arrow */}
-      <header className="px-4 py-4 lg:py-6 flex-shrink-0" style={{ backgroundColor: '#718479' }}>
+      {/* Header - compact on mobile */}
+      <header className="px-3 py-2 lg:px-4 lg:py-6 flex-shrink-0" style={{ backgroundColor: '#718479' }}>
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 lg:gap-4">
             {/* Back to Home */}
             <Link
               href="/"
-              className="p-2 rounded-full hover:bg-white/10 transition-colors"
+              className="p-1.5 lg:p-2 rounded-full hover:bg-white/10 transition-colors"
               aria-label="Back to home"
             >
-              <ArrowLeft size={24} className="text-white" />
+              <ArrowLeft size={20} className="lg:w-6 lg:h-6 text-white" />
             </Link>
 
-            {/* Logo and Title */}
-            <div className="flex items-center gap-4">
+            {/* Logo and Title - simplified on mobile */}
+            <div className="flex items-center gap-2 lg:gap-4">
               <img
                 src="/logo-white.png"
                 alt="Prox"
-                className="h-14 w-auto"
+                className="h-8 lg:h-14 w-auto"
               />
-              <div className="w-px bg-white/30 h-10" />
+              <div className="hidden lg:block w-px bg-white/30 h-10" />
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-light text-white">Buy a Gift</h1>
-                  <span className="px-2 py-0.5 text-xs font-medium bg-white/20 text-white rounded-full">beta</span>
+                  <h1 className="text-lg lg:text-2xl font-light text-white">Buy a Gift</h1>
+                  <span className="hidden lg:inline px-2 py-0.5 text-xs font-medium bg-white/20 text-white rounded-full">beta</span>
                 </div>
-                <p className="text-white/80 text-sm">Find something special for someone</p>
+                <p className="hidden lg:block text-white/80 text-sm">Find something special for someone</p>
               </div>
             </div>
           </div>
