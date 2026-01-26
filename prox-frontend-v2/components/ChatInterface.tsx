@@ -153,6 +153,7 @@ export default function ChatInterface({
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const isProgrammaticFocus = useRef(false);
 
   // Rotating placeholder examples
   const placeholderExamples = [
@@ -183,7 +184,13 @@ export default function ChatInterface({
     if (conversationStarted && !isLoading && inputRef.current) {
       // Small delay to ensure DOM is ready
       setTimeout(() => {
+        // Mark this as programmatic focus to prevent scroll on dedicated routes
+        isProgrammaticFocus.current = true;
         inputRef.current?.focus();
+        // Reset flag after focus event has fired
+        setTimeout(() => {
+          isProgrammaticFocus.current = false;
+        }, 50);
       }, 100);
     }
   }, [conversationStarted, isLoading]);
@@ -804,6 +811,8 @@ export default function ChatInterface({
               }}
               onFocus={() => {
                 // On mobile, scroll input into view when keyboard opens
+                // Skip if this is a programmatic focus (e.g., autofocus on page load)
+                if (isProgrammaticFocus.current) return;
                 setTimeout(() => {
                   inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 300);
