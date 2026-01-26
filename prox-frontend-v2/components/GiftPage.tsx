@@ -107,7 +107,7 @@ export default function GiftPage() {
   const handleExploreArea = (area: string) => {};
 
   return (
-    <div className="min-h-screen lg:min-h-screen flex flex-col overflow-hidden" style={{ backgroundColor: '#F0F2F1', height: '100dvh' }}>
+    <div className="min-h-screen lg:min-h-screen flex flex-col overflow-hidden" style={{ backgroundColor: '#F0F2F1', height: '100svh', paddingTop: 'env(safe-area-inset-top)' }}>
       {/* Header - compact on mobile */}
       <header className="px-3 py-2 lg:px-4 lg:py-6 flex-shrink-0" style={{ backgroundColor: '#718479' }}>
         <div className="max-w-4xl mx-auto">
