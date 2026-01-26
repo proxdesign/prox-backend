@@ -107,9 +107,9 @@ export default function SolveProblemPage() {
   const handleExploreArea = (area: string) => {};
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F0F2F1' }}>
+    <div className="min-h-screen lg:min-h-screen flex flex-col overflow-hidden" style={{ backgroundColor: '#F0F2F1', height: '100dvh' }}>
       {/* Header with back arrow */}
-      <header className="px-4 py-6" style={{ backgroundColor: '#718479' }}>
+      <header className="px-4 py-4 lg:py-6 flex-shrink-0" style={{ backgroundColor: '#718479' }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4">
             {/* Back to Home */}
@@ -142,7 +142,7 @@ export default function SolveProblemPage() {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col min-h-[80vh] pb-8 pt-6">
+      <main className="flex-1 flex flex-col overflow-hidden pb-2 lg:pb-8 pt-2 lg:pt-6">
         {/* Stage 3: Browse - Full product grid with filters */}
         {currentStage === 'browse' && (
           <>
@@ -171,10 +171,10 @@ export default function SolveProblemPage() {
 
         {/* Stage 1 & 2: Discovery/Preview */}
         {(currentStage === 'discovery' || currentStage === 'preview') && (
-          <div className="flex-1 px-4 lg:px-16 max-w-6xl mx-auto w-full">
-            <div className="h-full grid grid-cols-1 lg:grid-cols-5 gap-6">
-              {/* Chat Section - full width on mobile, narrower on desktop */}
-              <div className="lg:col-span-3 min-h-[32rem]">
+          <div className="flex-1 flex flex-col px-2 lg:px-16 max-w-6xl mx-auto w-full overflow-hidden">
+            <div className="flex-1 flex flex-col lg:grid lg:grid-cols-5 gap-2 lg:gap-6 overflow-hidden">
+              {/* Chat Section - full height on mobile, grid on desktop */}
+              <div className="flex-1 lg:flex-none lg:col-span-3 flex flex-col overflow-hidden">
                 <ChatInterface
                   mode="conversational"
                   onModeSelect={handleModeSelect}
@@ -223,8 +223,8 @@ export default function SolveProblemPage() {
         )}
       </main>
 
-      {/* Footer */}
-      <div className="mt-auto">
+      {/* Footer - hidden on mobile during chat */}
+      <div className="hidden lg:block mt-auto flex-shrink-0">
         <Footer />
       </div>
     </div>

@@ -155,24 +155,34 @@ export default function ChatInterface({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const isProgrammaticFocus = useRef(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const shouldMaintainFocus = useRef(false);
+  const hasAutoFocused = useRef(false);
 
-  // Visual Viewport API - handle mobile keyboard
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Visual Viewport API - track viewport height for mobile keyboard
   useEffect(() => {
     const viewport = window.visualViewport;
     if (!viewport) return;
 
     const handleResize = () => {
-      // Calculate keyboard height
-      const newKeyboardHeight = window.innerHeight - viewport.height;
-      setKeyboardHeight(Math.max(0, newKeyboardHeight));
-
-      // Scroll messages to bottom when keyboard opens
-      if (newKeyboardHeight > 0) {
-        setTimeout(scrollToBottom, 100);
-      }
+      setViewportHeight(viewport.height);
+      // Scroll messages to bottom when keyboard opens/closes
+      setTimeout(scrollToBottom, 100);
     };
+
+    // Set initial height
+    setViewportHeight(viewport.height);
 
     viewport.addEventListener('resize', handleResize);
     viewport.addEventListener('scroll', handleResize);
@@ -182,6 +192,19 @@ export default function ChatInterface({
       viewport.removeEventListener('scroll', handleResize);
     };
   }, []);
+
+  // Auto-focus input on dedicated routes to open keyboard
+  useEffect(() => {
+    if (initialPrompt && isMobile && !hasAutoFocused.current && conversationStarted && !isLoading) {
+      // Delay to ensure everything is rendered
+      setTimeout(() => {
+        if (inputRef.current && !hasAutoFocused.current) {
+          hasAutoFocused.current = true;
+          inputRef.current.focus();
+        }
+      }, 500);
+    }
+  }, [initialPrompt, isMobile, conversationStarted, isLoading]);
 
   // Maintain focus after AI responds (prevent keyboard dismiss)
   useEffect(() => {
@@ -764,14 +787,10 @@ export default function ChatInterface({
     <div
       ref={chatContainerRef}
       data-testid="chat-interface"
-      className="min-h-[32rem] flex flex-col bg-white rounded-lg border border-gray-200 shadow-sm h-full transition-all duration-200"
-      style={{
-        // Adjust for mobile keyboard
-        paddingBottom: keyboardHeight > 0 ? `${keyboardHeight}px` : undefined,
-      }}
+      className="flex flex-col bg-white rounded-lg border border-gray-200 shadow-sm transition-all duration-200 h-full min-h-0"
     >
       {/* Messages Area - Scrollable */}
-      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 lg:p-6">
         <div className="flex flex-col gap-4">
         {messages.map((message, index) => (
           <div key={index} className={`flex ${message.role === 'user' ? 'justify-end animate-slideInFromRight' : 'justify-start items-end animate-slideInFromLeft'} gap-2`}>
