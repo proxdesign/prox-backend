@@ -11,9 +11,7 @@ import {
   ExploreCategory,
   homeSpaces,
   homeStyles,
-  homeCleaningCategories,
   gardeningCategories,
-  petCleaningCategories,
   furnitureExploreCategories,
   decorExploreCategories,
   getSearchQueryForCategory,
@@ -28,9 +26,7 @@ export default function ExplorePage() {
     const allCategories = [
       ...homeSpaces,
       ...homeStyles,
-      ...homeCleaningCategories,
       ...gardeningCategories,
-      ...petCleaningCategories,
       ...furnitureExploreCategories,
       ...decorExploreCategories,
     ];
@@ -98,7 +94,6 @@ export default function ExplorePage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-2xl font-light text-white">Explore</h1>
-                  <span className="px-2 py-0.5 text-xs font-medium bg-white/20 text-white rounded-full">beta</span>
                 </div>
                 <p className="text-white/80 text-sm">Browse by category</p>
               </div>
@@ -109,57 +104,33 @@ export default function ExplorePage() {
 
       {/* Main Content */}
       <main className="flex-1 px-4 py-8 max-w-4xl mx-auto w-full">
-        {/* Section 1: Home Spaces & Styles */}
+        {/* Section 1: Home Spaces */}
         <section className="mb-10">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Home Spaces & Styles
+            Home Spaces
           </h2>
-
-          {/* Spaces */}
-          <div className="mb-6">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
-              Spaces
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {homeSpaces.map(space => (
-                <CategoryCard
-                  key={space.id}
-                  category={space}
-                  onClick={handleCategoryClick}
-                  size="small"
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Styles */}
-          <div>
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
-              Styles
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {homeStyles.map(style => (
-                <CategoryCard
-                  key={style.id}
-                  category={style}
-                  onClick={handleCategoryClick}
-                  size="small"
-                />
-              ))}
-            </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {homeSpaces.map(space => (
+              <CategoryCard
+                key={space.id}
+                category={space}
+                onClick={handleCategoryClick}
+                size="small"
+              />
+            ))}
           </div>
         </section>
 
-        {/* Section 2: Home Cleaning */}
+        {/* Section 2: Home Styles */}
         <section className="mb-10">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Home Cleaning
+            Home Styles
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {homeCleaningCategories.map(category => (
+            {homeStyles.map(style => (
               <CategoryCard
-                key={category.id}
-                category={category}
+                key={style.id}
+                category={style}
                 onClick={handleCategoryClick}
                 size="small"
               />
@@ -184,24 +155,7 @@ export default function ExplorePage() {
           </div>
         </section>
 
-        {/* Section 4: Pet Cleaning */}
-        <section className="mb-10">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Pet Cleaning
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {petCleaningCategories.map(category => (
-              <CategoryCard
-                key={category.id}
-                category={category}
-                onClick={handleCategoryClick}
-                size="small"
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Section 5: Browse Products (Chips) */}
+        {/* Section 4: Browse Products (Chips) */}
         <section className="mb-10">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
             Browse Products
