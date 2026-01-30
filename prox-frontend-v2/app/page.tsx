@@ -727,10 +727,7 @@ export default function Home() {
               />
               <div className={`w-px bg-white/30 ${currentStep === 4 ? 'h-10' : 'h-16'}`}></div>
               <div>
-                <div className="flex items-center gap-2">
-                  <h1 className={`font-light text-white ${currentStep === 4 ? 'text-2xl' : 'text-3xl'}`}>Prox Discovery</h1>
-                  <span className="px-2 py-0.5 text-xs font-medium bg-white/20 text-white rounded-full">beta</span>
-                </div>
+                <h1 className={`font-light text-white ${currentStep === 4 ? 'text-2xl' : 'text-3xl'}`}>Prox Discovery</h1>
                 {/* Tagline - Only show on discovery screen */}
                 {currentStep !== 4 && (
                   <p className="text-white/90 text-sm mt-1">

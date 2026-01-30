@@ -5,47 +5,10 @@ import { trackUseCaseClick } from '@/lib/analytics';
 
 interface LandingViewProps {
   onStartConversation: (prompt: string) => void;
-  onQuickFix?: () => void;
 }
 
-export default function LandingView({ onStartConversation, onQuickFix }: LandingViewProps) {
+export default function LandingView({ onStartConversation }: LandingViewProps) {
   const router = useRouter();
-
-  const useCases = [
-    {
-      icon: '🔧',
-      title: 'Solve a Problem',
-      description: 'Fix something that\'s been bothering you',
-      prompt: 'I have a problem to solve',
-      size: 'large' // Primary card
-    },
-    {
-      icon: '✨',
-      title: 'Explore',
-      description: 'See what\'s trending',
-      prompt: 'Show me what\'s trending',
-      size: 'small'
-    },
-    {
-      icon: '🎁',
-      title: 'Buy a Gift',
-      description: 'Find something for someone else',
-      prompt: 'I\'m looking for a gift',
-      size: 'small'
-    },
-    {
-      icon: '⚡',
-      title: 'Quick Fix',
-      description: 'Under $30, instant solutions',
-      prompt: 'I need a quick fix under $30',
-      size: 'medium'
-    }
-  ];
-
-  const handleUseCaseClick = (useCase: typeof useCases[0]) => {
-    trackUseCaseClick(useCase.title.toLowerCase().replace(' ', '_'));
-    onStartConversation(useCase.prompt);
-  };
 
   return (
     <div className="landing-container min-h-[60vh] flex flex-col justify-center items-center py-12 px-4">
@@ -98,21 +61,6 @@ export default function LandingView({ onStartConversation, onQuickFix }: Landing
           <span className="text-3xl mb-3 block">🎁</span>
           <h3 className="font-semibold text-lg text-gray-900 mb-1">Buy a Gift</h3>
           <p className="text-sm text-gray-500">Find something for someone else</p>
-        </button>
-        
-        {/* Quick Fix - spans full width at bottom - navigates to /quick-fix page */}
-        <button
-          onClick={() => {
-            trackUseCaseClick('quick_fix');
-            router.push('/quick-fix');
-          }}
-          className="col-span-1 sm:col-span-2 p-6 bg-white/80 backdrop-blur rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-amber-300/30 transition-all duration-300 flex items-center gap-6 animate-fade-in-up-4"
-        >
-          <span className="text-4xl">⚡</span>
-          <div className="text-left">
-            <h3 className="font-semibold text-lg text-gray-900 mb-1">Quick Fix</h3>
-            <p className="text-sm text-gray-500">Under $30, instant solutions</p>
-          </div>
         </button>
       </div>
     </div>
