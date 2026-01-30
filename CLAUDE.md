@@ -297,6 +297,21 @@ git commit -m "Description"
 git push origin main
 ```
 
+## Category Product Curation
+
+The system uses a CategoryConfig-based approach for precise product matching per category.
+
+See **`prox_autonomous_discovery/docs/CATEGORY_CURATION.md`** for:
+- How CategoryConfig works (primary_terms, secondary_terms, exclusion_terms)
+- How to add new categories
+- How to troubleshoot contamination issues
+- How to run E2E tests
+
+Key files:
+- `api/category_config.py` - All 28 category definitions
+- `api/category_products.py` - Search engine with exclusion filtering
+- `tests/test_category_products.py` - E2E tests for category accuracy
+
 ## Database Schema (Key Tables)
 
 - `users` - User accounts with magic link auth

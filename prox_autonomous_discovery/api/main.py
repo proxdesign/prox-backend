@@ -10,6 +10,7 @@ import anthropic
 from config.settings import settings
 from database.connection import db
 from services.auth_service import auth_service
+from api.category_products import router as category_products_router
 
 logging.basicConfig(level=settings.LOG_LEVEL)
 logger = logging.getLogger(__name__)
@@ -37,6 +38,9 @@ app.add_middleware(
 
 # Initialize Claude client
 claude = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+
+# Register category products router
+app.include_router(category_products_router, prefix="/api", tags=["category-products"])
 
 # Auth dependency
 def get_current_user(authorization: Optional[str] = Header(None)) -> Optional[Dict[str, Any]]:
