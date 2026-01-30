@@ -240,6 +240,52 @@ const SEARCH_TO_SOLUTION_MAP: { [key: string]: number } = {
   "boho": 47,
 };
 
+// Excluded product types - these should never appear in home/furniture searches
+const EXCLUDED_KEYWORDS = [
+  // Food & Beverages
+  'noodle', 'pasta', 'cracker', 'snack', 'food', 'candy', 'chocolate', 'cookie',
+  'cereal', 'drink', 'beverage', 'tea', 'coffee', 'sauce', 'seasoning', 'spice mix',
+  // Media & Entertainment
+  'dvd', 'blu-ray', 'cd', 'vinyl', 'album', 'movie', 'film', 'video game', 'playstation', 'xbox',
+  'nintendo', 'book', 'novel', 'paperback', 'hardcover', 'kindle', 'audiobook',
+  // Health & Beauty
+  'scar gel', 'cream', 'lotion', 'shampoo', 'conditioner', 'soap', 'body wash',
+  'makeup', 'mascara', 'lipstick', 'foundation', 'perfume', 'cologne', 'deodorant',
+  'vitamin', 'supplement', 'medicine', 'pill', 'tablet', 'capsule',
+  // Clothing & Accessories (non-home)
+  't-shirt', 'shirt', 'pants', 'jeans', 'dress', 'skirt', 'jacket', 'coat',
+  'shoes', 'sneakers', 'boots', 'sandals', 'socks', 'underwear', 'bra',
+  'watch', 'jewelry', 'necklace', 'bracelet', 'earring', 'ring',
+  // Electronics (non-home)
+  'phone case', 'screen protector', 'charger cable', 'earbuds', 'headphones',
+  'laptop', 'tablet', 'computer', 'keyboard', 'mouse', 'webcam',
+  // Toys & Games
+  'toy', 'action figure', 'doll', 'lego', 'puzzle', 'board game', 'card game',
+  // Automotive
+  'car', 'automotive', 'vehicle', 'tire', 'motor oil', 'windshield',
+  // Office supplies (non-home decor)
+  'printer paper', 'ink cartridge', 'stapler', 'paper clip', 'binder',
+];
+
+// Check if a product title contains excluded keywords
+function isExcludedProduct(title: string): boolean {
+  const lowerTitle = title.toLowerCase();
+  return EXCLUDED_KEYWORDS.some(keyword => lowerTitle.includes(keyword));
+}
+
+// Filter products to only include home-relevant items
+function filterHomeProducts(products: Product[]): Product[] {
+  return products.filter(product => {
+    const title = product.title || '';
+    // Exclude products with banned keywords
+    if (isExcludedProduct(title)) {
+      console.log(`🚫 Filtered out: "${title.substring(0, 50)}..."`);
+      return false;
+    }
+    return true;
+  });
+}
+
 // Canopy API search for Amazon products (primary method)
 async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): Promise<Product[]> {
   // Check cache first
@@ -257,9 +303,11 @@ async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): 
   }
 
   try {
-    console.log(`🌿 Canopy API search for: "${searchTerm}"`);
+    // Request more products than needed to account for filtering
+    const requestLimit = Math.min(limit * 2, 48);
+    console.log(`🌿 Canopy API search for: "${searchTerm}" (requesting ${requestLimit} to filter down to ${limit})`);
     const response = await fetch(
-      `https://rest.canopyapi.co/api/amazon/search?searchTerm=${encodeURIComponent(searchTerm)}&domain=US&limit=${limit}`,
+      `https://rest.canopyapi.co/api/amazon/search?searchTerm=${encodeURIComponent(searchTerm)}&domain=US&limit=${requestLimit}`,
       {
         method: 'GET',
         headers: {
@@ -280,7 +328,7 @@ async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): 
     const results = data?.data?.amazonProductSearchResults?.productResults?.results || [];
 
     if (results.length > 0) {
-      const products = results.map((item: any) =>
+      const allProducts = results.map((item: any) =>
         transformProductWithAffiliateTag({
           title: item.title || 'Product Title Not Available',
           brand: item.brand || extractBrand(item.title || ''),
@@ -295,8 +343,13 @@ async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): 
           trendScore: calculateTrendScoreSync({ rating: item.rating, ratings_total: item.ratingsTotal }),
         })
       );
-      console.log(`✅ Canopy returned ${products.length} products for "${searchTerm}"`);
-      // Cache the results
+
+      // Filter out non-home products (food, media, clothing, etc.)
+      const filteredProducts = filterHomeProducts(allProducts);
+      // Limit to requested amount
+      const products = filteredProducts.slice(0, limit);
+      console.log(`✅ Canopy returned ${allProducts.length} products, ${filteredProducts.length} after filtering, returning ${products.length} for "${searchTerm}"`);
+      // Cache the filtered results
       setCachedProducts(cacheKey, products);
       return products;
     }
