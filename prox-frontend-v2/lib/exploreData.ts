@@ -272,6 +272,11 @@ export function getExploreCategoryById(id: string): ExploreCategory | undefined 
 
 // Helper to get search query for a category
 export function getSearchQueryForCategory(category: ExploreCategory): string {
-  // Use just the first keyword for cleaner search matching
+  // For style categories, append "furniture decor" to get home products
+  // instead of unrelated items (e.g., "industrial" alone returns contractor supplies)
+  if (category.type === 'style') {
+    return `${category.keywords[0]} style furniture decor`;
+  }
+  // Use just the first keyword for other categories
   return category.keywords[0];
 }

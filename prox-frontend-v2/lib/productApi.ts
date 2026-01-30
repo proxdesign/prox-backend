@@ -21,7 +21,7 @@ interface CacheEntry {
 
 const productCache = new Map<string, CacheEntry>();
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
-const CACHE_VERSION = 'v2'; // Increment to invalidate old caches
+const CACHE_VERSION = 'v3'; // Increment to invalidate old caches
 
 function getCachedProducts(key: string): Product[] | null {
   const entry = productCache.get(key);
@@ -267,8 +267,15 @@ const EXCLUDED_KEYWORDS = [
   'toy', 'action figure', 'doll', 'lego', 'puzzle', 'board game', 'card game', 'plush',
   // Automotive
   'automotive', 'vehicle', 'tire', 'motor oil', 'windshield', 'car seat',
-  // Office supplies (non-home decor)
+  // Office/Industrial Supplies (not home decor)
   'printer paper', 'ink cartridge', 'stapler', 'paper clip', 'binder',
+  'sharpie', 'marker', 'highlighter', 'pen', 'pencil', 'eraser', 'scissors',
+  'tape dispenser', 'packing tape', 'duct tape', 'electrical tape', 'masking tape',
+  'contractor bag', 'trash bag', 'garbage bag', 'plastic bag',
+  'pipe fitting', 'pvc pipe', 'copper pipe', 'plumbing', 'valve', 'coupling',
+  'drill bit', 'saw blade', 'sandpaper', 'welding', 'soldering',
+  'safety glasses', 'work gloves', 'hard hat', 'respirator', 'ear plugs',
+  'zip tie', 'cable tie', 'wire connector', 'junction box', 'conduit',
   // Musical instruments & Religious items
   'shofar', 'guitar', 'ukulele', 'violin', 'trumpet', 'flute', 'drum', 'harmonica',
   'menorah', 'rosary', 'crucifix', 'prayer', 'religious',
