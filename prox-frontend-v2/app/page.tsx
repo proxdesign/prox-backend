@@ -739,7 +739,7 @@ export default function Home() {
 
             {/* Header Right Side */}
             <div className="flex items-center gap-4">
-              {/* How it Works & Why Prox links - Desktop only */}
+              {/* How it Works, Guides & Why Prox links - Desktop only */}
               {currentStep !== 4 && (
                 <div className="hidden md:flex items-center gap-2 text-sm">
                   <button
@@ -748,6 +748,13 @@ export default function Home() {
                   >
                     How it Works
                   </button>
+                  <span className="text-white/40">•</span>
+                  <Link
+                    href="/guides"
+                    className="text-white/80 hover:text-white transition-colors"
+                  >
+                    Guides
+                  </Link>
                   <span className="text-white/40">•</span>
                   <button
                     onClick={() => setShowWhyProx(true)}
@@ -795,7 +802,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Mobile: How it Works & Why Prox links - centered below header */}
+          {/* Mobile: How it Works, Guides & Why Prox links - centered below header */}
           {currentStep !== 4 && (
             <div className="flex md:hidden items-center justify-center gap-2 text-sm mt-4">
               <button
@@ -804,6 +811,13 @@ export default function Home() {
               >
                 How it Works
               </button>
+              <span className="text-white/40">•</span>
+              <Link
+                href="/guides"
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                Guides
+              </Link>
               <span className="text-white/40">•</span>
               <button
                 onClick={() => setShowWhyProx(true)}

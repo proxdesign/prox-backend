@@ -67,6 +67,13 @@ test.describe('UI Elements', () => {
     await expect(whyProxButtons.first()).toBeVisible();
   });
 
+  test('Guides link is visible in header', async ({ page }) => {
+    // The link is in the header (has mobile + desktop versions)
+    const guidesLinks = page.locator('header').getByText('Guides');
+    // At least one should be visible (mobile or desktop version depending on viewport)
+    await expect(guidesLinks.first()).toBeVisible();
+  });
+
   test('footer is present', async ({ page }) => {
     // Scroll to bottom to ensure footer is in view
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));

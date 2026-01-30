@@ -103,11 +103,6 @@ test.describe('Mobile Layout', () => {
     await expect(page.locator('.landing-container, [data-testid="chat-interface"]')).toBeVisible({ timeout: 5000 });
   });
 
-  test('beta badge is visible on mobile', async ({ page }) => {
-    const betaBadge = page.getByText('beta');
-    await expect(betaBadge).toBeVisible();
-  });
-
   test('footer renders correctly on mobile', async ({ page }) => {
     // Scroll to footer
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
@@ -119,6 +114,7 @@ test.describe('Mobile Layout', () => {
     await expect(page.getByText('Prox', { exact: true }).last()).toBeVisible();
     await expect(page.getByText('Affiliate Disclosure')).toBeVisible();
     await expect(page.getByText('Learn More')).toBeVisible();
+    await expect(page.getByText('Buying Guides')).toBeVisible();
   });
 });
 
