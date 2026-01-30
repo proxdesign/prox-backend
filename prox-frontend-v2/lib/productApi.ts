@@ -21,6 +21,7 @@ interface CacheEntry {
 
 const productCache = new Map<string, CacheEntry>();
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
+const CACHE_VERSION = 'v2'; // Increment to invalidate old caches
 
 function getCachedProducts(key: string): Product[] | null {
   const entry = productCache.get(key);
@@ -243,28 +244,39 @@ const SEARCH_TO_SOLUTION_MAP: { [key: string]: number } = {
 // Excluded product types - these should never appear in home/furniture searches
 const EXCLUDED_KEYWORDS = [
   // Food & Beverages
-  'noodle', 'pasta', 'cracker', 'snack', 'food', 'candy', 'chocolate', 'cookie',
-  'cereal', 'drink', 'beverage', 'tea', 'coffee', 'sauce', 'seasoning', 'spice mix',
+  'noodle', 'pasta', 'crackers', 'cracker', 'snack', 'food', 'candy', 'chocolate', 'cookie',
+  'cereal', 'drink', 'beverage', 'tea bag', 'coffee bean', 'sauce', 'seasoning', 'spice mix',
+  'chips', 'pretzels', 'nuts', 'seeds', 'granola', 'protein bar', 'energy bar',
+  'soup', 'broth', 'canned', 'frozen', 'organic food', 'gluten free', 'keto',
   // Media & Entertainment
   'dvd', 'blu-ray', 'cd', 'vinyl', 'album', 'movie', 'film', 'video game', 'playstation', 'xbox',
   'nintendo', 'book', 'novel', 'paperback', 'hardcover', 'kindle', 'audiobook',
   // Health & Beauty
-  'scar gel', 'cream', 'lotion', 'shampoo', 'conditioner', 'soap', 'body wash',
+  'scar gel', 'moisturizer', 'lotion', 'shampoo', 'conditioner', 'body wash',
   'makeup', 'mascara', 'lipstick', 'foundation', 'perfume', 'cologne', 'deodorant',
-  'vitamin', 'supplement', 'medicine', 'pill', 'tablet', 'capsule',
+  'vitamin', 'supplement', 'medicine', 'pill', 'capsule', 'probiotic',
+  'face mask', 'skin care', 'anti-aging', 'sunscreen', 'hair dye',
   // Clothing & Accessories (non-home)
-  't-shirt', 'shirt', 'pants', 'jeans', 'dress', 'skirt', 'jacket', 'coat',
+  't-shirt', 'tshirt', 'pants', 'jeans', 'dress', 'skirt', 'jacket',
   'shoes', 'sneakers', 'boots', 'sandals', 'socks', 'underwear', 'bra',
-  'watch', 'jewelry', 'necklace', 'bracelet', 'earring', 'ring',
+  'jewelry', 'necklace', 'bracelet', 'earring',
   // Electronics (non-home)
   'phone case', 'screen protector', 'charger cable', 'earbuds', 'headphones',
-  'laptop', 'tablet', 'computer', 'keyboard', 'mouse', 'webcam',
+  'laptop', 'computer', 'webcam', 'bluetooth speaker', 'smart watch',
   // Toys & Games
-  'toy', 'action figure', 'doll', 'lego', 'puzzle', 'board game', 'card game',
+  'toy', 'action figure', 'doll', 'lego', 'puzzle', 'board game', 'card game', 'plush',
   // Automotive
-  'car', 'automotive', 'vehicle', 'tire', 'motor oil', 'windshield',
+  'automotive', 'vehicle', 'tire', 'motor oil', 'windshield', 'car seat',
   // Office supplies (non-home decor)
   'printer paper', 'ink cartridge', 'stapler', 'paper clip', 'binder',
+  // Musical instruments & Religious items
+  'shofar', 'guitar', 'ukulele', 'violin', 'trumpet', 'flute', 'drum', 'harmonica',
+  'menorah', 'rosary', 'crucifix', 'prayer', 'religious',
+  // Sports & Fitness (non-home)
+  'dumbbell', 'barbell', 'yoga mat', 'resistance band', 'jump rope', 'tennis', 'golf',
+  'basketball', 'football', 'soccer', 'baseball', 'hockey',
+  // Pet products (non-decor)
+  'dog food', 'cat food', 'pet treat', 'chew toy', 'leash', 'collar', 'pet bed',
 ];
 
 // Check if a product title contains excluded keywords
@@ -288,8 +300,8 @@ function filterHomeProducts(products: Product[]): Product[] {
 
 // Canopy API search for Amazon products (primary method)
 async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): Promise<Product[]> {
-  // Check cache first
-  const cacheKey = `canopy:${searchTerm.toLowerCase()}:${limit}`;
+  // Check cache first (include version to invalidate on filter updates)
+  const cacheKey = `canopy:${CACHE_VERSION}:${searchTerm.toLowerCase()}:${limit}`;
   const cached = getCachedProducts(cacheKey);
   if (cached) {
     console.log(`⚡ Cache hit for "${searchTerm}" (${cached.length} products)`);
