@@ -363,43 +363,35 @@ export async function POST(request: NextRequest) {
       // If no products found, fall through to normal conversation flow
     }
 
-    // Handle "Solve a Problem" requests - progressive disclosure: show products early
+    // Handle "Solve a Problem" requests - ask combined question (room + problem)
     if (isProblemRequest) {
-      console.log('Handling problem solving request with progressive disclosure');
+      console.log('Handling problem solving request');
       const rateLimitHeaders = {
         'X-RateLimit-Remaining': String(rateLimit.remaining),
         'X-RateLimit-Reset': String(Math.ceil(rateLimit.resetIn / 1000))
       };
 
-      // Fetch broad organization products to show while asking clarifying question
-      const broadProducts = await fetchBroadProducts('organization', 6);
-      console.log('Fetched broad products for problem flow:', broadProducts.length);
-
       return NextResponse.json({
-        response: "I'd love to help! What room or space is giving you trouble?\n\nWhile you think about it, here are some popular solutions:",
+        response: "I'd love to help! What room or space is giving you trouble, and what's bugging you about it?",
         showProductGrid: false,
-        products: broadProducts,  // Show products immediately per progressive disclosure
+        products: [],  // No products until we have context
         solutions: [],
         needsMoreInfo: true
       }, { headers: rateLimitHeaders });
     }
 
-    // Handle "Looking for a Gift" requests - progressive disclosure: show products early
+    // Handle "Looking for a Gift" requests - ask combined question (recipient + budget)
     if (isGiftRequest) {
-      console.log('Handling gift request with progressive disclosure');
+      console.log('Handling gift request');
       const rateLimitHeaders = {
         'X-RateLimit-Remaining': String(rateLimit.remaining),
         'X-RateLimit-Reset': String(Math.ceil(rateLimit.resetIn / 1000))
       };
 
-      // Fetch broad gift products to show while asking clarifying question
-      const broadProducts = await fetchBroadProducts('gift', 6);
-      console.log('Fetched broad products for gift flow:', broadProducts.length);
-
       return NextResponse.json({
-        response: "Great! Who's the gift for and what's your budget?\n\nHere are some popular gift ideas to browse:",
+        response: "Great! Who's the gift for, and what are they into?",
         showProductGrid: false,
-        products: broadProducts,  // Show products immediately per progressive disclosure
+        products: [],  // No products until we have context
         solutions: [],
         needsMoreInfo: true
       }, { headers: rateLimitHeaders });
