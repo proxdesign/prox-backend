@@ -8,6 +8,97 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
 });
 
+// Product category terms for direct product name recognition (Phase 3 of churn optimization)
+const PRODUCT_CATEGORY_TERMS: Record<string, string[]> = {
+  'spice': ['spice rack', 'spice organizer', 'spice storage', 'spice shelf'],
+  'shoe': ['shoe rack', 'shoe organizer', 'shoe storage', 'shoe shelf'],
+  'closet': ['closet organizer', 'closet system', 'hanging organizer'],
+  'drawer': ['drawer organizer', 'drawer divider', 'drawer insert'],
+  'cabinet': ['cabinet organizer', 'shelf riser', 'cabinet shelf'],
+  'desk': ['desk organizer', 'pencil holder', 'desk tray'],
+  'cord': ['cord organizer', 'cable management', 'cable clips'],
+  'lazy susan': ['lazy susan', 'turntable organizer'],
+  'bin': ['storage bin', 'storage basket', 'fabric bin'],
+  'hook': ['wall hook', 'adhesive hook', 'over door hook'],
+  'under sink': ['under sink', 'under-sink', 'undersink'],
+  'pantry': ['pantry organizer', 'pantry storage', 'can organizer'],
+};
+
+// Detect if user is asking for a specific product type
+function detectProductCategory(message: string): string | null {
+  const lowerMessage = message.toLowerCase();
+  for (const [category, terms] of Object.entries(PRODUCT_CATEGORY_TERMS)) {
+    if (terms.some(term => lowerMessage.includes(term))) {
+      return category;
+    }
+  }
+  return null;
+}
+
+// Fetch broad products for progressive disclosure (Phase 1 of churn optimization)
+async function fetchBroadProducts(category: string, limit: number = 6): Promise<any[]> {
+  const categoryQueries: Record<string, string> = {
+    'organization': 'home organization storage',
+    'gift': 'home gift ideas kitchen',
+    'kitchen': 'kitchen organization',
+    'bathroom': 'bathroom storage organizer',
+    'bedroom': 'bedroom organization storage',
+    'office': 'desk organization office',
+    'storage': 'storage bins organizer',
+    'gardening': 'garden organizer planter',
+  };
+
+  const query = categoryQueries[category] || 'home organization';
+  const apiUrl = process.env.API_URL || 'https://prox-autonomous-discovery.fly.dev';
+
+  try {
+    const response = await fetch(
+      `${apiUrl}/search?q=${encodeURIComponent(query)}&limit=${limit}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data.products || data || [];
+    }
+  } catch (error) {
+    console.error('Error fetching broad products:', error);
+  }
+  return [];
+}
+
+// Fetch products by specific category name (for direct product searches)
+async function fetchProductsByCategory(category: string, limit: number = 12): Promise<any[]> {
+  const searchTerms: Record<string, string> = {
+    'spice': 'spice rack organizer',
+    'shoe': 'shoe rack storage organizer',
+    'closet': 'closet organizer system',
+    'drawer': 'drawer organizer divider',
+    'cabinet': 'cabinet shelf organizer riser',
+    'desk': 'desk organizer office supplies',
+    'cord': 'cable management cord organizer',
+    'lazy susan': 'lazy susan turntable organizer',
+    'bin': 'storage bin basket fabric',
+    'hook': 'wall hooks adhesive removable',
+    'under sink': 'under sink organizer storage',
+    'pantry': 'pantry organizer storage can',
+  };
+
+  const query = searchTerms[category] || category;
+  const apiUrl = process.env.API_URL || 'https://prox-autonomous-discovery.fly.dev';
+
+  try {
+    const response = await fetch(
+      `${apiUrl}/search?q=${encodeURIComponent(query)}&limit=${limit}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data.products || data || [];
+    }
+  } catch (error) {
+    console.error('Error fetching products by category:', error);
+  }
+  return [];
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Check rate limit first
@@ -247,35 +338,68 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Handle "Solve a Problem" requests - ask clarifying question
-    if (isProblemRequest) {
-      console.log('Handling problem solving request');
+    // Handle direct product name requests (e.g., "spice rack") - Phase 3 of churn optimization
+    // When user types a specific product category, show products immediately without conversation
+    const productCategory = detectProductCategory(lowerMessage);
+    if (productCategory) {
+      console.log('Detected direct product search for category:', productCategory);
       const rateLimitHeaders = {
         'X-RateLimit-Remaining': String(rateLimit.remaining),
         'X-RateLimit-Reset': String(Math.ceil(rateLimit.resetIn / 1000))
       };
-      
+
+      const products = await fetchProductsByCategory(productCategory, 12);
+      console.log('Fetched products for category:', productCategory, 'count:', products.length);
+
+      if (products.length > 0) {
+        const categoryDisplay = productCategory.charAt(0).toUpperCase() + productCategory.slice(1);
+        return NextResponse.json({
+          response: `Here are some great ${categoryDisplay.toLowerCase()} options:`,
+          showProductGrid: true,
+          products: products,
+          solutions: []
+        }, { headers: rateLimitHeaders });
+      }
+      // If no products found, fall through to normal conversation flow
+    }
+
+    // Handle "Solve a Problem" requests - progressive disclosure: show products early
+    if (isProblemRequest) {
+      console.log('Handling problem solving request with progressive disclosure');
+      const rateLimitHeaders = {
+        'X-RateLimit-Remaining': String(rateLimit.remaining),
+        'X-RateLimit-Reset': String(Math.ceil(rateLimit.resetIn / 1000))
+      };
+
+      // Fetch broad organization products to show while asking clarifying question
+      const broadProducts = await fetchBroadProducts('organization', 6);
+      console.log('Fetched broad products for problem flow:', broadProducts.length);
+
       return NextResponse.json({
-        response: "I'd love to help! What room or space is giving you trouble?",
+        response: "I'd love to help! What room or space is giving you trouble?\n\nWhile you think about it, here are some popular solutions:",
         showProductGrid: false,
-        products: [],
+        products: broadProducts,  // Show products immediately per progressive disclosure
         solutions: [],
         needsMoreInfo: true
       }, { headers: rateLimitHeaders });
     }
 
-    // Handle "Looking for a Gift" requests - ask clarifying question
+    // Handle "Looking for a Gift" requests - progressive disclosure: show products early
     if (isGiftRequest) {
-      console.log('Handling gift request');
+      console.log('Handling gift request with progressive disclosure');
       const rateLimitHeaders = {
         'X-RateLimit-Remaining': String(rateLimit.remaining),
         'X-RateLimit-Reset': String(Math.ceil(rateLimit.resetIn / 1000))
       };
-      
+
+      // Fetch broad gift products to show while asking clarifying question
+      const broadProducts = await fetchBroadProducts('gift', 6);
+      console.log('Fetched broad products for gift flow:', broadProducts.length);
+
       return NextResponse.json({
-        response: "Great! Who's the gift for and what's your budget?",
+        response: "Great! Who's the gift for and what's your budget?\n\nHere are some popular gift ideas to browse:",
         showProductGrid: false,
-        products: [],
+        products: broadProducts,  // Show products immediately per progressive disclosure
         solutions: [],
         needsMoreInfo: true
       }, { headers: rateLimitHeaders });
@@ -631,10 +755,19 @@ If the user hasn't given enough detail yet, respond with ONLY a question - no JS
     // Remove the JSON block from the display text
     const cleanResponse = responseText.replace(/```json[\s\S]*?```/g, '').trim();
 
+    // Mid-conversation category refinement: fetch products when user mentions a room/category
+    // This enables progressive disclosure - products refine as conversation progresses
+    let refinedProducts: any[] = [];
+    if (hasHistory && detectedCategory) {
+      console.log('Mid-conversation category refinement for:', detectedCategory);
+      refinedProducts = await fetchBroadProducts(detectedCategory, 8);
+      console.log('Fetched refined products:', refinedProducts.length);
+    }
+
     return NextResponse.json({
       response: cleanResponse,
       solutions: recommendedSolutions,
-      products: [] // Products will be fetched client-side based on solution keywords
+      products: refinedProducts  // Include refined products based on detected category
     }, {
       headers: {
         'X-RateLimit-Remaining': String(rateLimit.remaining),

@@ -88,57 +88,63 @@ echo "|---------|-------------|--------|---------|" >> "$REPORT_FILE"
 echo "Running FLOW tests..."
 
 # FLOW-TTV-01: Solve flow minimal input - count turns to products
+# Progressive disclosure: counts as PASS if products OR solutions appear
 echo "  Testing FLOW-TTV-01: Solve flow turns to products..."
 turn_count=0
-has_solutions=false
+has_products=false
 
 # Turn 1: Initial problem statement
 response=$(chat "I have a problem to solve" "[]")
 turn_count=$((turn_count + 1))
 ai_response=$(echo "$response" | jq -r '.response // empty')
 solutions=$(echo "$response" | jq -r '.solutions // [] | length')
+products=$(echo "$response" | jq -r '.products // [] | length')
 
-if [ "$solutions" -gt 0 ]; then
-    has_solutions=true
+# Progressive disclosure: products shown alongside questions count as success
+if [ "$solutions" -gt 0 ] || [ "$products" -gt 0 ]; then
+    has_products=true
 fi
 
 # Build history for next turn
 history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}]"
 
 # Turn 2: Answer with room
-if [ "$has_solutions" = false ]; then
+if [ "$has_products" = false ]; then
     response=$(chat "kitchen" "$history")
     turn_count=$((turn_count + 1))
     ai_response2=$(echo "$response" | jq -r '.response // empty')
     solutions=$(echo "$response" | jq -r '.solutions // [] | length')
+    products=$(echo "$response" | jq -r '.products // [] | length')
 
-    if [ "$solutions" -gt 0 ]; then
-        has_solutions=true
+    if [ "$solutions" -gt 0 ] || [ "$products" -gt 0 ]; then
+        has_products=true
     fi
 
     history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}, {\"role\": \"user\", \"content\": \"kitchen\"}, {\"role\": \"assistant\", \"content\": $(echo "$ai_response2" | jq -Rs .)}]"
 fi
 
 # Turn 3: Answer with problem type
-if [ "$has_solutions" = false ]; then
+if [ "$has_products" = false ]; then
     response=$(chat "counter clutter" "$history")
     turn_count=$((turn_count + 1))
     solutions=$(echo "$response" | jq -r '.solutions // [] | length')
+    products=$(echo "$response" | jq -r '.products // [] | length')
 
-    if [ "$solutions" -gt 0 ]; then
-        has_solutions=true
+    if [ "$solutions" -gt 0 ] || [ "$products" -gt 0 ]; then
+        has_products=true
     fi
 fi
 
 # Continue up to 6 turns
 for i in 4 5 6; do
-    if [ "$has_solutions" = false ]; then
+    if [ "$has_products" = false ]; then
         response=$(chat "yes" "$history")
         turn_count=$((turn_count + 1))
         solutions=$(echo "$response" | jq -r '.solutions // [] | length')
+        products=$(echo "$response" | jq -r '.products // [] | length')
 
-        if [ "$solutions" -gt 0 ]; then
-            has_solutions=true
+        if [ "$solutions" -gt 0 ] || [ "$products" -gt 0 ]; then
+            has_products=true
             break
         fi
     fi
@@ -153,52 +159,57 @@ else
 fi
 
 # FLOW-TTV-03: Gift flow minimal input
+# Progressive disclosure: counts as PASS if products OR solutions appear
 echo "  Testing FLOW-TTV-03: Gift flow turns to products..."
 turn_count=0
-has_solutions=false
+has_products=false
 
 response=$(chat "I am looking for a gift" "[]")
 turn_count=$((turn_count + 1))
 ai_response=$(echo "$response" | jq -r '.response // empty')
 solutions=$(echo "$response" | jq -r '.solutions // [] | length')
+products=$(echo "$response" | jq -r '.products // [] | length')
 
-if [ "$solutions" -gt 0 ]; then
-    has_solutions=true
+if [ "$solutions" -gt 0 ] || [ "$products" -gt 0 ]; then
+    has_products=true
 fi
 
 history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}]"
 
-if [ "$has_solutions" = false ]; then
+if [ "$has_products" = false ]; then
     response=$(chat "mom, around 40 dollars" "$history")
     turn_count=$((turn_count + 1))
     ai_response2=$(echo "$response" | jq -r '.response // empty')
     solutions=$(echo "$response" | jq -r '.solutions // [] | length')
+    products=$(echo "$response" | jq -r '.products // [] | length')
 
-    if [ "$solutions" -gt 0 ]; then
-        has_solutions=true
+    if [ "$solutions" -gt 0 ] || [ "$products" -gt 0 ]; then
+        has_products=true
     fi
 
     history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}, {\"role\": \"user\", \"content\": \"mom, around 40 dollars\"}, {\"role\": \"assistant\", \"content\": $(echo "$ai_response2" | jq -Rs .)}]"
 fi
 
-if [ "$has_solutions" = false ]; then
+if [ "$has_products" = false ]; then
     response=$(chat "cooking and baking" "$history")
     turn_count=$((turn_count + 1))
     solutions=$(echo "$response" | jq -r '.solutions // [] | length')
+    products=$(echo "$response" | jq -r '.products // [] | length')
 
-    if [ "$solutions" -gt 0 ]; then
-        has_solutions=true
+    if [ "$solutions" -gt 0 ] || [ "$products" -gt 0 ]; then
+        has_products=true
     fi
 fi
 
 for i in 4 5 6; do
-    if [ "$has_solutions" = false ]; then
+    if [ "$has_products" = false ]; then
         response=$(chat "bread making" "$history")
         turn_count=$((turn_count + 1))
         solutions=$(echo "$response" | jq -r '.solutions // [] | length')
+        products=$(echo "$response" | jq -r '.products // [] | length')
 
-        if [ "$solutions" -gt 0 ]; then
-            has_solutions=true
+        if [ "$solutions" -gt 0 ] || [ "$products" -gt 0 ]; then
+            has_products=true
             break
         fi
     fi
