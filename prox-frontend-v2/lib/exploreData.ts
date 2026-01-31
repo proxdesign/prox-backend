@@ -180,7 +180,7 @@ export const gardeningCategories: ExploreCategory[] = [
     name: 'Outdoor Decor',
     keywords: ['garden decor', 'outdoor solar lights', 'garden statue'],
     icon: '🏡',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=400&h=300&fit=crop&q=80',
     type: 'gardening'
   },
 ];

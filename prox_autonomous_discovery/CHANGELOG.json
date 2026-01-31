@@ -1,6 +1,15 @@
 {
   "changelog": [
     {
+      "date": "2026-01-30",
+      "version": "5.4.0",
+      "type": "added",
+      "component": "Conversational AI Churn Analysis Framework",
+      "reason": "Establish systematic testing methodology for optimizing chat flow time-to-value and reducing user abandonment",
+      "details": "Created comprehensive churn analysis test suite with 60+ tests across 5 layers (FLOW, LLM, UI, MOB, DATA). Implemented automated test runner script (run-churn-tests.sh) that executes API tests and generates academic-style reports with citations. Established website-tests folder structure in iCloud organized by scripts/, plans/, and results/YYYY-MM-DD/. Test naming convention: [LAYER]-[CATEGORY]-[##] (e.g., FLOW-TTV-01, LLM-QQ-02). References include Google Conversation Design, Amazon Lex, Voiceflow, Nielsen Norman Group, Baymard Institute, Hick's Law, and Don Norman's cognitive load theory.",
+      "impact": "Identified critical time-to-value issue: both Solve and Gift flows require 6 turns to show products (target: ≤3). Using Baymard's 10-15% abandonment coefficient per turn, current flows have 47-61% cumulative abandonment risk vs 27-39% at target. Recommendation: implement progressive disclosure pattern (show broad products early, refine with conversation). 85% overall test score with 14 PASS, 1 PARTIAL, 2 FAIL."
+    },
+    {
       "date": "2026-01-24",
       "version": "5.3.0",
       "type": "added",

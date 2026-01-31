@@ -1,0 +1,85 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - button "Prox Prox Discovery AI-powered recommendations to solve your home problems" [ref=e6] [cursor=pointer]:
+          - img "Prox" [ref=e7]
+          - generic [ref=e9]:
+            - heading "Prox Discovery" [level=1] [ref=e10]
+            - paragraph [ref=e11]: AI-powered recommendations to solve your home problems
+        - generic [ref=e12]:
+          - button "How it Works" [ref=e13] [cursor=pointer]
+          - generic [ref=e14]: •
+          - link "Guides" [ref=e15] [cursor=pointer]:
+            - /url: /guides
+          - generic [ref=e16]: •
+          - button "Why Prox?" [ref=e17] [cursor=pointer]
+    - main [ref=e18]:
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - heading "Hey! I'm Prox." [level=1] [ref=e24]
+          - paragraph [ref=e25]: I help people find home products that actually work.
+        - generic [ref=e26]:
+          - button "🔧 Solve a Problem Fix something that's been bothering you" [ref=e27] [cursor=pointer]:
+            - generic [ref=e28]: 🔧
+            - heading "Solve a Problem" [level=3] [ref=e29]
+            - paragraph [ref=e30]: Fix something that's been bothering you
+          - button "✨ Explore Browse by category" [ref=e31] [cursor=pointer]:
+            - generic [ref=e32]: ✨
+            - heading "Explore" [level=3] [ref=e33]
+            - paragraph [ref=e34]: Browse by category
+          - button "🎁 Buy a Gift Find something for someone else" [ref=e35] [cursor=pointer]:
+            - generic [ref=e36]: 🎁
+            - heading "Buy a Gift" [level=3] [ref=e37]
+            - paragraph [ref=e38]: Find something for someone else
+    - contentinfo [ref=e40]:
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - heading "Prox" [level=3] [ref=e44]
+            - paragraph [ref=e45]: AI-powered product recommendations based on real social media trends.
+          - generic [ref=e46]:
+            - heading "Buying Guides" [level=4] [ref=e47]
+            - list [ref=e48]:
+              - listitem [ref=e49]:
+                - link "Kitchen Organization" [ref=e50] [cursor=pointer]:
+                  - /url: /guides/kitchen-organization
+              - listitem [ref=e51]:
+                - link "Home Gift Ideas" [ref=e52] [cursor=pointer]:
+                  - /url: /guides/gift-ideas
+              - listitem [ref=e53]:
+                - link "Cutting Board Guide" [ref=e54] [cursor=pointer]:
+                  - /url: /guides/cutting-boards
+              - listitem [ref=e55]:
+                - link "All Guides →" [ref=e56] [cursor=pointer]:
+                  - /url: /guides
+          - generic [ref=e57]:
+            - heading "Learn More" [level=4] [ref=e58]
+            - list [ref=e59]:
+              - listitem [ref=e60]:
+                - link "How It Works" [ref=e61] [cursor=pointer]:
+                  - /url: /how-it-works
+              - listitem [ref=e62]:
+                - link "About Our Recommendations" [ref=e63] [cursor=pointer]:
+                  - /url: /about-recommendations
+              - listitem [ref=e64]:
+                - link "Privacy Policy" [ref=e65] [cursor=pointer]:
+                  - /url: /privacy-policy
+              - listitem [ref=e66]:
+                - link "Terms of Service" [ref=e67] [cursor=pointer]:
+                  - /url: /terms
+          - generic [ref=e68]:
+            - heading "Affiliate Disclosure" [level=4] [ref=e69]
+            - paragraph [ref=e70]:
+              - text: As an Amazon Associate we earn from qualifying purchases. We may also earn commissions from other affiliate partners.
+              - link "Learn more" [ref=e71] [cursor=pointer]:
+                - /url: /about-recommendations
+              - text: .
+        - generic [ref=e72]: © 2026 Prox LLC. All rights reserved.
+  - button "Open Next.js Dev Tools" [ref=e78] [cursor=pointer]:
+    - img [ref=e79]
+  - alert [ref=e82]
+```

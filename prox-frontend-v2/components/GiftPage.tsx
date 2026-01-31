@@ -149,7 +149,6 @@ export default function GiftPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-lg lg:text-2xl font-light text-white">Buy a Gift</h1>
-                  <span className="hidden lg:inline px-2 py-0.5 text-xs font-medium bg-white/20 text-white rounded-full">beta</span>
                 </div>
                 <p className="hidden lg:block text-white/80 text-sm">Find something special for someone</p>
               </div>

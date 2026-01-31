@@ -1,7 +1,9 @@
 // Simple in-memory rate limiter for API routes
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
-const RATE_LIMIT = 200; // requests per hour
+// Higher limit for development
+const isDev = process.env.NODE_ENV === 'development';
+const RATE_LIMIT = isDev ? 1000 : 200; // requests per hour
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour in ms
 
 export function checkRateLimit(ip: string): { 

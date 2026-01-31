@@ -312,6 +312,83 @@ Key files:
 - `api/category_products.py` - Search engine with exclusion filtering
 - `tests/test_category_products.py` - E2E tests for category accuracy
 
+## Conversational AI Churn Analysis
+
+### Overview
+
+A comprehensive testing framework for analyzing and optimizing the "Solve a Problem" and "Buy a Gift" conversational flows. Tests are based on industry best practices from Google Conversation Design, Amazon Lex, Voiceflow, Nielsen Norman Group, and others.
+
+### Test Files Location
+
+All test files are organized in the iCloud folder:
+
+```
+~/Library/Mobile Documents/com~apple~CloudDocs/projects/prox-product-discovery/website-tests/
+├── scripts/
+│   ├── run-churn-tests.sh          # Automated test runner (bash)
+│   └── warmup-categories.sh        # Category cache warmup
+├── plans/
+│   └── CHURN_ANALYSIS_TEST_PLAN.md # 60+ test definitions with references
+└── results/
+    └── YYYY-MM-DD/                 # Results organized by date
+        ├── test-results-*.md       # Academic-style test report
+        ├── playwright-report/      # Playwright HTML report + screenshots
+        └── playwright-errors/      # Failed test screenshots
+```
+
+### Test Categories
+
+| Layer | Code | Tests |
+|-------|------|-------|
+| Conversation Flow | `FLOW-*` | Time-to-value, slot filling, progressive disclosure |
+| AI/Language Model | `LLM-*` | Question quality, inference, escape hatches, momentum |
+| Interface | `UI-*` | Loading states, progress indicators, input fields |
+| Mobile | `MOB-*` | Keyboard, touch targets, viewport handling |
+| Context/State | `DATA-*` | Context retention, conversation memory |
+
+### Running Tests
+
+```bash
+# Navigate to frontend
+cd ~/projects/prox-product-discovery/prox-frontend-v2
+
+# Start dev server (required)
+npm run dev
+
+# Run churn analysis tests
+./scripts/run-churn-tests.sh
+
+# Results saved to: test-results-YYYYMMDD-HHMMSS.md
+```
+
+### Key Findings (2026-01-30)
+
+| Metric | Current | Target | Status |
+|--------|---------|--------|--------|
+| Solve flow turns to products | 6 | ≤3 | FAIL |
+| Gift flow turns to products | 6 | ≤3 | FAIL |
+| Questions per AI response | 1 | 1 | PASS |
+| Implicit inference | Working | — | PASS |
+| Escape hatches | Working | — | PASS |
+| Context retention | Working | — | PASS |
+
+**Critical Issue:** Both flows take 6 turns to show products (target: ≤3). Each additional turn increases abandonment by 10-15% (Baymard Institute).
+
+**Recommendation:** Implement progressive disclosure — show broad products after Turn 2, refine with subsequent answers.
+
+### References
+
+The test plan includes citations from:
+- Google Conversation Design Guidelines (2024)
+- Amazon Lex Best Practices (2024)
+- Voiceflow Research (2023)
+- Nielsen Norman Group (2023)
+- Baymard Institute E-Commerce UX Research (2024)
+- Hick's Law (1952) - Decision time theory
+- Don Norman - The Design of Everyday Things (2013)
+
+See `website-tests/plans/CHURN_ANALYSIS_TEST_PLAN.md` for full methodology and `website-tests/results/2026-01-30/test-results-20260130-200258.md` for the detailed academic report.
+
 ## Database Schema (Key Tables)
 
 - `users` - User accounts with magic link auth
