@@ -6,7 +6,7 @@
 !.gitignore
 !README.md
 !Procfile
-!CLAUDE.md
+!prox.md
 !prox-setup.sh
 !vercel.json
 !package.json
