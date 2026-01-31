@@ -2,6 +2,21 @@
 
 # Churn Analysis Test Runner
 # Automatically executes all tests from CHURN_ANALYSIS_TEST_PLAN.md and generates a scored report
+#
+# EXPECTED FLOW (updated 2026-01-30):
+# ==================================
+# Turn 1: User says "I have a problem" or "I'm looking for a gift"
+#         AI asks combined question: "What room, and what's bugging you?"
+#         Products: NONE (no context yet)
+#
+# Turn 2: User provides context: "kitchen, counter clutter"
+#         AI responds with follow-up question
+#         Products: YES (we now have room + problem context)
+#
+# Target: Products by Turn 2 (≤3 turns)
+#
+# Direct product searches (e.g., "spice rack") bypass conversation
+# and return products immediately on Turn 1.
 
 set -e
 
@@ -87,20 +102,23 @@ echo "|---------|-------------|--------|---------|" >> "$REPORT_FILE"
 
 echo "Running FLOW tests..."
 
-# FLOW-TTV-01: Solve flow minimal input - count turns to products
-# Progressive disclosure: counts as PASS if products OR solutions appear
+# FLOW-TTV-01: Solve flow - count turns to products
+# Expected flow:
+#   Turn 1: "I have a problem" → AI asks "What room, and what's bugging you?" → NO products
+#   Turn 2: "kitchen, counter clutter" → AI responds with products → YES products
+# Target: ≤3 turns to products (should be 2 with combined question)
 echo "  Testing FLOW-TTV-01: Solve flow turns to products..."
 turn_count=0
 has_products=false
 
 # Turn 1: Initial problem statement
+# Expected: Combined question asking for room AND problem, NO products yet
 response=$(chat "I have a problem to solve" "[]")
 turn_count=$((turn_count + 1))
 ai_response=$(echo "$response" | jq -r '.response // empty')
 solutions=$(echo "$response" | jq -r '.solutions // [] | length')
 products=$(echo "$response" | jq -r '.products // [] | length')
 
-# Progressive disclosure: products shown alongside questions count as success
 if [ "$solutions" -gt 0 ] || [ "$products" -gt 0 ]; then
     has_products=true
 fi
@@ -108,9 +126,10 @@ fi
 # Build history for next turn
 history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}]"
 
-# Turn 2: Answer with room
+# Turn 2: User provides room AND problem (answering combined question)
+# Expected: Products should appear now that we have context
 if [ "$has_products" = false ]; then
-    response=$(chat "kitchen" "$history")
+    response=$(chat "kitchen, counter clutter" "$history")
     turn_count=$((turn_count + 1))
     ai_response2=$(echo "$response" | jq -r '.response // empty')
     solutions=$(echo "$response" | jq -r '.solutions // [] | length')
@@ -120,12 +139,12 @@ if [ "$has_products" = false ]; then
         has_products=true
     fi
 
-    history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}, {\"role\": \"user\", \"content\": \"kitchen\"}, {\"role\": \"assistant\", \"content\": $(echo "$ai_response2" | jq -Rs .)}]"
+    history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}, {\"role\": \"user\", \"content\": \"kitchen, counter clutter\"}, {\"role\": \"assistant\", \"content\": $(echo "$ai_response2" | jq -Rs .)}]"
 fi
 
-# Turn 3: Answer with problem type
+# Turn 3+: Fallback if products not shown yet (shouldn't happen with combined questions)
 if [ "$has_products" = false ]; then
-    response=$(chat "counter clutter" "$history")
+    response=$(chat "yes, random items" "$history")
     turn_count=$((turn_count + 1))
     solutions=$(echo "$response" | jq -r '.solutions // [] | length')
     products=$(echo "$response" | jq -r '.products // [] | length')
@@ -135,7 +154,7 @@ if [ "$has_products" = false ]; then
     fi
 fi
 
-# Continue up to 6 turns
+# Continue up to 6 turns (legacy fallback)
 for i in 4 5 6; do
     if [ "$has_products" = false ]; then
         response=$(chat "yes" "$history")
@@ -158,12 +177,17 @@ else
     log_result "FLOW-TTV-01" "Solve flow turns to products" "FAIL" "$turn_count turns (target ≤3)"
 fi
 
-# FLOW-TTV-03: Gift flow minimal input
-# Progressive disclosure: counts as PASS if products OR solutions appear
+# FLOW-TTV-03: Gift flow - count turns to products
+# Expected flow:
+#   Turn 1: "I'm looking for a gift" → AI asks "Who's it for, and what are they into?" → NO products
+#   Turn 2: "mom, she likes cooking" → AI responds with products → YES products
+# Target: ≤3 turns to products (should be 2 with combined question)
 echo "  Testing FLOW-TTV-03: Gift flow turns to products..."
 turn_count=0
 has_products=false
 
+# Turn 1: Initial gift request
+# Expected: Combined question asking for recipient AND interests, NO products yet
 response=$(chat "I am looking for a gift" "[]")
 turn_count=$((turn_count + 1))
 ai_response=$(echo "$response" | jq -r '.response // empty')
@@ -176,8 +200,10 @@ fi
 
 history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}]"
 
+# Turn 2: User provides recipient AND interests (answering combined question)
+# Expected: Products should appear now that we have context
 if [ "$has_products" = false ]; then
-    response=$(chat "mom, around 40 dollars" "$history")
+    response=$(chat "mom, she likes cooking" "$history")
     turn_count=$((turn_count + 1))
     ai_response2=$(echo "$response" | jq -r '.response // empty')
     solutions=$(echo "$response" | jq -r '.solutions // [] | length')
@@ -187,11 +213,12 @@ if [ "$has_products" = false ]; then
         has_products=true
     fi
 
-    history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}, {\"role\": \"user\", \"content\": \"mom, around 40 dollars\"}, {\"role\": \"assistant\", \"content\": $(echo "$ai_response2" | jq -Rs .)}]"
+    history="[{\"role\": \"assistant\", \"content\": $(echo "$ai_response" | jq -Rs .)}, {\"role\": \"user\", \"content\": \"mom, she likes cooking\"}, {\"role\": \"assistant\", \"content\": $(echo "$ai_response2" | jq -Rs .)}]"
 fi
 
+# Turn 3+: Fallback if products not shown yet (shouldn't happen with combined questions)
 if [ "$has_products" = false ]; then
-    response=$(chat "cooking and baking" "$history")
+    response=$(chat "budget around 40 dollars" "$history")
     turn_count=$((turn_count + 1))
     solutions=$(echo "$response" | jq -r '.solutions // [] | length')
     products=$(echo "$response" | jq -r '.products // [] | length')
@@ -322,6 +349,9 @@ else
 fi
 
 # LLM-ESC-03: Direct product name search
+# When user types a specific product name (e.g., "spice rack"), bypass conversation
+# and return products immediately. This respects user autonomy - they know what they want.
+# Detected categories: spice, shoe, closet, drawer, cabinet, desk, cord, lazy susan, bin, hook, etc.
 echo "  Testing LLM-ESC-03: Direct product name search..."
 response=$(chat "spice rack" "[{\"role\": \"assistant\", \"content\": \"I'd love to help! What room or space is giving you trouble?\"}]")
 solutions=$(echo "$response" | jq -r '.solutions // [] | length')
