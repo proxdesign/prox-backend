@@ -35,6 +35,57 @@ function detectProductCategory(message: string): string | null {
   return null;
 }
 
+// Helper: Check if product has a valid image
+function hasValidImage(product: any): boolean {
+  return product.image_url &&
+    typeof product.image_url === 'string' &&
+    product.image_url.includes('media-amazon');
+}
+
+// Primary search function: tries vector search first, falls back to keyword search
+async function fetchFromFlydev(query: string, limit: number = 8): Promise<any[]> {
+  const apiUrl = process.env.API_URL || 'https://prox-autonomous-discovery.fly.dev';
+
+  // STEP 1: Try vector search first (semantic search)
+  try {
+    const vectorResponse = await fetch(
+      `${apiUrl}/search/vector?q=${encodeURIComponent(query)}&limit=${limit}`
+    );
+
+    if (vectorResponse.ok) {
+      const vectorData = await vectorResponse.json();
+      const vectorProducts = vectorData.products || [];
+      const productsWithImages = vectorProducts.filter(hasValidImage);
+
+      console.log(`[PRODUCTS] Vector search returned ${vectorProducts.length} products (${productsWithImages.length} with images)`);
+
+      // Use vector results if we have at least 4 products with images
+      if (productsWithImages.length >= 4) {
+        return productsWithImages;
+      }
+    }
+  } catch (error) {
+    console.error('[PRODUCTS] Vector search error:', error);
+  }
+
+  // STEP 2: Fall back to keyword search
+  console.log('[PRODUCTS] Falling back to keyword search');
+  try {
+    const keywordResponse = await fetch(
+      `${apiUrl}/search?q=${encodeURIComponent(query)}&limit=${limit}`
+    );
+
+    if (keywordResponse.ok) {
+      const keywordData = await keywordResponse.json();
+      return keywordData.products || keywordData || [];
+    }
+  } catch (error) {
+    console.error('[PRODUCTS] Keyword search error:', error);
+  }
+
+  return [];
+}
+
 // Fetch broad products for progressive disclosure (Phase 1 of churn optimization)
 async function fetchBroadProducts(category: string, limit: number = 6): Promise<any[]> {
   const categoryQueries: Record<string, string> = {
@@ -52,20 +103,7 @@ async function fetchBroadProducts(category: string, limit: number = 6): Promise<
   };
 
   const query = categoryQueries[category] || 'home organization';
-  const apiUrl = process.env.API_URL || 'https://prox-autonomous-discovery.fly.dev';
-
-  try {
-    const response = await fetch(
-      `${apiUrl}/search?q=${encodeURIComponent(query)}&limit=${limit}`
-    );
-    if (response.ok) {
-      const data = await response.json();
-      return data.products || data || [];
-    }
-  } catch (error) {
-    console.error('Error fetching broad products:', error);
-  }
-  return [];
+  return fetchFromFlydev(query, limit);
 }
 
 // Fetch products by specific category name (for direct product searches)
@@ -86,20 +124,7 @@ async function fetchProductsByCategory(category: string, limit: number = 12): Pr
   };
 
   const query = searchTerms[category] || category;
-  const apiUrl = process.env.API_URL || 'https://prox-autonomous-discovery.fly.dev';
-
-  try {
-    const response = await fetch(
-      `${apiUrl}/search?q=${encodeURIComponent(query)}&limit=${limit}`
-    );
-    if (response.ok) {
-      const data = await response.json();
-      return data.products || data || [];
-    }
-  } catch (error) {
-    console.error('Error fetching products by category:', error);
-  }
-  return [];
+  return fetchFromFlydev(query, limit);
 }
 
 export async function POST(request: NextRequest) {
