@@ -23,7 +23,7 @@ class SearchFilters(BaseModel):
     styles: Optional[List[str]] = None
     materials: Optional[List[str]] = None
     features: Optional[List[str]] = None
-    sort_by: Optional[str] = "relevance"  # relevance, price_asc, price_desc, rating, trending
+    sort_by: Optional[str] = "relevance"  # relevance, price_asc, price_desc, rating, alphabetical, newest
     limit: Optional[int] = 20
     offset: Optional[int] = 0
 
@@ -43,11 +43,10 @@ class AdvancedSearchEngine:
     
     def __init__(self):
         self.sort_options = {
-            'relevance': 'p.trend_score DESC, p.rating DESC',
-            'price_asc': 'p.price ASC',
-            'price_desc': 'p.price DESC', 
-            'rating': 'p.rating DESC, p.review_count DESC',
-            'trending': 'p.trend_score DESC',
+            'relevance': 'p.rating DESC NULLS LAST, p.review_count DESC NULLS LAST',
+            'price_asc': 'p.price ASC NULLS LAST',
+            'price_desc': 'p.price DESC NULLS LAST',
+            'rating': 'p.rating DESC NULLS LAST, p.review_count DESC NULLS LAST',
             'alphabetical': 'p.product_name ASC',
             'newest': 'p.created_at DESC'
         }

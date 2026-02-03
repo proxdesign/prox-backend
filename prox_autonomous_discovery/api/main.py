@@ -236,9 +236,9 @@ async def get_products(solution_id: int):
             FROM products p
             JOIN affiliate_partners ap ON p.affiliate_partner_id = ap.id
             WHERE p.solution_id = %s AND p.active = TRUE
-            ORDER BY (CASE WHEN p.image_url LIKE '%%media-amazon%%' THEN 1 ELSE 2 END), p.trend_score DESC
+            ORDER BY (CASE WHEN p.image_url LIKE '%%media-amazon%%' THEN 1 ELSE 2 END), p.rating DESC NULLS LAST, p.review_count DESC NULLS LAST
         """
-        
+
         results = db.execute_query(query, [solution_id])
         
         products = []
@@ -306,7 +306,7 @@ async def get_trending_products(
                 query += " AND pr.problem_category = %s"
                 params.append(category)
         
-        query += " ORDER BY (CASE WHEN p.image_url LIKE '%%media-amazon%%' THEN 1 ELSE 2 END), p.trend_score DESC LIMIT %s"
+        query += " ORDER BY (CASE WHEN p.image_url LIKE '%%media-amazon%%' THEN 1 ELSE 2 END), p.rating DESC NULLS LAST, p.review_count DESC NULLS LAST LIMIT %s"
         params.append(limit)
         
         results = db.execute_query(query, params)
