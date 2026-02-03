@@ -149,33 +149,50 @@ async def health_check():
     }
 
 
-@app.get("/check-pgvector")
-async def check_pgvector():
-    """Check if pgvector extension is available and enable it."""
+@app.get("/db-diagnostics")
+async def db_diagnostics():
+    """Check database info, size, and pgvector availability."""
     try:
-        # Check available extensions
-        available = db.execute_query(
-            "SELECT name, default_version, installed_version FROM pg_available_extensions WHERE name = 'vector'"
+        # Get Postgres version
+        version = db.execute_query("SELECT version()")
+
+        # Get database size
+        db_size = db.execute_query("""
+            SELECT pg_size_pretty(pg_database_size(current_database())) as size,
+                   current_database() as database_name
+        """)
+
+        # Get table counts
+        table_stats = db.execute_query("""
+            SELECT relname as table_name,
+                   n_live_tup as row_count
+            FROM pg_stat_user_tables
+            ORDER BY n_live_tup DESC
+        """)
+
+        # Check pgvector availability
+        pgvector_available = db.execute_query(
+            "SELECT name, default_version FROM pg_available_extensions WHERE name = 'vector'"
         )
 
-        # Try to create the extension
+        # Try to create pgvector extension
+        pgvector_error = None
         try:
             db.execute("CREATE EXTENSION IF NOT EXISTS vector")
-            extension_created = True
+            pgvector_created = True
         except Exception as e:
-            extension_created = False
-            extension_error = str(e)
-
-        # Check if it's now installed
-        installed = db.execute_query(
-            "SELECT extname, extversion FROM pg_extension WHERE extname = 'vector'"
-        )
+            pgvector_created = False
+            pgvector_error = str(e)
 
         return {
-            "available_extensions": available,
-            "extension_created": extension_created,
-            "extension_error": extension_error if not extension_created else None,
-            "installed_extensions": installed
+            "postgres_version": version,
+            "database_size": db_size,
+            "table_stats": table_stats,
+            "pgvector": {
+                "available": len(pgvector_available) > 0 if pgvector_available else False,
+                "created": pgvector_created,
+                "error": pgvector_error
+            }
         }
     except Exception as e:
         return {"error": str(e)}
