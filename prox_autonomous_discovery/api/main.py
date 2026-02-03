@@ -149,6 +149,38 @@ async def health_check():
     }
 
 
+@app.get("/check-pgvector")
+async def check_pgvector():
+    """Check if pgvector extension is available and enable it."""
+    try:
+        # Check available extensions
+        available = db.execute_query(
+            "SELECT name, default_version, installed_version FROM pg_available_extensions WHERE name = 'vector'"
+        )
+
+        # Try to create the extension
+        try:
+            db.execute("CREATE EXTENSION IF NOT EXISTS vector")
+            extension_created = True
+        except Exception as e:
+            extension_created = False
+            extension_error = str(e)
+
+        # Check if it's now installed
+        installed = db.execute_query(
+            "SELECT extname, extversion FROM pg_extension WHERE extname = 'vector'"
+        )
+
+        return {
+            "available_extensions": available,
+            "extension_created": extension_created,
+            "extension_error": extension_error if not extension_created else None,
+            "installed_extensions": installed
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
 @app.get("/problems", response_model=List[Problem])
 async def get_problems(
     category: Optional[str] = None,
