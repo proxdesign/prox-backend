@@ -516,7 +516,7 @@ async def chat(message: ChatMessage):
 
 @app.get("/search")
 async def search_products(
-    query: Optional[str] = Query(None, description="Search query"),
+    q: Optional[str] = Query(None, description="Search query"),
     categories: Optional[str] = Query(None, description="Comma-separated category names"),
     brands: Optional[str] = Query(None, description="Comma-separated brand names"),
     min_price: Optional[float] = Query(None, description="Minimum price"),
@@ -536,7 +536,7 @@ async def search_products(
         
         # Parse comma-separated lists
         filters = SearchFilters(
-            query=query,
+            query=q,
             categories=categories.split(',') if categories else None,
             brands=brands.split(',') if brands else None,
             min_price=min_price,
