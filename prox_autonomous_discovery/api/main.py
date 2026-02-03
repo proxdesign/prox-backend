@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 import anthropic
+import voyageai
+import os
 from config.settings import settings
 from database.connection import db
 from services.auth_service import auth_service
@@ -147,55 +149,6 @@ async def health_check():
         "timestamp": datetime.now(),
         "version": "1.0.0"
     }
-
-
-@app.get("/db-diagnostics")
-async def db_diagnostics():
-    """Check database info, size, and pgvector availability."""
-    try:
-        # Get Postgres version
-        version = db.execute_query("SELECT version()")
-
-        # Get database size
-        db_size = db.execute_query("""
-            SELECT pg_size_pretty(pg_database_size(current_database())) as size,
-                   current_database() as database_name
-        """)
-
-        # Get table counts
-        table_stats = db.execute_query("""
-            SELECT relname as table_name,
-                   n_live_tup as row_count
-            FROM pg_stat_user_tables
-            ORDER BY n_live_tup DESC
-        """)
-
-        # Check pgvector availability
-        pgvector_available = db.execute_query(
-            "SELECT name, default_version FROM pg_available_extensions WHERE name = 'vector'"
-        )
-
-        # Try to create pgvector extension
-        pgvector_error = None
-        try:
-            db.execute("CREATE EXTENSION IF NOT EXISTS vector")
-            pgvector_created = True
-        except Exception as e:
-            pgvector_created = False
-            pgvector_error = str(e)
-
-        return {
-            "postgres_version": version,
-            "database_size": db_size,
-            "table_stats": table_stats,
-            "pgvector": {
-                "available": len(pgvector_available) > 0 if pgvector_available else False,
-                "created": pgvector_created,
-                "error": pgvector_error
-            }
-        }
-    except Exception as e:
-        return {"error": str(e)}
 
 
 @app.get("/problems", response_model=List[Problem])
@@ -656,6 +609,133 @@ async def get_search_suggestions(query: str = Query(..., description="Partial se
     except Exception as e:
         logger.error(f"Error fetching search suggestions: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch suggestions")
+
+
+# Voyage client for embeddings
+_voyage_client = None
+
+def get_voyage_client():
+    """Get or create Voyage client."""
+    global _voyage_client
+    if _voyage_client is None:
+        api_key = os.getenv("VOYAGE_API_KEY")
+        if api_key:
+            _voyage_client = voyageai.Client(api_key=api_key)
+    return _voyage_client
+
+
+def get_query_embedding(query: str) -> Optional[List[float]]:
+    """Generate embedding for a search query using Voyage."""
+    client = get_voyage_client()
+    if not client:
+        return None
+    try:
+        result = client.embed([query], model="voyage-3-lite", input_type="query")
+        return result.embeddings[0]
+    except Exception as e:
+        logger.error(f"Error generating query embedding: {e}")
+        return None
+
+
+@app.get("/search/vector")
+async def vector_search(
+    q: str = Query(..., description="Search query"),
+    limit: int = Query(20, description="Maximum results"),
+    threshold: float = Query(0.3, description="Minimum similarity score (0-1)")
+):
+    """Vector similarity search using pgvector embeddings."""
+    try:
+        # Generate query embedding
+        query_embedding = get_query_embedding(q)
+
+        if not query_embedding:
+            # Fallback to text search if embeddings unavailable
+            logger.warning("Embeddings unavailable, falling back to text search")
+            return await vector_search_fallback(q, limit)
+
+        # Convert to string format for pgvector
+        embedding_str = "[" + ",".join(str(x) for x in query_embedding) + "]"
+
+        # Vector similarity search using cosine distance
+        # pgvector uses <=> for cosine distance (lower = more similar)
+        # Convert to similarity score: 1 - distance
+        query = """
+            SELECT
+                p.id, p.product_name, p.brand, p.price,
+                p.affiliate_url, p.image_url, p.rating, p.review_count,
+                1 - (p.embedding <=> %s::vector) as similarity_score
+            FROM products p
+            WHERE p.active = TRUE
+              AND p.embedding IS NOT NULL
+              AND 1 - (p.embedding <=> %s::vector) >= %s
+            ORDER BY p.embedding <=> %s::vector
+            LIMIT %s
+        """
+
+        results = db.execute_query(query, [
+            embedding_str, embedding_str, threshold, embedding_str, limit
+        ])
+
+        products = []
+        for row in results:
+            products.append({
+                'id': row['id'],
+                'product_name': row['product_name'],
+                'brand': row['brand'],
+                'price': float(row['price']) if row['price'] else None,
+                'affiliate_url': row['affiliate_url'],
+                'image_url': row['image_url'],
+                'rating': float(row['rating']) if row['rating'] else None,
+                'review_count': row['review_count'],
+                'similarity_score': float(row['similarity_score'])
+            })
+
+        return {
+            'query': q,
+            'total_found': len(products),
+            'products': products,
+            'search_type': 'vector'
+        }
+
+    except Exception as e:
+        logger.error(f"Error in vector search: {e}")
+        raise HTTPException(status_code=500, detail="Vector search failed")
+
+
+async def vector_search_fallback(q: str, limit: int):
+    """Fallback text search when vector search is unavailable."""
+    query = """
+        SELECT
+            p.id, p.product_name, p.brand, p.price,
+            p.affiliate_url, p.image_url, p.rating, p.review_count
+        FROM products p
+        WHERE p.active = TRUE AND p.product_name ILIKE %s
+        ORDER BY p.rating DESC NULLS LAST
+        LIMIT %s
+    """
+
+    results = db.execute_query(query, [f"%{q}%", limit])
+
+    products = []
+    for row in results:
+        products.append({
+            'id': row['id'],
+            'product_name': row['product_name'],
+            'brand': row['brand'],
+            'price': float(row['price']) if row['price'] else None,
+            'affiliate_url': row['affiliate_url'],
+            'image_url': row['image_url'],
+            'rating': float(row['rating']) if row['rating'] else None,
+            'review_count': row['review_count'],
+            'similarity_score': None
+        })
+
+    return {
+        'query': q,
+        'total_found': len(products),
+        'products': products,
+        'search_type': 'text_fallback'
+    }
 
 
 @app.post("/search/semantic")
