@@ -20,7 +20,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71VeEHJZvCL._AC_SL1500_.jpg',
         'rating': 4.5,
         'review_count': 2345,
-        'trend_score': 9.2
     },
     {
         'solution_id': 1,
@@ -31,7 +30,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81rP3BVrKzL._AC_SL1500_.jpg',
         'rating': 4.4,
         'review_count': 1876,
-        'trend_score': 8.1
     },
     {
         'solution_id': 1,
@@ -42,7 +40,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81O8YCqWJpL._AC_SL1500_.jpg',
         'rating': 4.3,
         'review_count': 3456,
-        'trend_score': 7.8
     },
     # Closet Organization
     {
@@ -54,7 +51,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81K9YCqWJpL._AC_SL1500_.jpg',
         'rating': 4.6,
         'review_count': 2567,
-        'trend_score': 8.9
     },
     {
         'solution_id': 2,
@@ -65,7 +61,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/61L8ZqY8YzL._AC_SL1500_.jpg',
         'rating': 4.4,
         'review_count': 1934,
-        'trend_score': 8.3
     },
     # Under Bed Storage
     {
@@ -77,7 +72,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71rAZNvZUGL._AC_SL1500_.jpg',
         'rating': 4.5,
         'review_count': 4321,
-        'trend_score': 8.7
     },
     {
         'solution_id': 3,
@@ -88,7 +82,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81jmKdKBCIL._AC_SL1500_.jpg',
         'rating': 4.4,
         'review_count': 1765,
-        'trend_score': 8.5
     },
     
     # CATEGORY: HOME OFFICE (80+ products)
@@ -102,7 +95,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/61p8zqY8YzL._AC_SL1500_.jpg',
         'rating': 4.7,
         'review_count': 1543,
-        'trend_score': 9.4
     },
     {
         'solution_id': 4,
@@ -113,7 +105,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71Dq5rZwQ6L._AC_SL1500_.jpg',
         'rating': 4.2,
         'review_count': 876,
-        'trend_score': 7.6
     },
     # Office Chairs
     {
@@ -125,7 +116,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71VeEHJZvCL._AC_SL1500_.jpg',
         'rating': 4.1,
         'review_count': 2156,
-        'trend_score': 8.8
     },
     {
         'solution_id': 5,
@@ -136,7 +126,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81rP3BVrKzL._AC_SL1500_.jpg',
         'rating': 4.3,
         'review_count': 1876,
-        'trend_score': 9.1
     },
     # Standing Desks
     {
@@ -148,7 +137,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81O8YCqWJpL._AC_SL1500_.jpg',
         'rating': 4.4,
         'review_count': 3421,
-        'trend_score': 9.0
     },
     
     # CATEGORY: BEDROOM FURNITURE (60+ products)
@@ -162,7 +150,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71xKfqSNYsL._AC_SL1500_.jpg',
         'rating': 4.5,
         'review_count': 2134,
-        'trend_score': 8.6
     },
     {
         'solution_id': 7,
@@ -173,7 +160,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/61Dq5rZwQ6L._AC_SL1200_.jpg',
         'rating': 4.3,
         'review_count': 1567,
-        'trend_score': 8.2
     },
     # Bedroom Storage
     {
@@ -185,7 +171,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71L8ZqY8YzL._AC_SL1500_.jpg',
         'rating': 4.4,
         'review_count': 2987,
-        'trend_score': 8.4
     },
     # Dressers
     {
@@ -197,7 +182,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71kHmWl9mYL._AC_SL1500_.jpg',
         'rating': 4.2,
         'review_count': 1432,
-        'trend_score': 7.9
     },
     
     # CATEGORY: KITCHEN & DINING (70+ products)
@@ -211,7 +195,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/61L8ZqY8YzL._AC_SL1500_.jpg',
         'rating': 4.6,
         'review_count': 3876,
-        'trend_score': 8.8
     },
     {
         'solution_id': 10,
@@ -222,7 +205,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81rP3BVrKzL._AC_SL1500_.jpg',
         'rating': 4.3,
         'review_count': 1765,
-        'trend_score': 8.1
     },
     # Dining Furniture
     {
@@ -234,7 +216,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81K9YCqWJpL._AC_SL1500_.jpg',
         'rating': 4.4,
         'review_count': 876,
-        'trend_score': 8.3
     },
     
     # CATEGORY: LIVING ROOM (80+ products)  
@@ -248,7 +229,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71rAZNvZUGL._AC_SL1500_.jpg',
         'rating': 4.5,
         'review_count': 2345,
-        'trend_score': 9.0
     },
     {
         'solution_id': 12,
@@ -259,7 +239,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81jmKdKBCIL._AC_SL1500_.jpg',
         'rating': 4.3,
         'review_count': 1567,
-        'trend_score': 8.4
     },
     # TV Stands
     {
@@ -271,7 +250,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/61p8zqY8YzL._AC_SL1500_.jpg',
         'rating': 4.2,
         'review_count': 2876,
-        'trend_score': 8.7
     },
     # Bookcases
     {
@@ -283,7 +261,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71Dq5rZwQ6L._AC_SL1500_.jpg',
         'rating': 4.4,
         'review_count': 1987,
-        'trend_score': 8.5
     },
     
     # CATEGORY: BATHROOM (40+ products)
@@ -297,7 +274,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/71VeEHJZvCL._AC_SL1500_.jpg',
         'rating': 4.6,
         'review_count': 3456,
-        'trend_score': 8.9
     },
     {
         'solution_id': 15,
@@ -308,7 +284,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81rP3BVrKzL._AC_SL1500_.jpg',
         'rating': 4.3,
         'review_count': 1234,
-        'trend_score': 8.2
     },
     
     # CATEGORY: OUTDOOR & PATIO (30+ products)
@@ -322,7 +297,6 @@ PRODUCT_CATALOG = [
         'image_url': 'https://m.media-amazon.com/images/I/81O8YCqWJpL._AC_SL1500_.jpg',
         'rating': 4.4,
         'review_count': 876,
-        'trend_score': 8.1
     }
 ]
 
@@ -338,12 +312,12 @@ def add_bulk_products(products, batch_size=50):
         batch = products[i:i + batch_size]
         
         query = """
-            INSERT INTO products 
-            (solution_id, product_name, brand, price, affiliate_url, image_url, 
-             rating, review_count, trend_score, affiliate_partner_id, active)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, TRUE)
+            INSERT INTO products
+            (solution_id, product_name, brand, price, affiliate_url, image_url,
+             rating, review_count, affiliate_partner_id, active)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, TRUE)
         """
-        
+
         data = [
             (
                 p['solution_id'],
@@ -354,7 +328,6 @@ def add_bulk_products(products, batch_size=50):
                 p['image_url'],
                 p['rating'],
                 p['review_count'],
-                p['trend_score'],
                 1  # Amazon partner ID
             )
             for p in batch
@@ -386,7 +359,6 @@ def generate_variant_products():
             variant = base.copy()
             variant['product_name'] = f"{base['product_name']} - {color}"
             variant['price'] = base['price'] + (hash(color) % 20 - 10)  # Price variation
-            variant['trend_score'] = max(5.0, base['trend_score'] - 1.0)
             # Generate variant ASIN
             base_asin = base['affiliate_url'].split('/')[-1].split('?')[0]
             variant['affiliate_url'] = f"https://amazon.com/dp/{base_asin}{color[:2].upper()}?tag=prox0a-20"

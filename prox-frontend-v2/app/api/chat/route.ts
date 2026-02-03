@@ -39,13 +39,16 @@ function detectProductCategory(message: string): string | null {
 async function fetchBroadProducts(category: string, limit: number = 6): Promise<any[]> {
   const categoryQueries: Record<string, string> = {
     'organization': 'home organization storage',
-    'gift': 'home gift ideas kitchen',
-    'kitchen': 'kitchen organization',
+    'gift': 'gift ideas home',
+    'kitchen': 'kitchen organization cooking',
     'bathroom': 'bathroom storage organizer',
     'bedroom': 'bedroom organization storage',
     'office': 'desk organization office',
     'storage': 'storage bins organizer',
     'gardening': 'garden organizer planter',
+    'toys': 'kids toys educational play',
+    'cleaning': 'cleaning supplies organizer',
+    'pet': 'pet supplies organizer',
   };
 
   const query = categoryQueries[category] || 'home organization';
@@ -163,13 +166,15 @@ export async function POST(request: NextRequest) {
     // Extract product category from message
     const categoryKeywords: Record<string, string[]> = {
       'gardening': ['garden', 'gardening', 'plant', 'plants', 'planter', 'herb', 'outdoor', 'yard'],
-      'kitchen': ['kitchen', 'counter', 'pantry', 'cooking', 'utensil', 'spice'],
+      'kitchen': ['kitchen', 'counter', 'pantry', 'cooking', 'utensil', 'spice', 'baking', 'cook'],
       'office': ['desk', 'office', 'cable', 'monitor', 'ergonomic'],
       'bedroom': ['bed', 'sleep', 'closet', 'bedroom', 'mattress'],
       'bathroom': ['bathroom', 'shower', 'toilet', 'bath'],
       'cleaning': ['clean', 'cleaning', 'dust', 'mop', 'vacuum'],
       'pet': ['pet', 'dog', 'cat', 'animal'],
       'storage': ['storage', 'organize', 'organizer', 'shelf', 'bin'],
+      'toys': ['toy', 'toys', 'play', 'toddler', 'kid', 'kids', 'child', 'children', 'baby'],
+      'gift': ['gift', 'present', 'mom', 'dad', 'parent', 'friend', 'birthday', 'christmas'],
     };
 
     let detectedCategory = '';

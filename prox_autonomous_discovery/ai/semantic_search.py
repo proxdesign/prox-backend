@@ -237,7 +237,7 @@ class SemanticSearchEngine:
             JOIN affiliate_partners ap ON p.affiliate_partner_id = ap.id
             WHERE p.active = TRUE 
             AND ({' OR '.join(keyword_conditions)})
-            ORDER BY p.trend_score DESC, p.rating DESC
+            ORDER BY p.rating DESC NULLS LAST, p.review_count DESC NULLS LAST
             LIMIT %s
         """
         
@@ -270,7 +270,7 @@ class SemanticSearchEngine:
             JOIN affiliate_partners ap ON p.affiliate_partner_id = ap.id
             WHERE p.active = TRUE 
             AND ({' OR '.join(problem_conditions)})
-            ORDER BY p.trend_score DESC
+            ORDER BY p.rating DESC NULLS LAST, p.review_count DESC NULLS LAST
             LIMIT %s
         """
         
@@ -331,7 +331,7 @@ class SemanticSearchEngine:
             LEFT JOIN product_attributes pa ON p.id = pa.product_id AND pa.attribute_type = 'style'
             WHERE p.active = TRUE 
             AND ({' AND '.join(conditions)})
-            ORDER BY p.trend_score DESC
+            ORDER BY p.rating DESC NULLS LAST, p.review_count DESC NULLS LAST
             LIMIT %s
         """
         
@@ -361,7 +361,7 @@ class SemanticSearchEngine:
             JOIN affiliate_partners ap ON p.affiliate_partner_id = ap.id
             WHERE p.active = TRUE 
             AND ({' AND '.join(feature_conditions)})
-            ORDER BY p.trend_score DESC, p.rating DESC
+            ORDER BY p.rating DESC NULLS LAST, p.review_count DESC NULLS LAST
             LIMIT %s
         """
         
@@ -504,7 +504,7 @@ class SemanticSearchEngine:
             FROM products p
             JOIN affiliate_partners ap ON p.affiliate_partner_id = ap.id
             WHERE p.active = TRUE AND p.product_name ILIKE %s
-            ORDER BY p.trend_score DESC
+            ORDER BY p.rating DESC NULLS LAST, p.review_count DESC NULLS LAST
             LIMIT %s
         """
         

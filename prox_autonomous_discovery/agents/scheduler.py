@@ -8,7 +8,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 # Import all agents
 from agents.link_health_monitor import LinkHealthMonitor
 from agents.quality_auditor import QualityAuditor
-from agents.trend_decay import TrendDecay
 from agents.cost_optimizer import CostOptimizer
 
 logging.basicConfig(level=logging.INFO)
@@ -27,7 +26,6 @@ class AgentScheduler:
         self.agents = {
             'link_health_monitor': LinkHealthMonitor(),
             'quality_auditor': QualityAuditor(),
-            'trend_decay': TrendDecay(),
             'cost_optimizer': CostOptimizer()
         }
         
@@ -137,18 +135,7 @@ class AgentScheduler:
             name='Quality Auditor',
             max_instances=1
         )
-        
-        # Trend decay - daily at 3 AM
-        self.scheduler.add_job(
-            lambda: self.run_agent('trend_decay'),
-            'cron',
-            hour=3,
-            minute=0,
-            id='trend_decay',
-            name='Trend Decay',
-            max_instances=1
-        )
-        
+
         # Cost optimizer - daily at 11 PM
         self.scheduler.add_job(
             lambda: self.run_agent('cost_optimizer'),
@@ -163,7 +150,6 @@ class AgentScheduler:
         logger.info("Agent schedules configured:")
         logger.info("  - Link Health Monitor: every 6 hours")
         logger.info("  - Quality Auditor: daily at 2:00 AM")
-        logger.info("  - Trend Decay: daily at 3:00 AM")
         logger.info("  - Cost Optimizer: daily at 11:00 PM")
     
     def start(self):

@@ -199,7 +199,8 @@ YOUTUBE_API_KEY=AIza...
 ## Rules for Claude Code
 
 1. **Work locally** — `~/projects/prox-product-discovery/` not iCloud
-2. **Active frontend** — `prox-frontend-v2` (not `prox-frontend`)
+2. **Frontend repo** — `prox-frontend` is the production repo (separate from `prox-backend`)
+3. **Git email for Vercel** — Use `info@proxdesign.co` for commits to trigger Vercel deploys
 3. **Update CHANGELOG.json** — For significant changes
 4. **Don't commit .env** — Contains real keys
 5. **Push after work sessions** — Backup to GitHub

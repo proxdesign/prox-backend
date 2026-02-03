@@ -9,7 +9,6 @@ from analysis.problem_extractor import ProblemExtractor
 from analysis.solution_matcher import SolutionMatcher
 from analysis.product_enricher import ProductEnricher
 from analysis.content_generator import ContentGenerator
-from analysis.trend_scorer import TrendScorer
 
 logging.basicConfig(level=settings.LOG_LEVEL)
 logger = logging.getLogger(__name__)
@@ -23,7 +22,6 @@ class AnalysisPipeline:
         self.solution_matcher = SolutionMatcher()
         self.product_enricher = ProductEnricher()
         self.content_generator = ContentGenerator()
-        self.trend_scorer = TrendScorer()
         logger.info("Analysis pipeline initialized")
     
     def run_full_pipeline(self, 
@@ -104,24 +102,9 @@ class AnalysisPipeline:
             }
             
             logger.info(f"✓ Step 4 complete: {content_result['content_generated']} content pieces generated")
-            
-            # Step 5: Calculate trend scores
-            logger.info("Step 5: Updating trend scores")
-            step_start = time.time()
-            
-            trend_result = self.trend_scorer.update_all_trend_scores()
-            
-            results['steps']['trend_scoring'] = {
-                'problems_updated': trend_result['problems_updated'],
-                'products_updated': trend_result['products_updated'],
-                'trending_categories_count': trend_result['trending_categories_count'],
-                'duration_seconds': time.time() - step_start
-            }
-            
-            logger.info(f"✓ Step 5 complete: {trend_result['problems_updated']} problems and {trend_result['products_updated']} products scored")
-            
-            # Step 6: Quality scoring and cleanup
-            logger.info("Step 6: Quality scoring and cleanup")
+
+            # Step 5: Quality scoring and cleanup
+            logger.info("Step 5: Quality scoring and cleanup")
             step_start = time.time()
             
             cleanup_result = self._run_quality_scoring_and_cleanup()
@@ -131,7 +114,7 @@ class AnalysisPipeline:
                 'duration_seconds': time.time() - step_start
             }
             
-            logger.info(f"✓ Step 6 complete: Quality scoring and cleanup finished")
+            logger.info(f"✓ Step 5 complete: Quality scoring and cleanup finished")
             
             # Final results
             end_time = datetime.now()
@@ -176,16 +159,14 @@ class AnalysisPipeline:
             product_result = self.product_enricher.process_solutions_without_products(limit=limit//3)
             content_result = self.content_generator.process_products_without_content(limit=limit//4)
             
-            # Update effectiveness and trend scores
+            # Update effectiveness scores
             self.solution_matcher.update_solution_effectiveness()
-            trend_result = self.trend_scorer.calculate_problem_trend_scores()
-            
+
             results.update({
                 'problems_extracted': problem_result['problems_extracted'],
                 'solutions_generated': solution_result['solutions_generated'],
                 'products_found': product_result['products_found'],
                 'content_generated': content_result['content_generated'],
-                'trend_updates': trend_result['problems_updated'],
                 'update_end': datetime.now(),
                 'status': 'completed'
             })
@@ -293,19 +274,15 @@ class AnalysisPipeline:
         
         # Get content summary
         content_summary = self.content_generator.get_content_summary()
-        
-        # Get trend summary
-        trend_summary = self.trend_scorer.get_trend_summary()
-        
+
         # Get recent agent activity
         agent_activity = self._get_recent_agent_activity()
-        
+
         return {
             'problems': problem_summary,
             'solutions': solution_summary,
             'products': product_summary,
             'content': content_summary,
-            'trends': trend_summary,
             'agent_activity': agent_activity,
             'summary_generated': datetime.now()
         }
@@ -397,7 +374,6 @@ def main():
         print(f"Solutions generated: {result.get('solutions_generated', 0)}")
         print(f"Products found: {result.get('products_found', 0)}")
         print(f"Content generated: {result.get('content_generated', 0)}")
-        print(f"Trend updates: {result.get('trend_updates', 0)}")
     
     elif args.mode == 'summary':
         print("📋 Generating analysis summary...")
