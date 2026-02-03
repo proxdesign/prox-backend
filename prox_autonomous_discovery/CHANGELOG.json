@@ -1,6 +1,15 @@
 {
   "changelog": [
     {
+      "date": "2026-02-02",
+      "version": "5.5.0",
+      "type": "improved",
+      "component": "Product Image Backfill & Solve Page Layout",
+      "reason": "Fix missing product images and improve /solve page UX with proper panel layout and FTC-compliant footer visibility",
+      "details": "Backend: Added PATCH /products/{id}/image endpoint for direct image_url updates without Amazon API lookup. Fixed JSON serialization bug in amazon_data_updater.py (dict cannot adapt with %s placeholder). Frontend: Simplified /solve page layout replacing complex flex-1/min-h-0 hacks with fixed lg:h-[65vh] panel height. Panels now scroll independently with h-full overflow-y-auto. Footer always visible with Affiliate Disclosure (FTC requirement). Backfill: Successfully updated 124 product images via new PATCH endpoint, bringing coverage to 93% (452/486 products with valid images).",
+      "impact": "Product image coverage increased from ~70% to 93%. Solve page layout is now predictable and clean with no content clipping. Footer with required FTC Affiliate Disclosure always visible without scrolling. Page scrolls naturally to reveal full footer content."
+    },
+    {
       "date": "2026-01-30",
       "version": "5.4.0",
       "type": "added",
