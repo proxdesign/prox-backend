@@ -120,79 +120,85 @@ export default function ProductCard({
     }
   };
 
+  // Per PROTECTED_LAYOUT.md: Do not render card if no valid image URL
+  if (!product.image) {
+    return null;
+  }
+
   return (
-    <div 
+    <div
       className="group relative rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-lg transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Save Button - Top Left */}
-      <button
-        onClick={handleSave}
-        disabled={isSaving}
-        className={`absolute top-3 left-3 z-10 p-2 rounded-full transition-all duration-200 ${
-          isSaved 
-            ? 'bg-red-50 text-red-500 scale-110' 
-            : 'bg-white/80 backdrop-blur text-gray-400 hover:text-red-500 hover:bg-white/90'
-        } ${isSaving ? 'animate-pulse' : ''}`}
-      >
-        <Heart 
-          size={18} 
-          fill={isSaved ? 'currentColor' : 'none'}
-          strokeWidth={isSaved ? 0 : 2}
-        />
-      </button>
-
-      {/* Image Container - Natural aspect ratio */}
-      <a 
-        href={affiliateLink} 
-        target="_blank" 
-        rel="noopener noreferrer sponsored"
-        onClick={handleAffiliateClick}
-      >
-        <div className="relative">
-          <img 
-            src={product.image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800'} 
+      {/* HORIZONTAL LAYOUT: Image LEFT, Info RIGHT (per PROTECTED_LAYOUT.md) */}
+      <div className="flex flex-row">
+        {/* Image Container - Left side */}
+        <a
+          href={affiliateLink}
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+          onClick={handleAffiliateClick}
+          className="relative flex-shrink-0 w-32 sm:w-40"
+        >
+          <img
+            src={product.image}
             alt={product.title}
-            className="w-full object-cover"
-            style={{ minHeight: '180px', maxHeight: '350px' }}
-            onError={(e) => {
-              e.currentTarget.src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800';
-            }}
+            className="w-full h-full object-cover"
+            style={{ minHeight: '120px' }}
           />
 
           {/* Hover Overlay */}
           <div className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <span className="bg-white text-neutral-900 px-4 py-2 rounded-full font-medium text-sm shadow-lg">
+            <span className="bg-white text-neutral-900 px-3 py-1.5 rounded-full font-medium text-xs shadow-lg">
               View on Amazon
             </span>
           </div>
-        </div>
-      </a>
+        </a>
 
-      {/* Compact Info */}
-      <div className="p-3">
-        {/* Title - 2 lines max */}
-        <h3 className="font-medium text-neutral-900 text-sm leading-tight line-clamp-2 mb-1">
-          {product.title}
-        </h3>
-        
-        {/* Price and Rating Row */}
-        <div className="flex items-center justify-between">
-          <span className="font-bold text-neutral-900">
-            {product.price || 'See Price'}
-          </span>
-          
-          {product.rating && (
-            <div className="flex items-center gap-1 text-xs text-neutral-500">
-              <span className="text-amber-500">★</span>
-              <span>{product.rating.toFixed(1)}</span>
+        {/* Product Info - Right side */}
+        <div className="flex-1 p-3 flex flex-col justify-between relative">
+          {/* Save Button - Top Right */}
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className={`absolute top-2 right-2 z-10 p-1.5 rounded-full transition-all duration-200 ${
+              isSaved
+                ? 'bg-red-50 text-red-500 scale-110'
+                : 'bg-gray-100 text-gray-400 hover:text-red-500 hover:bg-gray-200'
+            } ${isSaving ? 'animate-pulse' : ''}`}
+          >
+            <Heart
+              size={16}
+              fill={isSaved ? 'currentColor' : 'none'}
+              strokeWidth={isSaved ? 0 : 2}
+            />
+          </button>
+
+          {/* Title - 2 lines max */}
+          <h3 className="font-medium text-neutral-900 text-sm leading-tight line-clamp-2 mb-2 pr-8">
+            {product.title}
+          </h3>
+
+          {/* Price and Rating Row */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-bold text-neutral-900">
+                {product.price || 'See Price'}
+              </span>
+
+              {product.rating && (
+                <div className="flex items-center gap-1 text-xs text-neutral-500">
+                  <span className="text-amber-500">★</span>
+                  <span>{product.rating.toFixed(1)}</span>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Affiliate indicator - subtle */}
-        <p className="text-[10px] text-neutral-400 mt-1">Affiliate link</p>
+            {/* Affiliate indicator - subtle */}
+            <p className="text-[10px] text-neutral-400">Affiliate link</p>
+          </div>
+        </div>
       </div>
     </div>
   );

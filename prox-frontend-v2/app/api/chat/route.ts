@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { problems, findProblemsForQuery } from '../../../lib/mockData';
-import { searchProductsByCategory } from '../../../lib/productApi';
+import { searchProductsByCategory, searchProductsViaCanopy } from '../../../lib/productApi';
 import { checkRateLimit, getClientIP } from '../../../lib/rateLimit';
 
 const anthropic = new Anthropic({
@@ -42,9 +42,14 @@ function hasValidImage(product: any): boolean {
     product.image_url.includes('media-amazon');
 }
 
-// Primary search function: tries vector search first, falls back to keyword search
+// Primary search function: tries vector search first, then keyword, then Canopy API
+// Search Priority Order (per PROTECTED_LAYOUT.md):
+// 1. /search/vector — semantic vector search via Voyage AI (primary)
+// 2. /search — keyword search (fallback)
+// 3. Canopy API — paid external search (last resort, only if < 4 products)
 async function fetchFromFlydev(query: string, limit: number = 8): Promise<any[]> {
   const apiUrl = process.env.API_URL || 'https://prox-autonomous-discovery.fly.dev';
+  let collectedProducts: any[] = [];
 
   // STEP 1: Try vector search first (semantic search)
   try {
@@ -63,6 +68,8 @@ async function fetchFromFlydev(query: string, limit: number = 8): Promise<any[]>
       if (productsWithImages.length >= 4) {
         return productsWithImages;
       }
+      // Save what we have so far
+      collectedProducts = productsWithImages;
     }
   } catch (error) {
     console.error('[PRODUCTS] Vector search error:', error);
@@ -77,13 +84,54 @@ async function fetchFromFlydev(query: string, limit: number = 8): Promise<any[]>
 
     if (keywordResponse.ok) {
       const keywordData = await keywordResponse.json();
-      return keywordData.products || keywordData || [];
+      const keywordProducts = keywordData.products || keywordData || [];
+      const keywordWithImages = keywordProducts.filter(hasValidImage);
+
+      console.log(`[PRODUCTS] Keyword search returned ${keywordProducts.length} products (${keywordWithImages.length} with images)`);
+
+      // Use keyword results if we have at least 4 products with images
+      if (keywordWithImages.length >= 4) {
+        return keywordWithImages;
+      }
+      // Merge with collected products (avoid duplicates by checking image_url)
+      const existingUrls = new Set(collectedProducts.map((p: any) => p.image_url));
+      for (const product of keywordWithImages) {
+        if (!existingUrls.has(product.image_url)) {
+          collectedProducts.push(product);
+        }
+      }
     }
   } catch (error) {
     console.error('[PRODUCTS] Keyword search error:', error);
   }
 
-  return [];
+  // Return if we have at least 4 products
+  if (collectedProducts.length >= 4) {
+    return collectedProducts;
+  }
+
+  // STEP 3: Last resort - Canopy API (paid external search)
+  console.log(`[PRODUCTS] Only ${collectedProducts.length} products found, falling back to Canopy API`);
+  try {
+    const canopyProducts = await searchProductsViaCanopy(query, limit);
+    console.log(`[PRODUCTS] Canopy API returned ${canopyProducts.length} products`);
+
+    if (canopyProducts.length > 0) {
+      // Transform Canopy products to match our format
+      const transformedCanopy = canopyProducts.map(p => ({
+        ...p,
+        image_url: p.image, // Canopy uses 'image', we need 'image_url'
+        product_name: p.title,
+        affiliate_url: p.link
+      }));
+      return transformedCanopy;
+    }
+  } catch (error) {
+    console.error('[PRODUCTS] Canopy API error:', error);
+  }
+
+  // Return whatever we collected (may be empty or < 4 products)
+  return collectedProducts;
 }
 
 // Fetch broad products for progressive disclosure (Phase 1 of churn optimization)

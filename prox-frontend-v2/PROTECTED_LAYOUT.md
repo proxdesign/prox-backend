@@ -46,4 +46,4 @@
 - Do NOT sort by trend_score (decommissioned)
 - Do NOT use /api/category-products/{slug} endpoint (does not exist)
 
-Last verified: 2026-02-03
+Last verified: 2026-02-03 (Canopy fallback implemented in app/api/chat/route.ts)

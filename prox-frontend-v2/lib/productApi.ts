@@ -305,8 +305,8 @@ function filterHomeProducts(products: Product[]): Product[] {
   });
 }
 
-// Canopy API search for Amazon products (primary method)
-async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): Promise<Product[]> {
+// Canopy API search for Amazon products (exported for use as fallback)
+export async function searchProductsViaCanopy(searchTerm: string, limit: number = 12): Promise<Product[]> {
   // Check cache first (include version to invalidate on filter updates)
   const cacheKey = `canopy:${CACHE_VERSION}:${searchTerm.toLowerCase()}:${limit}`;
   const cached = getCachedProducts(cacheKey);

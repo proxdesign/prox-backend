@@ -148,9 +148,9 @@ export default function SolveProblemPage() {
               <div className="hidden lg:block w-px bg-white/30 h-10" />
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-lg lg:text-2xl font-light text-white">Solve a Problem</h1>
+                  <h1 className="text-lg lg:text-2xl font-light text-white">Improve a Space</h1>
                 </div>
-                <p className="hidden lg:block text-white/80 text-sm">Fix what's been bothering you</p>
+                <p className="hidden lg:block text-white/80 text-sm">Make a room work better for you</p>
               </div>
             </div>
           </div>
