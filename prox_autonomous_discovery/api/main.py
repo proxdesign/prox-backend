@@ -490,7 +490,9 @@ def get_query_embedding(query: str) -> Optional[List[float]]:
 async def vector_search(
     q: str = Query(..., description="Search query"),
     limit: int = Query(20, description="Maximum results"),
-    threshold: float = Query(0.3, description="Minimum similarity score (0-1)")
+    threshold: float = Query(0.3, description="Minimum similarity score (0-1)"),
+    min_price: Optional[float] = Query(None, description="Minimum price"),
+    max_price: Optional[float] = Query(None, description="Maximum price")
 ):
     """Vector similarity search using pgvector embeddings."""
     try:
@@ -505,10 +507,25 @@ async def vector_search(
         # Convert to string format for pgvector
         embedding_str = "[" + ",".join(str(x) for x in query_embedding) + "]"
 
+        # Price bounds are applied IN the SQL (before the LIMIT) so the nearest
+        # IN-BUDGET products are returned — not the nearest overall, which the
+        # caller would then have to filter down to (often) zero. Additive: when
+        # neither bound is passed the query is byte-identical to before. Products
+        # with a NULL price are kept (the caller decides how to treat unpriced
+        # rows), matching the frontend filterByPrice contract.
+        price_clause = ""
+        price_params = []
+        if max_price is not None:
+            price_clause += " AND (p.price IS NULL OR p.price <= %s)"
+            price_params.append(max_price)
+        if min_price is not None:
+            price_clause += " AND (p.price IS NULL OR p.price >= %s)"
+            price_params.append(min_price)
+
         # Vector similarity search using cosine distance
         # pgvector uses <=> for cosine distance (lower = more similar)
         # Convert to similarity score: 1 - distance
-        query = """
+        query = f"""
             SELECT
                 p.id, p.product_name, p.brand, p.price,
                 p.affiliate_url, p.image_url, p.rating, p.review_count,
@@ -517,12 +534,13 @@ async def vector_search(
             WHERE p.active = TRUE
               AND p.embedding IS NOT NULL
               AND 1 - (p.embedding <=> %s::vector) >= %s
+              {price_clause}
             ORDER BY p.embedding <=> %s::vector
             LIMIT %s
         """
 
         results = db.execute_query(query, [
-            embedding_str, embedding_str, threshold, embedding_str, limit
+            embedding_str, embedding_str, threshold, *price_params, embedding_str, limit
         ])
 
         products = []
