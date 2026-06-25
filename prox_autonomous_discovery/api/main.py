@@ -492,7 +492,8 @@ async def vector_search(
     limit: int = Query(20, description="Maximum results"),
     threshold: float = Query(0.3, description="Minimum similarity score (0-1)"),
     min_price: Optional[float] = Query(None, description="Minimum price"),
-    max_price: Optional[float] = Query(None, description="Maximum price")
+    max_price: Optional[float] = Query(None, description="Maximum price"),
+    colors: Optional[str] = Query(None, description="Comma-separated color words (expanded family) — match product_name or specs.colors")
 ):
     """Vector similarity search using pgvector embeddings."""
     try:
@@ -522,6 +523,19 @@ async def vector_search(
             price_clause += " AND (p.price IS NULL OR p.price >= %s)"
             price_params.append(min_price)
 
+        # Color filter, same shape as price: applied IN the SQL (before the LIMIT) so the
+        # nearest IN-COLOR products are returned, not the nearest overall (which the caller's
+        # filterByColor would then trim to <2, relaxing to wrong-color items). The caller
+        # passes the already-expanded color family (blue→navy,teal,…); we match it against the
+        # product name OR the enriched specs.colors. Additive: no-op when colors is absent.
+        color_clause = ""
+        color_params = []
+        if colors:
+            patterns = ["%" + c.strip().lower() + "%" for c in colors.split(",") if c.strip()]
+            if patterns:
+                color_clause = " AND (lower(p.product_name) LIKE ANY(%s) OR lower(COALESCE(p.specs->>'colors', '')) LIKE ANY(%s))"
+                color_params = [patterns, patterns]
+
         # Vector similarity search using cosine distance
         # pgvector uses <=> for cosine distance (lower = more similar)
         # Convert to similarity score: 1 - distance
@@ -534,13 +548,13 @@ async def vector_search(
             WHERE p.active = TRUE
               AND p.embedding IS NOT NULL
               AND 1 - (p.embedding <=> %s::vector) >= %s
-              {price_clause}
+              {price_clause}{color_clause}
             ORDER BY p.embedding <=> %s::vector
             LIMIT %s
         """
 
         results = db.execute_query(query, [
-            embedding_str, embedding_str, threshold, *price_params, embedding_str, limit
+            embedding_str, embedding_str, threshold, *price_params, *color_params, embedding_str, limit
         ])
 
         products = []
