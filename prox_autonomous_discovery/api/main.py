@@ -474,6 +474,28 @@ def get_voyage_client():
     return _voyage_client
 
 
+# User-vocabulary → catalog-vocabulary synonym expansion, applied to the query text BEFORE
+# embedding. Evidence-driven (retrieval-correctness scorer, 2026-07-25): "black couch"
+# embedded far from sofa-named products and returned kitchen sink caddies at 0.37 similarity;
+# "black couch sofa" returns real sofas at 0.69. Append-only (never replaces the user's
+# words) and only for terms measured to fail — don't grow this map without a scorer read.
+QUERY_SYNONYMS = {
+    "couch": ["sofa"],
+    "loveseat": ["sofa", "couch"],
+    "desk chair": ["office chair"],
+}
+
+
+def expand_query_synonyms(query: str) -> str:
+    """Append catalog-vocabulary synonyms for user terms present in the query."""
+    ql = query.lower()
+    additions = []
+    for term, syns in QUERY_SYNONYMS.items():
+        if re.search(r"\b" + re.escape(term) + r"(e?s)?\b", ql):
+            additions.extend(s for s in syns if not re.search(r"\b" + re.escape(s) + r"\b", ql))
+    return query + " " + " ".join(additions) if additions else query
+
+
 def get_query_embedding(query: str) -> Optional[List[float]]:
     """Generate embedding for a search query using Voyage."""
     client = get_voyage_client()
@@ -498,8 +520,11 @@ async def vector_search(
 ):
     """Vector similarity search using pgvector embeddings."""
     try:
-        # Generate query embedding
-        query_embedding = get_query_embedding(q)
+        # Generate query embedding (user-vocab synonyms appended first — couch→+sofa)
+        expanded_q = expand_query_synonyms(q)
+        if expanded_q != q:
+            logger.info(f"Query synonym expansion: '{q}' -> '{expanded_q}'")
+        query_embedding = get_query_embedding(expanded_q)
 
         if not query_embedding:
             # Fallback to text search if embeddings unavailable
