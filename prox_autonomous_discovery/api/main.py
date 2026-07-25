@@ -1,5 +1,6 @@
 """FastAPI backend for Prox Autonomous Discovery."""
 import logging
+import re
 from datetime import datetime
 from typing import List, Dict, Optional, Any
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Header, Depends
@@ -531,9 +532,16 @@ async def vector_search(
         color_clause = ""
         color_params = []
         if colors:
-            patterns = ["%" + c.strip().lower() + "%" for c in colors.split(",") if c.strip()]
+            # Word-boundary regex (\mword\M, ~* = case-insensitive) instead of LIKE '%word%',
+            # so 'rust' stops matching "RUSTic", 'tan' stops matching "STANding", 'ash' stops
+            # matching "ASHley" — the substring false-positive class found live 2026-07-25.
+            # Mirrors the frontend lib/color-match.ts matchers (COLOR_WORD_BOUNDARY_ENABLED).
+            patterns = [
+                r"\m" + re.escape(c.strip().lower()) + r"\M"
+                for c in colors.split(",") if c.strip()
+            ]
             if patterns:
-                color_clause = " AND (lower(p.product_name) LIKE ANY(%s) OR lower(COALESCE(p.specs->>'colors', '')) LIKE ANY(%s))"
+                color_clause = " AND (p.product_name ~* ANY(%s) OR COALESCE(p.specs->>'colors', '') ~* ANY(%s))"
                 color_params = [patterns, patterns]
 
         # Vector similarity search using cosine distance
