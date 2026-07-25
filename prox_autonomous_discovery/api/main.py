@@ -561,12 +561,25 @@ async def vector_search(
             LIMIT %s
         """
 
+        # Over-fetch then dedupe: the catalog carries duplicate rows (same product imported
+        # more than once — e.g. "Jarvis Living Room Set" ×3), and this endpoint returned them
+        # verbatim (measured 6.1% dupe rate, retrieval-correctness baseline 2026-07-25).
+        # Rows are distance-ordered, so keeping the FIRST occurrence keeps the best match.
+        fetch_limit = min(limit * 3, 60)
         results = db.execute_query(query, [
-            embedding_str, embedding_str, threshold, *price_params, *color_params, embedding_str, limit
+            embedding_str, embedding_str, threshold, *price_params, *color_params, embedding_str, fetch_limit
         ])
 
         products = []
+        seen_urls = set()
+        seen_name_image = set()
         for row in results:
+            url = row['affiliate_url'] or ''
+            name_image = ((row['product_name'] or '').strip().lower(), row['image_url'] or '')
+            if (url and url in seen_urls) or name_image in seen_name_image:
+                continue
+            seen_urls.add(url)
+            seen_name_image.add(name_image)
             products.append({
                 'id': row['id'],
                 'product_name': row['product_name'],
@@ -578,6 +591,8 @@ async def vector_search(
                 'review_count': row['review_count'],
                 'similarity_score': float(row['similarity_score'])
             })
+            if len(products) >= limit:
+                break
 
         return {
             'query': q,
